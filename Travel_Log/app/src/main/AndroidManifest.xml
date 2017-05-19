@@ -54,7 +54,8 @@
         <activity android:name=".emailSubmitActivity" />
         <activity android:name=".TravelCameraActivity" />
         <activity android:name=".AlbumSelectActivity" />
-        <activity android:name=".ViewImage"></activity>
+        <activity android:name=".ViewImage" />
+        <activity android:name=".Life_LogActivity"></activity>
     </application>
 
 </manifest>
