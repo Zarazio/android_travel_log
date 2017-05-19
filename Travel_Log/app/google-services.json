@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "981810215081",
+    "project_id": "firebase-travellog"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:981810215081:android:ed74ff6d69462ee9",
+        "android_client_info": {
+          "package_name": "turn.zio.zara.travel_log"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "981810215081-n0g7tm5n9bgn4a1tsm3bj51d9m0pikpn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "turn.zio.zara.travel_log",
+            "certificate_hash": "18ef958fb22f18052a0447ad6ac5e18d0554490e"
+          }
+        },
+        {
+          "client_id": "981810215081-lr1vsnpbngdppcahtq3hh7rmos9i9rpo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxZl9_c1WbcUnng--KB2jBUA03GIh-tgE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
