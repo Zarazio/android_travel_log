@@ -31,8 +31,8 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
             Camera.Parameters parameters = camera.getParameters();
             camera.setDisplayOrientation(90);
             parameters.setRotation(90);
-            m_resWidth = 3840;
-            m_resHeight = 2160;
+            m_resWidth = 2160;
+            m_resHeight = 3840;
 
             parameters.setPictureSize(m_resWidth, m_resHeight);
             camera.setParameters(parameters);
