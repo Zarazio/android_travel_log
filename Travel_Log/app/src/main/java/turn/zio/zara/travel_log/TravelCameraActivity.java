@@ -15,8 +15,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.IOException;
 
 
 public class TravelCameraActivity extends AppCompatActivity {
@@ -83,16 +84,15 @@ public class TravelCameraActivity extends AppCompatActivity {
 
                 Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length) ;
 
-                saveBitmapToJpeg(bitmap,System.currentTimeMillis()+"_Travel_log");
-/*                getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI ,values ) ;*/
-/*
-              Uri uri = Uri.parse(image) ;
-              getApplicationContext().getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,uri.fromFile(new File(path))));*/
+
+               saveBitmapToJpeg(bitmap,System.currentTimeMillis()+"_Travel_log");
+
+               // String image = MediaStore.Images.Media.insertImage(getContentResolver(),bitmap , "","") ;
 
 
-                Toast.makeText(getApplicationContext(), "찍은 사진이 저장되었습니다", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "찍은 사진이 저장되었습니다", Toast.LENGTH_LONG).show();
 
-                camera.startPreview();
+                    camera.startPreview();
 
             }
 
@@ -100,28 +100,25 @@ public class TravelCameraActivity extends AppCompatActivity {
     }
 
     public static void saveBitmapToJpeg(Bitmap bitmap, String name){
-        String storage = Environment.getExternalStorageDirectory().getAbsolutePath() + "/travelLog" ;
-        OutputStream fOut = null;
+        String storage = Environment.getExternalStorageDirectory().getAbsolutePath() + "/travelLog/" ;
 
-        String fileName = "/" + name + ".jpg" ;
+        String fileName =  name + ".jpg" ;
         File file_path ;
 
-        file_path = new File(storage+ fileName) ;
+        file_path = new File(storage) ;
         try{
-
-            fOut = new FileOutputStream(file_path);
-
-
-            file_path.mkdirs() ;
-            if(!file_path.exists()) {
+            if(!file_path.isDirectory()) {
+                file_path.mkdirs() ;
             }
-            //FileOutputStream out = new FileOutputStream(storage + fileName) ;
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 85 , fOut) ;
-            fOut.flush();
-            fOut.close();
-        }catch (Exception exception) {
+            FileOutputStream out = new FileOutputStream(storage + fileName) ;
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100 , out) ;
+            out.close();
+        }catch (FileNotFoundException exception){
+
+        }catch (IOException ex) {
 
         }
+
     }
 }
 

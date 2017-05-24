@@ -19,7 +19,6 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
 
         mHolder = getHolder();
         mHolder.addCallback(this);
-        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
@@ -32,8 +31,8 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
             Camera.Parameters parameters = camera.getParameters();
             camera.setDisplayOrientation(90);
             parameters.setRotation(90);
-            m_resWidth = 5312;
-            m_resHeight = 2988;
+            m_resWidth = 3840;
+            m_resHeight = 2160;
 
             parameters.setPictureSize(m_resWidth, m_resHeight);
             camera.setParameters(parameters);
