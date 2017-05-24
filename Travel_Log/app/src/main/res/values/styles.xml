@@ -27,4 +27,7 @@
         <item name="android:colorControlActivated">@color/colorRed</item>
 
     </style>
+
+
+
 </resources>

@@ -18,7 +18,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/bakcMain"
+                android:id="@+id/bakcMain_icon"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginTop="10dp"
@@ -39,7 +39,7 @@
             android:adjustViewBounds="false">
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/view_loginlogo_icon"
                 android:layout_width="200dp"
                 android:layout_height="45dp"
                 android:layout_alignBottom="@+id/backmain"
@@ -78,7 +78,7 @@
             android:inputType="phone"
             android:textColorHint="#FFFFFF" />
         <TextView
-            android:id="@+id/viewmove"
+            android:id="@+id/viewmove_pass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/user_login_pass"

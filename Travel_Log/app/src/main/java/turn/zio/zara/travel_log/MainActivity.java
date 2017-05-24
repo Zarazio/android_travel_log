@@ -10,46 +10,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 public class MainActivity extends AppCompatActivity {
 
     TextView tv;
-    ToggleButton tb;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
-       /* tv = (TextView) findViewById(R.id.mylocation);
-        tb = (ToggleButton) findViewById(R.id.palceButton);
 
-        final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        tb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try{
-                    if(tb.isChecked()){
-                        tv.setText("수신중..");
-                        // GPS 제공자의 정보가 바뀌면 콜백하도록 리스너 등록하기~!!!
-                        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, // 등록할 위치제공자
-                                100, // 통지사이의 최소 시간간격 (miliSecond)
-                                1, // 통지사이의 최소 변경거리 (m)
-                                mLocationListener);
-                        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, // 등록할 위치제공자
-                                100, // 통지사이의 최소 시간간격 (miliSecond)
-                                1, // 통지사이의 최소 변경거리 (m)
-                                mLocationListener);
-                    }else{
-                        tv.setText("위치정보 미수신중");
-                        lm.removeUpdates(mLocationListener);  //  미수신할때는 반드시 자원해체를 해주어야 한다.
-                    }
-                }catch(SecurityException ex){
-                }
-            }
-        });*/
 
     }
     private final LocationListener mLocationListener = new LocationListener() {
@@ -86,37 +57,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     public void Log_Write(View view){
-       /* arData task = new arData();
-        String s = null;
 
-
-        try {
-            s = task.execute().get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        String[][] parsedata = new String[0][5];
-
-        Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();
-        try {
-            JSONArray json = new JSONArray(s);
-            parsedata = new String[json.length()][5];
-            for (int i = 0; i < json.length(); i++) {
-                JSONObject jobject = json.getJSONObject(i);
-                parsedata[i][0] = jobject.getString("test_code");
-                parsedata[i][1] = jobject.getString("title");
-                parsedata[i][2] = jobject.getString("contnet");
-                parsedata[i][3] = jobject.getString("longtitude");
-                parsedata[i][4] = jobject.getString("latitude");
-
-                Log.v("json",s);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }*/
     }
     class arData extends AsyncTask<String, Void, String> {
         @Override
@@ -180,4 +121,8 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void logmove(View view){
+        Intent intent = new Intent(this, Life_LogActivity.class);
+        startActivity(intent);
+    }
 }

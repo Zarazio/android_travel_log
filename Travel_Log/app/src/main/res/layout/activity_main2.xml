@@ -76,4 +76,11 @@
         android:layout_weight="0.07"
         android:text="Button" />
 
+    <Button
+        android:id="@+id/log"
+        android:onClick="logmove"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="log" />
+
 </LinearLayout>

@@ -116,7 +116,6 @@ public class RegisterActivity extends AppCompatActivity {
             }
         };
         DatePickerDialog dialog = new DatePickerDialog(this, listener, cyear, cmonth, cday);
-        dialog.getDatePicker().setCalendarViewShown(false);
         dialog.show();
     }
 

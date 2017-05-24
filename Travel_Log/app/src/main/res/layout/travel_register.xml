@@ -18,7 +18,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/bakcMain"
+                android:id="@+id/bakcMain_icon"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginTop="10dp"
@@ -39,7 +39,7 @@
             android:adjustViewBounds="false">
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/view_regilogo_icon"
                 android:layout_width="200dp"
                 android:layout_height="45dp"
                 android:layout_alignBottom="@+id/backmain"
@@ -145,7 +145,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/view_regi_pro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#FFFFFF"

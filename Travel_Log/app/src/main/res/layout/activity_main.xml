@@ -15,6 +15,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:visibility="visible">
 
             <LinearLayout
@@ -29,7 +30,7 @@
                     android:layout_marginTop="8dp">
 
                     <ImageButton
-                        android:id="@+id/imageButton6"
+                        android:id="@+id/Camera_sel_pop"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_weight="1"
@@ -44,22 +45,23 @@
                     android:layout_marginTop="-50dp">
 
                     <ImageView
-                        android:id="@+id/imageView2"
+                        android:id="@+id/view_mainlogo_icon"
                         android:layout_width="200dp"
                         android:layout_height="50dp"
                         android:layout_alignBottom="@+id/backmain"
                         android:layout_alignParentTop="true"
                         android:src="@drawable/loginlogo" />
                 </LinearLayout>
+
                 <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
                     android:layout_marginRight="8dp"
-                android:layout_marginTop="-50dp">
+                    android:layout_marginTop="-50dp">
 
                     <ImageButton
-                        android:id="@+id/imageButton7"
+                        android:id="@+id/view_calender_icon"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_weight="1"
@@ -84,7 +86,7 @@
         android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/view_home_icon"
             android:layout_width="50dp"
             android:layout_height="60dp"
             android:layout_weight="1"
@@ -92,7 +94,7 @@
             app:srcCompat="@drawable/home" />
 
         <ImageButton
-            android:id="@+id/imageButton2"
+            android:id="@+id/view_search_icon"
             android:layout_width="50dp"
             android:layout_height="60dp"
             android:layout_weight="1"
@@ -100,7 +102,7 @@
             app:srcCompat="@drawable/search" />
 
         <ImageButton
-            android:id="@+id/imageButton3"
+            android:id="@+id/view_logWrite_icon"
             android:layout_width="50dp"
             android:layout_height="60dp"
             android:layout_weight="1"
@@ -108,7 +110,7 @@
             app:srcCompat="@drawable/pen" />
 
         <ImageButton
-            android:id="@+id/imageButton4"
+            android:id="@+id/view_heart_icon"
             android:layout_width="50dp"
             android:layout_height="60dp"
             android:layout_weight="1"
@@ -116,7 +118,7 @@
             app:srcCompat="@drawable/heart" />
 
         <ImageButton
-            android:id="@+id/imageButton5"
+            android:id="@+id/virw_mypage_icon"
             android:layout_width="50dp"
             android:layout_height="60dp"
             android:layout_weight="1"

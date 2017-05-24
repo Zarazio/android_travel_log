@@ -35,19 +35,13 @@ public class CameraOverlayView  extends View implements SensorEventListener {
     private Sensor mOriSensor;
     private double mlongitude;
     private double mlatitude;
-    private int mVisibleDistance = 1;
+    private double mVisibleDistance = 1;
     private int mWidth;
     private int mHeight;
     private int mShadowXMargin;
     private int mShadowYMargin;
     private Paint mPaint;
-    private Paint mThemePaint;
-    private Paint mSelectedThemePaint;
     private Paint mShadowPaint;
-    private Paint mPopPaint;
-    private Paint mTouchEffectPaint;
-    private Paint mPointPaint1;
-    private Paint mPointPaint2;
     private List<PointF> mPointFList = null;
     private HashMap<Integer, String> mPointHashMap;
 
