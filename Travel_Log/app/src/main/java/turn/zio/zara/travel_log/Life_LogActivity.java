@@ -18,7 +18,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -215,7 +214,6 @@ public class Life_LogActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 
-        Toast.makeText(getBaseContext(), "resultCode : "+resultCode,Toast.LENGTH_SHORT).show();
 
         if(requestCode == getposition)
         {

@@ -41,6 +41,7 @@ public class ListViewDialog extends Dialog {
     private void createListViewDialog(){
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, mStrListItem);
         mListView.setAdapter(adapter);
+
         mListView.setOnItemClickListener(new OnItemClickListener(){
 
             @Override

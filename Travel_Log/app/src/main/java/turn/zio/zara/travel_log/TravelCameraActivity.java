@@ -15,9 +15,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.OutputStream;
 
 
 public class TravelCameraActivity extends AppCompatActivity {
@@ -39,7 +38,6 @@ public class TravelCameraActivity extends AppCompatActivity {
 
         String action = getIntent().getStringExtra("action");
 
-        Toast.makeText(getApplicationContext(),action,Toast.LENGTH_SHORT).show();
         if(action.equals("1")) {
             String f = getIntent().getStringExtra("img");
             iv2 = (ImageView) findViewById(R.id.imageView6);
@@ -82,52 +80,19 @@ public class TravelCameraActivity extends AppCompatActivity {
                     return;
                 }
 
-//
-//                String saveFolderName = "zarazio" ;
-//                try{
-//                    SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss") ;
-//                    Date current = new Date();
-//                    String dateString = formatter.format(current) ;
-//                    File sdCardPath = Environment.getExternalStorageDirectory() ;
-//                    File dirs = new File(Environment.getExternalStorageDirectory(),"saveFolderName") ;
-//                    if(dirs.mkdirs()) {
-//                        Log.d("Camera_Test" , "Directory Created") ;
-//                    }
-//
-//                    +
-//                    FileOutputStream out = null ;
-//                    String savePicName = sdCardPath.getPath() + "/" + saveFolderName + "/pic" + dateString + ".jpg" ;
-//                    out = new FileOutputStream(savePicName) ;
-//                    out.write(data);
-//                    out.close();
-//                 }catch (Excepit)
-// getContentResolver() ;
 
                 Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length) ;
-//                ContentValues values = new ContentValues() ;
+
+                saveBitmapToJpeg(bitmap,System.currentTimeMillis()+"_Travel_log");
+/*                getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI ,values ) ;*/
+/*
+              Uri uri = Uri.parse(image) ;
+              getApplicationContext().getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,uri.fromFile(new File(path))));*/
 
 
-//                values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
-//                values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg") ;
-//                values.put(MediaStore.Images.Media.DATA, path+System.currentTimeMillis() +".jpg");
+                Toast.makeText(getApplicationContext(), "찍은 사진이 저장되었습니다", Toast.LENGTH_LONG).show();
 
-                saveBitmapToJpeg(bitmap,"dd");
-
-               // String image = MediaStore.Images.Media.insertImage(getContentResolver(),bitmap , "","") ;
-
-
-
-                //getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI ,values ) ;
-
-
-//
-//               Uri uri = Uri.parse(image) ;
-//                getApplicationContext().getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,uri.fromFile(new File(path))));
-//
-
-                    Toast.makeText(getApplicationContext(), "찍은 사진이 저장되었습니다", Toast.LENGTH_LONG).show();
-
-                    camera.startPreview();
+                camera.startPreview();
 
             }
 
@@ -135,26 +100,28 @@ public class TravelCameraActivity extends AppCompatActivity {
     }
 
     public static void saveBitmapToJpeg(Bitmap bitmap, String name){
-        String storage = Environment.getExternalStorageDirectory().getAbsolutePath() + "/travelLog/" ;
+        String storage = Environment.getExternalStorageDirectory().getAbsolutePath() + "/travelLog" ;
+        OutputStream fOut = null;
 
-        String fileName = name + ".jpg" ;
+        String fileName = "/" + name + ".jpg" ;
         File file_path ;
+
+        file_path = new File(storage+ fileName) ;
         try{
 
-            file_path = new File(storage) ;
-            if(!file_path.isDirectory()) {
-                file_path.mkdirs() ;
+            fOut = new FileOutputStream(file_path);
+
+
+            file_path.mkdirs() ;
+            if(!file_path.exists()) {
             }
-            FileOutputStream out = new FileOutputStream(storage + fileName) ;
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90 , out) ;
-
-            out.close();
-        }catch (FileNotFoundException exception){
-
-        }catch (IOException ex) {
+            //FileOutputStream out = new FileOutputStream(storage + fileName) ;
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 85 , fOut) ;
+            fOut.flush();
+            fOut.close();
+        }catch (Exception exception) {
 
         }
-
     }
 }
 

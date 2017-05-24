@@ -18,6 +18,14 @@
         app:layout_constraintLeft_toLeftOf="parent" />
 
 
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="385dp"
+        android:layout_height="431dp"
+        android:alpha="0.3"
+        app:srcCompat="@drawable/cast_mini_controller_progress_drawable"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="1dp" />
 
     <FrameLayout
         android:id="@+id/travel_camera_frame"
@@ -30,13 +38,4 @@
 
 
     </FrameLayout>
-
-    <ImageView
-        android:id="@+id/imageView6"
-        android:layout_width="385dp"
-        android:layout_height="431dp"
-        android:alpha="0.3"
-        app:srcCompat="@drawable/cast_mini_controller_progress_drawable"
-        tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="1dp" />
 </android.support.constraint.ConstraintLayout>
