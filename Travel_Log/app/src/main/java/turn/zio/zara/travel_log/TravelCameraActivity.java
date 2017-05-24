@@ -29,7 +29,7 @@ public class TravelCameraActivity extends AppCompatActivity {
     private String fileName;
     private final String SAVE_FOLDER = "/save_folder" ;
 
-
+    String action;
     public static String IMAGE_FILE = "capture.jpg" ;
 
     @Override
@@ -37,7 +37,7 @@ public class TravelCameraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_travel_camera);
 
-        String action = getIntent().getStringExtra("action");
+        action = getIntent().getStringExtra("action");
 
         if(action.equals("1")) {
             String f = getIntent().getStringExtra("img");
@@ -46,21 +46,17 @@ public class TravelCameraActivity extends AppCompatActivity {
             alpha.setAlpha(50);
             iv2.setImageURI(Uri.parse(f));
         }
+
         cameraSurfaceView = new CameraSurfaceView(getApplicationContext());
         frameLayout = (FrameLayout) findViewById(R.id.travel_camera_frame);
         frameLayout.addView(cameraSurfaceView);
 
         Intent i = getIntent() ;
         // File f = (File)i.getExtras().getParcelable("img") ;
-
-
-
-
     }
 
 
     public void takePhoto(View view) {
-
 
         cameraSurfaceView.takePhoto(new Camera.PictureCallback() {
 
@@ -81,28 +77,28 @@ public class TravelCameraActivity extends AppCompatActivity {
                     return;
                 }
 
-
                 Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length) ;
-
-
                saveBitmapToJpeg(bitmap,System.currentTimeMillis()+"_Travel_log");
 
                // String image = MediaStore.Images.Media.insertImage(getContentResolver(),bitmap , "","") ;
 
-
                     Toast.makeText(getApplicationContext(), "찍은 사진이 저장되었습니다", Toast.LENGTH_LONG).show();
-
-                    camera.startPreview();
+                    if(action.equals("1")){
+                        camera.startPreview();
+                    }
+                     else {
+                        camera.stopPreview();
+                        finish();
+                    }
 
             }
-
         });
     }
 
     public static void saveBitmapToJpeg(Bitmap bitmap, String name){
         String storage = Environment.getExternalStorageDirectory().getAbsolutePath() + "/travelLog/" ;
 
-        String fileName =  name + ".jpg" ;
+        String fileName =  name + ".jpg";
         File file_path ;
 
         file_path = new File(storage) ;
@@ -112,6 +108,7 @@ public class TravelCameraActivity extends AppCompatActivity {
             }
             FileOutputStream out = new FileOutputStream(storage + fileName) ;
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100 , out) ;
+            out.flush();
             out.close();
         }catch (FileNotFoundException exception){
 
