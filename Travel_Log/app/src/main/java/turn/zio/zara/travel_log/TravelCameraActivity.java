@@ -1,34 +1,23 @@
 package turn.zio.zara.travel_log;
 
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Environment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-
-import static turn.zio.zara.travel_log.R.drawable.camera;
 
 
 public class TravelCameraActivity extends AppCompatActivity {
@@ -48,15 +37,16 @@ public class TravelCameraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_travel_camera);
 
-        String f = getIntent().getStringExtra("img") ;
+        String action = getIntent().getStringExtra("action");
 
-
-
-        iv2 = (ImageView) findViewById(R.id.imageView6) ;
-        Drawable alpha = iv2.getDrawable() ;
-        alpha.setAlpha(50);
-        iv2.setImageURI(Uri.parse(f)) ;
-
+        Toast.makeText(getApplicationContext(),action,Toast.LENGTH_SHORT).show();
+        if(action.equals("1")) {
+            String f = getIntent().getStringExtra("img");
+            iv2 = (ImageView) findViewById(R.id.imageView6);
+            Drawable alpha = iv2.getDrawable();
+            alpha.setAlpha(50);
+            iv2.setImageURI(Uri.parse(f));
+        }
         cameraSurfaceView = new CameraSurfaceView(getApplicationContext());
         frameLayout = (FrameLayout) findViewById(R.id.travel_camera_frame);
         frameLayout.addView(cameraSurfaceView);

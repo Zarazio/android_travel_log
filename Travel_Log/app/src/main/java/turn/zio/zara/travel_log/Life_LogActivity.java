@@ -1,19 +1,27 @@
 package turn.zio.zara.travel_log;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,8 +36,8 @@ public class Life_LogActivity extends AppCompatActivity {
 
     LocationManager lm;
     private ListViewDialog mDialog;
+    int getposition;
 
-    final CharSequence[] addFileItem = {"사진찍기", "갤러리", "음성메모"};
 
     private TextView place_info;
 
@@ -151,12 +159,18 @@ public class Life_LogActivity extends AppCompatActivity {
                 // TODO Auto-generated method stub
 
                 if (position == 0){
-
+                    Intent intent = new Intent(getApplicationContext(), TravelCameraActivity.class);
+                    intent.putExtra("action","0");
+                    startActivity(intent);
                 } else if (position == 1){
-
+                    Intent intent = new Intent(Intent.ACTION_PICK);
+                    intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
+                    startActivityForResult(intent, position);
+                    getposition = 1;
                 } else if(position == 2){
 
                 } else if(position == 3){
+
                 }
                 mDialog.dismiss();
             }
@@ -196,5 +210,43 @@ public class Life_LogActivity extends AppCompatActivity {
     }
     public void HashTagAdd(View view){
         log.append("#");
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
+        Toast.makeText(getBaseContext(), "resultCode : "+resultCode,Toast.LENGTH_SHORT).show();
+
+        if(requestCode == getposition)
+        {
+            if(resultCode== Activity.RESULT_OK)
+            {
+                try {
+                    //Uri에서 이미지 이름을 얻어온다.
+                    //String name_Str = getImageNameToUri(data.getData());
+
+                    //이미지 데이터를 비트맵으로 받아온다.
+                    Bitmap image_bitmap 	= MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                    ImageView image = (ImageView)findViewById(R.id.view_Travel_Picture);
+
+                    //배치해놓은 ImageView에 set
+                    image.setImageBitmap(image_bitmap);
+
+
+                    //Toast.makeText(getBaseContext(), "name_Str : "+name_Str , Toast.LENGTH_SHORT).show();
+
+
+                } catch (FileNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

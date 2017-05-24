@@ -2,9 +2,9 @@ package turn.zio.zara.travel_log;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -13,8 +13,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import java.io.File;
-import java.lang.reflect.Array;
-import java.net.URI;
 import java.util.ArrayList;
 
 public class AlbumSelectActivity extends AppCompatActivity {
@@ -33,7 +31,10 @@ public class AlbumSelectActivity extends AppCompatActivity {
 
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-                startActivity(new Intent(getApplicationContext(), TravelCameraActivity.class).putExtra("img",list.get(position).toString())) ;
+                Intent intent = new Intent(getApplicationContext(), TravelCameraActivity.class);
+                intent.putExtra("img",list.get(position).toString());
+                intent.putExtra("action","1");
+                startActivity(intent);
             }
         });
 
