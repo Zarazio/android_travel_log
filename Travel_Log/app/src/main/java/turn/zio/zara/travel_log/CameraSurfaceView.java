@@ -13,6 +13,9 @@ import android.view.SurfaceView;
 public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder mHolder;
     private Camera camera = null;
+    int degrees =90;
+    int m_resWidth;
+    int m_resHeight;
 
     public CameraSurfaceView(Context context) {
         super(context);
@@ -20,20 +23,16 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         mHolder = getHolder();
         mHolder.addCallback(this);
     }
-
-    public void surfaceCreated(SurfaceHolder holder) {
-        camera = Camera.open();
-
-        int m_resWidth;
-        int m_resHeight;
-
+    public void Cameradisplay(){
+        Log.d("display","변경됬겠지" + degrees);
         try {
             Camera.Parameters parameters = camera.getParameters();
             camera.setDisplayOrientation(90);
-            parameters.setRotation(90);
-            m_resWidth = 3840;
-            m_resHeight = 2160;
-
+            parameters.setRotation(degrees);
+            m_resWidth = camera.getParameters().getPictureSize().width;
+            m_resHeight = camera.getParameters().getPictureSize().height;
+            Log.d("width", m_resWidth+"");
+            Log.d("height", m_resHeight+"");
             parameters.setPictureSize(m_resWidth, m_resHeight);
             camera.setParameters(parameters);
             camera.setPreviewDisplay(mHolder);
@@ -41,10 +40,16 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
             Log.e("CameraSurfaceView", "Failed to set camera preview.", e);
         }
     }
+    public void surfaceCreated(SurfaceHolder holder) {
+        camera = Camera.open();
+        Cameradisplay();
+    }
 
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height){
+        Log.d("surface변경","ㅇㅇ");
         camera.startPreview();
     }
+
 
     public void surfaceDestroyed(SurfaceHolder holder) {
         camera.stopPreview();

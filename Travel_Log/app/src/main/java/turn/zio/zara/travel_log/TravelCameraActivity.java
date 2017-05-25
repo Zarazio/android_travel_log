@@ -1,13 +1,13 @@
 package turn.zio.zara.travel_log;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.OrientationEventListener;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -25,11 +25,9 @@ public class TravelCameraActivity extends AppCompatActivity {
 
     private CameraSurfaceView cameraSurfaceView;
     private FrameLayout frameLayout;
-    private String fileName;
-    private final String SAVE_FOLDER = "/save_folder" ;
-
+    OrientationEventListener orientEventListener;
+    int degrees;
     String action;
-    public static String IMAGE_FILE = "capture.jpg" ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,20 +45,19 @@ public class TravelCameraActivity extends AppCompatActivity {
         }
 
         cameraSurfaceView = new CameraSurfaceView(getApplicationContext());
+
         frameLayout = (FrameLayout) findViewById(R.id.travel_camera_frame);
         frameLayout.addView(cameraSurfaceView);
 
         Intent i = getIntent() ;
         // File f = (File)i.getExtras().getParcelable("img") ;
     }
-
-
+    
     public void takePhoto(View view) {
 
         cameraSurfaceView.takePhoto(new Camera.PictureCallback() {
 
             public void onPictureTaken(byte[] data, Camera camera) {
-
                 String path ;
                 String pathState = Environment.getExternalStorageState() ;
 
@@ -108,6 +105,11 @@ public class TravelCameraActivity extends AppCompatActivity {
                     }
                      else {
                         camera.stopPreview();
+                        intent = new Intent();
+                        intent.putExtra("filepath" , path_root);
+                        setResult(RESULT_OK, intent);
+                        finish();
+
                         finish();
                     }
 

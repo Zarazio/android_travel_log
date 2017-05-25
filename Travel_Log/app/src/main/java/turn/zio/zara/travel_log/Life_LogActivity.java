@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -19,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,11 +37,8 @@ public class Life_LogActivity extends AppCompatActivity {
 
     LocationManager lm;
     private ListViewDialog mDialog;
-    int getposition;
-
 
     private TextView place_info;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -160,12 +159,11 @@ public class Life_LogActivity extends AppCompatActivity {
                 if (position == 0){
                     Intent intent = new Intent(getApplicationContext(), TravelCameraActivity.class);
                     intent.putExtra("action","0");
-                    startActivity(intent);
+                    startActivityForResult(intent, position);
                 } else if (position == 1){
                     Intent intent = new Intent(Intent.ACTION_PICK);
                     intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
                     startActivityForResult(intent, position);
-                    getposition = 1;
                 } else if(position == 2){
 
                 } else if(position == 3){
@@ -212,13 +210,8 @@ public class Life_LogActivity extends AppCompatActivity {
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-
-
-        if(requestCode == getposition)
-        {
-            if(resultCode== Activity.RESULT_OK)
-            {
+        if(requestCode == 1) {
+            if(resultCode== Activity.RESULT_OK) {
                 try {
                     //Uri에서 이미지 이름을 얻어온다.
                     //String name_Str = getImageNameToUri(data.getData());
@@ -244,6 +237,14 @@ public class Life_LogActivity extends AppCompatActivity {
                 {
                     e.printStackTrace();
                 }
+            }
+        }else if (requestCode == 0){
+            if(resultCode== Activity.RESULT_OK) {
+                String path = data.getStringExtra("filepath");
+                File imgFile = new  File(path);
+                ImageView image = (ImageView)findViewById(R.id.view_Travel_Picture);
+                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                image.setImageBitmap(myBitmap);
             }
         }
     }
