@@ -11,8 +11,8 @@ import android.view.SurfaceView;
  */
 
 public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
-    private SurfaceHolder mHolder;
-    private Camera camera = null;
+    SurfaceHolder mHolder;
+    Camera camera = null;
     int degrees =90;
     int m_resWidth;
     int m_resHeight;

@@ -18,6 +18,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import static turn.zio.zara.travel_log.R.drawable.camera;
+
 
 public class TravelCameraActivity extends AppCompatActivity {
 
@@ -52,9 +54,28 @@ public class TravelCameraActivity extends AppCompatActivity {
         Intent i = getIntent() ;
         // File f = (File)i.getExtras().getParcelable("img") ;
     }
-    public void takePhoto(View view) {
 
-        cameraSurfaceView.takePhoto(new Camera.PictureCallback() {
+    public void autoFocusd(View view) {
+        cameraSurfaceView.camera.autoFocus(mAutoFocus) ;
+    }
+
+    Camera.AutoFocusCallback mAutoFocus = new Camera.AutoFocusCallback() {
+        @Override
+        public void onAutoFocus(boolean success, Camera camera) {
+            if(success){
+                Toast.makeText(getApplicationContext(),"Auto Focus Success",Toast.LENGTH_SHORT).show();
+                cameraSurfaceView.camera.takePicture(null, null, null,takePhoto);
+            }
+            else{
+                Toast.makeText(getApplicationContext(),"Auto Focus Failed",Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    };
+
+
+
+        Camera.PictureCallback takePhoto = new Camera.PictureCallback() {
 
             public void onPictureTaken(byte[] data, Camera camera) {
                 String path ;
@@ -113,8 +134,8 @@ public class TravelCameraActivity extends AppCompatActivity {
                     }
 
             }
-        });
-    }
+
+    };
 
 }
 
