@@ -52,7 +52,6 @@ public class TravelCameraActivity extends AppCompatActivity {
         Intent i = getIntent() ;
         // File f = (File)i.getExtras().getParcelable("img") ;
     }
-    
     public void takePhoto(View view) {
 
         cameraSurfaceView.takePhoto(new Camera.PictureCallback() {
