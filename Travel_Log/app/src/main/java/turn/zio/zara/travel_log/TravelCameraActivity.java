@@ -2,7 +2,6 @@ package turn.zio.zara.travel_log;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.net.Uri;
@@ -76,9 +75,30 @@ public class TravelCameraActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "sd card 인식 실패", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                String path_root = path + System.currentTimeMillis() + "_Travel_log.jpg";
 
-                Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length) ;
-               saveBitmapToJpeg(bitmap,System.currentTimeMillis()+"_Travel_log");
+                File file = new File(path_root);
+                FileOutputStream out = null;
+                try {
+                    out = new FileOutputStream(file);
+                    out.write(data);
+                    out.flush();
+                    out.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                Uri uri = Uri.parse("file://" + path_root);
+                intent.setData(uri);
+                sendBroadcast(intent);
+
+
+
+                //Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length) ;
+               //saveBitmapToJpeg(bitmap,System.currentTimeMillis()+"_Travel_log");
 
                // String image = MediaStore.Images.Media.insertImage(getContentResolver(),bitmap , "","") ;
 
@@ -95,27 +115,5 @@ public class TravelCameraActivity extends AppCompatActivity {
         });
     }
 
-    public static void saveBitmapToJpeg(Bitmap bitmap, String name){
-        String storage = Environment.getExternalStorageDirectory().getAbsolutePath() + "/travelLog/" ;
-
-        String fileName =  name + ".jpg";
-        File file_path ;
-
-        file_path = new File(storage) ;
-        try{
-            if(!file_path.isDirectory()) {
-                file_path.mkdirs() ;
-            }
-            FileOutputStream out = new FileOutputStream(storage + fileName) ;
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100 , out) ;
-            out.flush();
-            out.close();
-        }catch (FileNotFoundException exception){
-
-        }catch (IOException ex) {
-
-        }
-
-    }
 }
 
