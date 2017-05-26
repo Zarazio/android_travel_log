@@ -3,7 +3,6 @@ package turn.zio.zara.travel_log;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
@@ -33,36 +32,21 @@ import java.util.regex.Pattern;
 
 public class Life_LogActivity extends AppCompatActivity {
 
-    private EditText log_Content;
-    private EditText log_Title;
-    private TextView user_id;
+    private EditText log;
     List<Object> hash = new ArrayList<Object>();
 
     LocationManager lm;
     private ListViewDialog mDialog;
 
     private TextView place_info;
-
-    SharedPreferences login;
-    SharedPreferences.Editor editor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_life_log);
 
-        log_Content = (EditText) findViewById(R.id.view_Travel_logTxt);
-        log_Title = (EditText) findViewById(R.id.view_Travel_logTitle);
+        log = (EditText) findViewById(R.id.view_Travel_logTxt);
         place_info = (TextView) findViewById(R.id.user_place_info);
-        user_id = (TextView) findViewById(R.id.user_profile_id);
 
-        login = getSharedPreferences("LoginKeep", MODE_PRIVATE);
-        editor = login.edit();
-
-        //SharedPreferences값이 있으면 유저아이디를 없으면 널값을
-        SharedPreferences user = getSharedPreferences("LoginKeep", MODE_PRIVATE);
-        String userkeep = user.getString("user_id", "0");
-
-        user_id.setText(userkeep);
         /*log.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -222,7 +206,7 @@ public class Life_LogActivity extends AppCompatActivity {
         finish();
     }
     public void HashTagAdd(View view){
-        log_Content.append("#");
+        log.append("#");
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

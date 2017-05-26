@@ -23,14 +23,8 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         mHolder = getHolder();
         mHolder.addCallback(this);
     }
-    public CameraSurfaceView(Context context, int degrees) {
-        super(context);
-
-        this.degrees = degrees;
-        mHolder = getHolder();
-        mHolder.addCallback(this);
-    }
-    public void Cameradisplay(int degrees){
+    public void Cameradisplay(){
+        Log.d("display","변경됬겠지" + degrees);
         try {
             Camera.Parameters parameters = camera.getParameters();
             camera.setDisplayOrientation(90);
@@ -48,10 +42,11 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
     }
     public void surfaceCreated(SurfaceHolder holder) {
         camera = Camera.open();
-        Cameradisplay(degrees);
+        Cameradisplay();
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height){
+        Log.d("surface변경","ㅇㅇ");
         camera.startPreview();
     }
 

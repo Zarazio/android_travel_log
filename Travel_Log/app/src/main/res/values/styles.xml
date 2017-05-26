@@ -27,7 +27,7 @@
         <item name="android:colorControlActivated">@color/colorRed</item>
 
     </style>
-
-
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
 
 </resources>

@@ -10,4 +10,5 @@
         <item>취소</item>
     </string-array>
 
+    <string name="action_settings">Settings</string>
 </resources>

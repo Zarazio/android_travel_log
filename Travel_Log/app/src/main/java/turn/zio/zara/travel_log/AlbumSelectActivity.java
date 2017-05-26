@@ -1,24 +1,24 @@
 package turn.zio.zara.travel_log;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
 
 import java.io.File;
 import java.util.ArrayList;
 
 public class AlbumSelectActivity extends AppCompatActivity {
 
-    GridView gv ;
+    GalleryAdapter mAdapter ;
+    RecyclerView mRecyclerView ;
+
     ArrayList<File> list ;
+    ArrayList<ImageModel> data = new ArrayList<>() ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,49 +26,39 @@ public class AlbumSelectActivity extends AppCompatActivity {
 
         list = imageReader(Environment.getExternalStorageDirectory()) ;
 
-        gv = (GridView) findViewById(R.id.gridView) ;
-        gv.setAdapter(new GridAdapter());
 
-        gv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-                Intent intent = new Intent(getApplicationContext(), TravelCameraActivity.class);
-                intent.putExtra("img",list.get(position).toString());
-                intent.putExtra("action","1");
+
+        for(int i=0 ; i<list.size() ; i++){
+            ImageModel imageModel = new ImageModel() ;
+            imageModel.setName("Image " + i);
+            imageModel.setUrl(list.get(i)+"");
+            data.add(imageModel)  ;
+        }
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar) ;
+        setSupportActionBar(toolbar);
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.list) ;
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this,3));
+        mRecyclerView.setHasFixedSize(true);
+
+        mAdapter = new GalleryAdapter(AlbumSelectActivity.this, data) ;
+        mRecyclerView.setAdapter(mAdapter);
+
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener(){
+
+            @Override
+            public void onItemClick(View view, int position){
+                Intent intent = new Intent(AlbumSelectActivity.this, DetailActivity.class) ;
+                intent.putParcelableArrayListExtra("data", data) ;
+                intent.putExtra("pos", position) ;
                 startActivity(intent);
             }
-        });
+        }));
 
 
     }
 
-    class GridAdapter extends BaseAdapter {
-
-        @Override
-        public int getCount() {
-            return list.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return list.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            convertView = getLayoutInflater().inflate(R.layout.singl_grid,parent ,false) ;
-            ImageView iv = (ImageView) convertView.findViewById(R.id.imageView4) ;
-
-            iv.setImageURI(Uri.parse(getItem(position).toString() )) ;
-
-            return convertView;
-        }
-    }
 
     ArrayList<File> imageReader(File root){
 
