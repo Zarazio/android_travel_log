@@ -18,8 +18,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static turn.zio.zara.travel_log.R.drawable.camera;
-
 
 public class TravelCameraActivity extends AppCompatActivity {
 
@@ -55,7 +53,7 @@ public class TravelCameraActivity extends AppCompatActivity {
         // File f = (File)i.getExtras().getParcelable("img") ;
     }
 
-    public void autoFocusd(View view) {
+    public void autoFocus(View view) {
         cameraSurfaceView.camera.autoFocus(mAutoFocus) ;
     }
 
@@ -64,7 +62,6 @@ public class TravelCameraActivity extends AppCompatActivity {
         public void onAutoFocus(boolean success, Camera camera) {
             if(success){
                 Toast.makeText(getApplicationContext(),"Auto Focus Success",Toast.LENGTH_SHORT).show();
-                cameraSurfaceView.camera.takePicture(null, null, null,takePhoto);
             }
             else{
                 Toast.makeText(getApplicationContext(),"Auto Focus Failed",Toast.LENGTH_SHORT).show();
@@ -74,68 +71,69 @@ public class TravelCameraActivity extends AppCompatActivity {
     };
 
 
+        public void takephoto(View view){
+            cameraSurfaceView.takePhoto(takePhoto);
+        }
+            Camera.PictureCallback takePhoto = new Camera.PictureCallback() {
 
-        Camera.PictureCallback takePhoto = new Camera.PictureCallback() {
+                public void onPictureTaken(byte[] data, Camera camera) {
+                    String path ;
+                    String pathState = Environment.getExternalStorageState() ;
 
-            public void onPictureTaken(byte[] data, Camera camera) {
-                String path ;
-                String pathState = Environment.getExternalStorageState() ;
+                    if(pathState.equals(Environment.MEDIA_MOUNTED)) {
+                         path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/travelLog/" ;
+                        File file = new File(path) ;
 
-                if(pathState.equals(Environment.MEDIA_MOUNTED)) {
-                     path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/travelLog/" ;
-                    File file = new File(path) ;
-
-                    if(!file.exists())
-                        file.mkdirs() ;
-                }
-                else {
-                    Toast.makeText(getApplicationContext(), "sd card 인식 실패", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                String path_root = path + System.currentTimeMillis() + "_Travel_log.jpg";
-
-                File file = new File(path_root);
-                FileOutputStream out = null;
-                try {
-                    out = new FileOutputStream(file);
-                    out.write(data);
-                    out.flush();
-                    out.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                Uri uri = Uri.parse("file://" + path_root);
-                intent.setData(uri);
-                sendBroadcast(intent);
-
-
-
-                //Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length) ;
-               //saveBitmapToJpeg(bitmap,System.currentTimeMillis()+"_Travel_log");
-
-               // String image = MediaStore.Images.Media.insertImage(getContentResolver(),bitmap , "","") ;
-
-                    Toast.makeText(getApplicationContext(), "찍은 사진이 저장되었습니다", Toast.LENGTH_LONG).show();
-                    if(action.equals("1")){
-                        camera.startPreview();
+                        if(!file.exists())
+                            file.mkdirs() ;
                     }
-                     else {
-                        camera.stopPreview();
-                        intent = new Intent();
-                        intent.putExtra("filepath" , path_root);
-                        setResult(RESULT_OK, intent);
-                        finish();
+                    else {
+                        Toast.makeText(getApplicationContext(), "sd card 인식 실패", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    String path_root = path + System.currentTimeMillis() + "_Travel_log.jpg";
 
-                        finish();
+                    File file = new File(path_root);
+                    FileOutputStream out = null;
+                    try {
+                        out = new FileOutputStream(file);
+                        out.write(data);
+                        out.flush();
+                        out.close();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
 
-            }
+                    Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                    Uri uri = Uri.parse("file://" + path_root);
+                    intent.setData(uri);
+                    sendBroadcast(intent);
 
-    };
 
+
+                    //Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length) ;
+                   //saveBitmapToJpeg(bitmap,System.currentTimeMillis()+"_Travel_log");
+
+                   // String image = MediaStore.Images.Media.insertImage(getContentResolver(),bitmap , "","") ;
+
+                        Toast.makeText(getApplicationContext(), "찍은 사진이 저장되었습니다", Toast.LENGTH_LONG).show();
+                        if(action.equals("1")){
+                            camera.startPreview();
+                        }
+                         else {
+                            camera.stopPreview();
+                            intent = new Intent();
+                            intent.putExtra("filepath" , path_root);
+                            setResult(RESULT_OK, intent);
+                            finish();
+
+                            finish();
+                        }
+
+                }
+
+        };
 }
 

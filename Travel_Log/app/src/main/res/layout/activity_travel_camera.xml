@@ -8,7 +8,7 @@
 
     <Button
         android:id="@+id/takePicture"
-        android:onClick="autoFocus"
+        android:onClick="takephoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="카메라"
@@ -31,7 +31,7 @@
         android:id="@+id/travel_camera_frame"
         android:layout_width="382dp"
         android:layout_height="430dp"
-        android:onClick="autofocus"
+        android:onClick="autoFocus"
         android:layout_marginRight="1dp"
         android:layout_marginTop="-15dp"
         app:layout_constraintRight_toRightOf="parent"
