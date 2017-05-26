@@ -1,12 +1,13 @@
 package turn.zio.zara.travel_log;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.OrientationEventListener;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -22,29 +23,50 @@ import java.io.IOException;
 public class TravelCameraActivity extends AppCompatActivity {
 
     ImageView iv2 ;
+    OrientationEventListener orientEventListener;
 
     private CameraSurfaceView cameraSurfaceView;
     private FrameLayout frameLayout;
-    OrientationEventListener orientEventListener;
-    int degrees;
-    String action;
 
+    String action;
+    int degrees = 90;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_travel_camera);
 
-        action = getIntent().getStringExtra("action");
+        Intent intent = getIntent();
+        action = intent.getStringExtra("action");
 
-        if(action.equals("1")) {
+        Log.d("카메라",action);
+        /*if(action.equals("1")) {
             String f = getIntent().getStringExtra("img");
             iv2 = (ImageView) findViewById(R.id.imageView6);
             Drawable alpha = iv2.getDrawable();
             alpha.setAlpha(50);
             iv2.setImageURI(Uri.parse(f));
-        }
+        }*/
+        cameraSurfaceView = new CameraSurfaceView(getApplicationContext(),degrees);
+        orientEventListener = new OrientationEventListener(this,
+                SensorManager.SENSOR_DELAY_NORMAL) {
 
-        cameraSurfaceView = new CameraSurfaceView(getApplicationContext());
+            @Override
+            public void onOrientationChanged(int arg0) {
+                if(arg0 >=315 || arg0 <= 45){
+                    degrees = 90;
+                }else if(arg0 >=46 && arg0 <=135){
+                    degrees = 180;
+                }else if(arg0 >=136 && arg0 <=225){
+                    degrees = 270;
+                }else if (arg0 >=225 && arg0 <=314){
+                    degrees = 0;
+                }
+            }
+        };
+
+        if (orientEventListener.canDetectOrientation()) {
+            orientEventListener.enable();
+        }
 
         frameLayout = (FrameLayout) findViewById(R.id.travel_camera_frame);
         frameLayout.addView(cameraSurfaceView);
@@ -53,6 +75,10 @@ public class TravelCameraActivity extends AppCompatActivity {
         // File f = (File)i.getExtras().getParcelable("img") ;
     }
 
+    public void memory(View view){
+        Intent intent = new Intent(getApplicationContext(), AlbumSelectActivity.class);
+        startActivity(intent);
+    }
     public void autoFocus(View view) {
         cameraSurfaceView.camera.autoFocus(mAutoFocus) ;
     }
@@ -72,6 +98,7 @@ public class TravelCameraActivity extends AppCompatActivity {
 
 
         public void takephoto(View view){
+            cameraSurfaceView.Cameradisplay(degrees);
             cameraSurfaceView.takePhoto(takePhoto);
         }
             Camera.PictureCallback takePhoto = new Camera.PictureCallback() {
@@ -127,8 +154,6 @@ public class TravelCameraActivity extends AppCompatActivity {
                             intent = new Intent();
                             intent.putExtra("filepath" , path_root);
                             setResult(RESULT_OK, intent);
-                            finish();
-
                             finish();
                         }
 

@@ -117,7 +117,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void travle_Camera(View view){
-        Intent intent = new Intent(this, AlbumSelectActivity.class);
+        Intent intent = new Intent(getApplicationContext(), TravelCameraActivity.class);
+        intent.putExtra("action", "1");
         startActivity(intent);
     }
 
