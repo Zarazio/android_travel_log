@@ -169,6 +169,7 @@
 
         <Button
             android:id="@+id/Travel_log_submit"
+            android:onClick="Travel_log_submit"
             android:layout_width="60dp"
             android:background="@null"
             android:layout_height="60dp"

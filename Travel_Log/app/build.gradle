@@ -39,5 +39,8 @@ dependencies {
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.github.bumptech.glide:glide:3.6.1'
     compile 'com.android.support:recyclerview-v7:24.2.1'
+    dependencies {
+        compile 'com.loopj.android:android-async-http:1.4.9'
+    }
     testCompile 'junit:junit:4.12'
 }

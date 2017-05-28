@@ -118,7 +118,8 @@ public class TravelCameraActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "sd card 인식 실패", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    String path_root = path + System.currentTimeMillis() + "_Travel_log.jpg";
+                    String file_name= System.currentTimeMillis() + "_Travel_log";
+                    String path_root = path + file_name +".jpg";
 
                     File file = new File(path_root);
                     FileOutputStream out = null;
@@ -138,7 +139,7 @@ public class TravelCameraActivity extends AppCompatActivity {
                     intent.setData(uri);
                     sendBroadcast(intent);
 
-
+                    Log.d("path_root", path_root);
 
                     //Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length) ;
                    //saveBitmapToJpeg(bitmap,System.currentTimeMillis()+"_Travel_log");
@@ -153,10 +154,11 @@ public class TravelCameraActivity extends AppCompatActivity {
                             camera.stopPreview();
                             intent = new Intent();
                             intent.putExtra("filepath" , path_root);
+                            intent.putExtra("file_name" , file_name);
+                            intent.putExtra("degrees" , degrees+"");
                             setResult(RESULT_OK, intent);
                             finish();
                         }
-
                 }
 
         };

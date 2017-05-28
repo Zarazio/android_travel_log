@@ -1,9 +1,11 @@
 package turn.zio.zara.travel_log;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
@@ -11,6 +13,8 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -21,9 +25,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.loopj.android.http.RequestParams;
+
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,19 +44,30 @@ import java.util.regex.Pattern;
 
 public class Life_LogActivity extends AppCompatActivity {
 
+    private String mImgPath = null;
+    private String mImgTitle = null;
+    private String mImgOrient = null;
+
+    FileInputStream mFileInputStream;
+
+    String lineEnd = "\r\n";
+    String twoHyphens = "--";
+    String boundary = "*****";
+
     private EditText log_Content;
     private EditText log_Title;
     private TextView user_id;
     private ImageView image;
+    private ListViewDialog mDialog;
+    private TextView place_info;
+
     List<Object> hash = new ArrayList<Object>();
 
     LocationManager lm;
-    private ListViewDialog mDialog;
-
-    private TextView place_info;
 
     SharedPreferences login;
     SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,6 +146,26 @@ public class Life_LogActivity extends AppCompatActivity {
         }
     }
 
+    public void getImageName(Uri data){
+        Log.d("Dd",data+"");
+        String[] proj={
+                MediaStore.Images.Media.DATA,
+                MediaStore.Images.Media.TITLE,
+                MediaStore.Images.Media.ORIENTATION
+        };
+        Cursor cursor = this.getContentResolver().query(data, proj, null, null, null);
+        cursor.moveToFirst();
+
+        int column_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        int column_title = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.TITLE);
+        int column_orientation= cursor.getColumnIndexOrThrow(MediaStore.Images.Media.ORIENTATION);
+
+        mImgPath = cursor.getString(column_data);
+        mImgTitle = cursor.getString(column_title);
+        mImgOrient = cursor.getString(column_orientation);
+
+    }
+
     private final LocationListener mLocationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
             //여기서 위치값이 갱신되면 이벤트가 발생한다.
@@ -151,12 +193,10 @@ public class Life_LogActivity extends AppCompatActivity {
         }
     };
 
-    public void Travel_log_submit(){
+    public void Travel_log_submit(View view){
         String Title = log_Title.getText().toString();
         String Content = log_Content.getText().toString();
-        /*if(image.)
-        String*/
-
+        Travel_log_Write(Title, Content);
     }
 
     public void addFile(View v){
@@ -166,6 +206,126 @@ public class Life_LogActivity extends AppCompatActivity {
                 showListDialog();
                 break;
         }
+    }
+
+    private void Travel_log_Write(final String Title, String Contnet){
+
+        class insertData extends AsyncTask<String, Void, String> {
+            ProgressDialog loading;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                loading = ProgressDialog.show(Life_LogActivity.this, "Please Wait", null, true, true);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                Log.d("result",s);
+
+                loading.dismiss();
+
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HttpURLConnection conn = null;
+                StringBuilder sb = new StringBuilder();
+                try {
+                    String log_Title = params[0];
+                    String log_Content = params[1];
+
+
+                    RequestParams insertData = new RequestParams();
+                    insertData.put("log_Title",log_Title);
+                    insertData.put("log_Content",log_Content);
+                    if(mImgPath !=null){
+                        File file = new File(mImgPath);
+                        mFileInputStream = new FileInputStream(mImgPath);
+                        insertData.put("image",mImgPath);
+                    }
+
+                    URL url = new URL("http://211.211.213.218:8084/android/insertLog"); //요청 URL을 입력
+                    conn = (HttpURLConnection) url.openConnection();
+
+                    conn.setDoInput(true); //input을 사용하도록 설정 (default : true)
+                    conn.setDoOutput(true); //output을 사용하도록 설정 (default : false)
+                    conn.setUseCaches(false);
+
+                    conn.setConnectTimeout(60); //타임아웃 시간 설정 (default : 무한대기)
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("Connection", "Keep-Alive");
+                    conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+
+                    DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
+
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+                    dos.writeBytes("Content-Disposition: form-data; name=\"log_Title\""
+                            + lineEnd);
+                    dos.writeBytes(lineEnd);
+                    dos.write(log_Title.getBytes("UTF-8"));
+                    dos.writeBytes( lineEnd);
+
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+                    dos.writeBytes("Content-Disposition: form-data; name=\"log_Content\""
+                            + lineEnd);
+                    dos.writeBytes(lineEnd);
+                    dos.write(log_Content.getBytes("UTF-8"));
+                    dos.writeBytes( lineEnd);
+
+                    if(mImgPath != null) {
+                        dos.writeBytes(twoHyphens + boundary + lineEnd);
+                        dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + mImgPath + "\"" + lineEnd);
+                        dos.writeBytes(lineEnd);
+
+                        int bytesAvailable = mFileInputStream.available();
+                        int maxBufferSize = 1024;
+                        int bufferSize = Math.min(bytesAvailable, maxBufferSize);
+
+                        byte[] buffer = new byte[bufferSize];
+                        int bytesRead = mFileInputStream.read(buffer, 0, bufferSize);
+
+                        while (bytesRead > 0) {
+                            dos.write(buffer, 0, bufferSize);
+                            bytesAvailable = mFileInputStream.available();
+                            bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                            bytesRead = mFileInputStream.read(buffer, 0, bufferSize);
+                        }
+                        dos.writeBytes(lineEnd);
+                        dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+                    }else{
+                        dos.writeBytes(twoHyphens + boundary + lineEnd);
+                        dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + null + "\"" + lineEnd);
+                        dos.writeBytes(lineEnd);
+                    }
+                    conn.connect();
+                    if(mFileInputStream != null){
+                        mFileInputStream.close();
+                    }
+                    Log.e("Test" , "File is written");
+
+                    dos.flush(); // finish upload...
+                    int ch;
+                    InputStream is = conn.getInputStream();
+                    StringBuffer b =new StringBuffer();
+                    while( ( ch = is.read() ) != -1 ){
+                        b.append( (char)ch );
+                    }
+                    String s=b.toString();
+                    dos.close();
+
+                    conn.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                return sb.toString();
+            }
+        }
+
+        insertData task = new insertData();
+        task.execute(Title,Contnet);
     }
 
     private void showListDialog(){
@@ -186,7 +346,7 @@ public class Life_LogActivity extends AppCompatActivity {
 
                 if (position == 0){
                     Intent intent = new Intent(getApplicationContext(), TravelCameraActivity.class);
-                    intent.putExtra("action","0");
+                    intent.putExtra("action", "0");
                     startActivityForResult(intent, position);
                 } else if (position == 1){
                     Intent intent = new Intent(Intent.ACTION_PICK);
@@ -241,17 +401,11 @@ public class Life_LogActivity extends AppCompatActivity {
         if(requestCode == 1) {
             if(resultCode== Activity.RESULT_OK) {
                 try {
-                    //Uri에서 이미지 이름을 얻어온다.
-                    //String name_Str = getImageNameToUri(data.getData());
-
                     //이미지 데이터를 비트맵으로 받아온다.
-                    Bitmap image_bitmap 	= MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-
+                    Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                    getImageName(data.getData());
                     //배치해놓은 ImageView에 set
                     image.setImageBitmap(image_bitmap);
-
-                    //Toast.makeText(getBaseContext(), "name_Str : "+name_Str , Toast.LENGTH_SHORT).show();
-
 
                 } catch (FileNotFoundException e) {
                     // TODO Auto-generated catch block
@@ -267,6 +421,12 @@ public class Life_LogActivity extends AppCompatActivity {
         }else if (requestCode == 0){
             if(resultCode== Activity.RESULT_OK) {
                 String path = data.getStringExtra("filepath");
+                String degrees = data.getStringExtra("degrees");
+                String file_name = data.getStringExtra("file_name");
+                Log.d("img",path);
+                mImgPath = path;
+                mImgOrient = degrees;
+                mImgTitle = file_name;
                 File imgFile = new  File(path);
                 Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                 image.setImageBitmap(myBitmap);
