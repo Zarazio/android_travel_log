@@ -16,6 +16,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -25,12 +26,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.loopj.android.http.RequestParams;
-
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -236,14 +236,17 @@ public class Life_LogActivity extends AppCompatActivity {
                     String log_Title = params[0];
                     String log_Content = params[1];
 
-
-                    RequestParams insertData = new RequestParams();
-                    insertData.put("log_Title",log_Title);
-                    insertData.put("log_Content",log_Content);
                     if(mImgPath !=null){
                         File file = new File(mImgPath);
                         mFileInputStream = new FileInputStream(mImgPath);
-                        insertData.put("image",mImgPath);
+                    }else{
+                        String testStr = "ABCDEFGHIJK...";
+                        File savefile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/travelLog/log.txt");
+                        FileOutputStream fos = new FileOutputStream(savefile);
+                        fos.write(testStr.getBytes());
+                        fos.close();
+                        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/travelLog/log.txt");
+                        mFileInputStream = new FileInputStream(Environment.getExternalStorageDirectory().getAbsolutePath()+"/travelLog/log.txt");
                     }
 
                     URL url = new URL("http://211.211.213.218:8084/android/insertLog"); //요청 URL을 입력
@@ -253,7 +256,7 @@ public class Life_LogActivity extends AppCompatActivity {
                     conn.setDoOutput(true); //output을 사용하도록 설정 (default : false)
                     conn.setUseCaches(false);
 
-                    conn.setConnectTimeout(60); //타임아웃 시간 설정 (default : 무한대기)
+                    //conn.setConnectTimeout(60); //타임아웃 시간 설정 (default : 무한대기)
                     conn.setRequestMethod("POST");
                     conn.setRequestProperty("Connection", "Keep-Alive");
                     conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
@@ -264,14 +267,14 @@ public class Life_LogActivity extends AppCompatActivity {
                     dos.writeBytes("Content-Disposition: form-data; name=\"log_Title\""
                             + lineEnd);
                     dos.writeBytes(lineEnd);
-                    dos.write(log_Title.getBytes("UTF-8"));
+                    dos.writeUTF(log_Title);
                     dos.writeBytes( lineEnd);
 
                     dos.writeBytes(twoHyphens + boundary + lineEnd);
                     dos.writeBytes("Content-Disposition: form-data; name=\"log_Content\""
                             + lineEnd);
                     dos.writeBytes(lineEnd);
-                    dos.write(log_Content.getBytes("UTF-8"));
+                    dos.writeUTF(log_Content);
                     dos.writeBytes( lineEnd);
 
                     if(mImgPath != null) {
@@ -296,8 +299,24 @@ public class Life_LogActivity extends AppCompatActivity {
                         dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
                     }else{
                         dos.writeBytes(twoHyphens + boundary + lineEnd);
-                        dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + null + "\"" + lineEnd);
+                        dos.writeBytes("Content-Disposition: form-data; name=\"null\";filename=\"" + null + "\"" + lineEnd);
                         dos.writeBytes(lineEnd);
+
+                        int bytesAvailable = mFileInputStream.available();
+                        int maxBufferSize = 1024;
+                        int bufferSize = Math.min(bytesAvailable, maxBufferSize);
+
+                        byte[] buffer = new byte[bufferSize];
+                        int bytesRead = mFileInputStream.read(buffer, 0, bufferSize);
+
+                        while (bytesRead > 0) {
+                            dos.write(buffer, 0, bufferSize);
+                            bytesAvailable = mFileInputStream.available();
+                            bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                            bytesRead = mFileInputStream.read(buffer, 0, bufferSize);
+                        }
+                        dos.writeBytes(lineEnd);
+                        dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
                     }
                     conn.connect();
                     if(mFileInputStream != null){
