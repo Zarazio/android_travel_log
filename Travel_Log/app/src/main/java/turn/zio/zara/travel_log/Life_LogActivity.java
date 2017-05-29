@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -223,7 +224,7 @@ public class Life_LogActivity extends AppCompatActivity {
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 Log.d("result",s);
-
+                Toast.makeText(getApplicationContext(), "업로드 성공", Toast.LENGTH_SHORT).show();
                 loading.dismiss();
 
             }
@@ -322,7 +323,6 @@ public class Life_LogActivity extends AppCompatActivity {
                     if(mFileInputStream != null){
                         mFileInputStream.close();
                     }
-                    Log.e("Test" , "File is written");
 
                     dos.flush(); // finish upload...
                     int ch;
