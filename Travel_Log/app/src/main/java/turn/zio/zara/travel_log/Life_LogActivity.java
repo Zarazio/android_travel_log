@@ -523,6 +523,8 @@ public class Life_LogActivity extends AppCompatActivity {
                     startActivityForResult(intent, position);
                 } else if(position == 2){
                     image.setImageBitmap(null);
+                    mImgPath = null;
+                    voiceData = null;
                     mDialog.dismiss();
                 }
                 mDialog.dismiss();
@@ -570,6 +572,7 @@ public class Life_LogActivity extends AppCompatActivity {
         if(requestCode == 0) {
             if(resultCode== Activity.RESULT_OK) {
                 try {
+                    voiceData = null;
                     //이미지 데이터를 비트맵으로 받아온다.
                     Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                     getImageName(data.getData());
@@ -589,6 +592,7 @@ public class Life_LogActivity extends AppCompatActivity {
             }
         }else if(requestCode == 1) {
             if(resultCode == Activity.RESULT_OK) {
+                mImgPath = null;
                 voiceData = data.getStringExtra("VoicePath");
                 Drawable drawable = getResources().getDrawable(R.drawable.voice);
                 image.setImageDrawable(drawable);

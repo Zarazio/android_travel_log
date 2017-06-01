@@ -154,7 +154,7 @@ public class VoiceRecording extends Activity {
         finish();
     }
     public void addBtn(View view){
-
+        
         Intent intent = new Intent();
         intent.putExtra("VoicePath" , path);
         setResult(RESULT_OK, intent);
