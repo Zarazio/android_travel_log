@@ -12,6 +12,7 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 import org.json.JSONArray;
@@ -44,6 +45,12 @@ public class CameraOverlayView  extends View implements SensorEventListener {
     private Paint mShadowPaint;
     private List<PointF> mPointFList = null;
     private HashMap<Integer, String> mPointHashMap;
+    private int mCounter = 0;
+    private float mTouchedY;
+    private float mTouchedX;
+    private Paint mTouchEffectPaint;
+    private boolean mScreenTouched = false;
+
 
     public CameraOverlayView(Context context) {
         super(context);
@@ -57,11 +64,18 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         canvas.save();
 
 
-        // DB의 레코드를 읽어들이고, drawGrid를 실행시켜 랜드마크 아이템들을 그림
+        // DB의 레코드를 읽어들이고, 그림
         interpretDB(canvas);
 
         // 회전된 카메라를 원상복귀함
         canvas.restore();
+        /*if (mScreenTouched == true && mCounter < 15) {
+            drawTouchEffect(canvas);
+            mCounter++;
+        } else {
+            mScreenTouched = false;
+            mCounter = 0;
+        }*/
     }
 
     private void initPaints() {
@@ -77,7 +91,36 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         mShadowPaint.setColor(Color.BLACK);
         mShadowPaint.setTextSize(40);
     }
+    // 스크린이 터치될때의 효과를 그림 원 3개를 물결처럼 그림
+    private void drawTouchEffect(Canvas pCanvas) {
+        // TODO Auto-generated method stub
+        pCanvas.drawCircle(mTouchedX, mTouchedY, mCounter * 1,
+                mTouchEffectPaint);
+        pCanvas.drawCircle(mTouchedX, mTouchedY, mCounter * 2,
+                mTouchEffectPaint);
+        pCanvas.drawCircle(mTouchedX, mTouchedY, mCounter * 3,
+                mTouchEffectPaint);
+    }
+    public boolean onTouchEvent(MotionEvent event) {
+        // TODO Auto-generated method stub
 
+        // 화면이 회전되었기에 좌표도 변환함
+        float convertedX, convertedY, temp;
+        convertedX = event.getX();
+        convertedY = event.getY();
+        convertedX = convertedX - mWidth / 2;
+        convertedY = convertedY - mHeight / 2;
+        temp = convertedX;
+        convertedX = -convertedY;
+        convertedY = temp;
+
+        mTouchedX = event.getX();
+        mTouchedY = event.getY();
+
+        mScreenTouched = true;
+
+        return super.onTouchEvent(event);
+    }
     // 센서 초기화
     // TYPE_ORIENTATION 사용할수 있게 설정
     private void initSensor(Context context) {
@@ -212,22 +255,24 @@ public class CameraOverlayView  extends View implements SensorEventListener {
             e.printStackTrace();
         }
         Log.d("result",s);
-        String[][] parsedata = new String[0][5];
+        String[][] parsedata = new String[0][9];
 
         String title;
         String content;
         try {
             JSONArray json = new JSONArray(s);
-            parsedata = new String[json.length()][6];
+            parsedata = new String[json.length()][9];
             for (int i = 0; i < json.length(); i++) {
                 JSONObject jobject = json.getJSONObject(i);
 
-                parsedata[i][0] = jobject.getString("test_code");
-                parsedata[i][1] = jobject.getString("title");
-                parsedata[i][2] = jobject.getString("content");
-                parsedata[i][3] = jobject.getString("longitude");
-                parsedata[i][4] = jobject.getString("latitude");
-                parsedata[i][5] = jobject.getString("myx");
+                parsedata[i][0] = jobject.getString("board_Code");
+                parsedata[i][1] = jobject.getString("board_Title");
+                parsedata[i][2] = jobject.getString("board_Content");
+                parsedata[i][3] = jobject.getString("log_longtitude");
+                parsedata[i][4] = jobject.getString("log_latitude");
+                parsedata[i][5] = jobject.getString("randomViewY");
+                parsedata[i][6] = jobject.getString("user_id");
+                parsedata[i][7] = jobject.getString("board_Date");
 
                 title = parsedata[i][1];
                 content = parsedata[i][2];
@@ -253,7 +298,7 @@ public class CameraOverlayView  extends View implements SensorEventListener {
             try{
 
 
-                String link="http://211.211.213.218:8084/android/ardata"; //92.168.25.25
+                String link="http://211.211.213.218:8084/android/boardList"; //92.168.25.25
                 HttpClient.Builder http = new HttpClient.Builder("GET", link);
 
                 // HTTP 요청 전송

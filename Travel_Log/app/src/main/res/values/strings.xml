@@ -4,7 +4,6 @@
 
     <string name="list_dialog_title">선택하세요..</string>
     <string-array name="list_dialog_list_item">
-        <item>사진찍기</item>
         <item>갤러리</item>
         <item>음성메모</item>
         <item>취소</item>

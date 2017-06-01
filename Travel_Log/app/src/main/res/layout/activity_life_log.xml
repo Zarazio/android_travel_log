@@ -5,12 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:id="@+id/background_logWrite_view"
     tools:context="turn.zio.zara.travel_log.Life_LogActivity">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginBottom="3dp"
+        android:layout_marginTop="8dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -21,13 +23,12 @@
                 android:id="@+id/bakcMain"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:background="@android:color/transparent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
                 android:onClick="bakcMain"
-                android:src="@drawable/backbutton" />
+                android:src="@drawable/backbutton2" />
 
         </LinearLayout>
 
@@ -43,61 +44,36 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="글쓰기"
+                android:text="새 게시글"
                 android:textSize="30sp" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/user_place_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <TextView
-                android:id="@+id/user_place_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="" />
 
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="-40dp">
 
-            <ImageView
-                android:id="@+id/user_profile_picture"
+            <Button
+                android:id="@+id/Travel_log_submit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/cast_abc_scrubber_control_off_mtrl_alpha" />
+                android:background="@null"
+                android:textSize="20dp"
+                android:onClick="Travel_log_submit"
+                android:text="완료" />
+        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/user_profile_id"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="uerid" />
-
-
-            </LinearLayout>
     </LinearLayout>
-
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="#000000"
+        />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:orientation="vertical">
 
         <LinearLayout
@@ -107,73 +83,295 @@
             android:orientation="vertical">
 
             <EditText
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:id="@+id/view_Travel_logTitle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="35dp"
                 android:background="@null"
                 android:ems="10"
-                android:hint="제목을 적어요"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:hint="제목"
+                android:textSize="30dp"
                 android:inputType="textPersonName" />
-
-            <EditText
-                android:id="@+id/view_Travel_logTxt"
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:background="#e6e6e6"
+                />
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:background="@null"
-                android:ems="10"
-                android:hint="아무거나 적어요"
-                android:inputType="textMultiLine" />
-        </LinearLayout>
+                android:layout_height="wrap_content">
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp">
+
+                    <ImageView
+                        android:onClick="addFile"
+                        android:id="@+id/addFile"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:maxHeight="100dp"
+                        android:maxWidth="100dp" />
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/view_Travel_logTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:background="@null"
+                    android:ems="10"
+                    android:hint="내용 입력"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:inputType="textMultiLine" />
+            </LinearLayout>
+
+        </LinearLayout>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="#e6e6e6"
+            />
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/view_Travel_Picture"
+            <TextView
+                android:id="@+id/place_text"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
-        </LinearLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:text="위치"
+                android:textSize="15dp" />
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:background="#e6e6e6"
+                />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp">
 
+                <ImageView
+                    android:id="@+id/user_place_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/user_place_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="현재 내 위치"
+                    android:textSize="20dp" />
+            </LinearLayout>
+        </LinearLayout>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="#e6e6e6"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/hash_Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:text="해시태그"
+                android:textSize="15dp" />
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:background="#e6e6e6"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:id="@+id/hash_text_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="#"
+                        android:textSize="25dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:id="@+id/hash_test_view"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:onClick="modeWrite"
+                        android:text="해시태그 입력"
+                        android:textSize="20dp"
+                        android:visibility="visible" />
+
+                    <EditText
+                        android:id="@+id/hash_text_write"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:ems="10"
+                        android:inputType="textPersonName"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="#e6e6e6"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/addFile"
-            android:onClick="addFile"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="첨부파일" />
-
-        <TextView
-            android:id="@+id/HashTag"
-            android:onClick="HashTagAdd"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="해시태그" />
-
-
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:layout_marginTop="-60dp"
-        android:layout_marginRight="10dp"
-        >
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/Travel_log_submit"
-            android:onClick="Travel_log_submit"
-            android:layout_width="60dp"
-            android:background="@null"
-            android:layout_height="60dp"
-            android:text="등록" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginLeft="10dp">
+
+            <TextView
+                android:id="@+id/share_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="공개설정" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="#e6e6e6" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="share_all"
+            android:layout_marginLeft="30dp">
+
+            <TextView
+                android:id="@+id/share_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="share_all"
+                android:text="전체공개"
+                android:textSize="15dp" />
+
+            <RadioButton
+                android:id="@+id/share_all_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="share_all" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:layout_marginLeft="30dp"
+            android:background="#e6e6e6" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp">
+
+
+            <TextView
+                android:id="@+id/share_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="그룹공개"
+                android:onClick="share_group"
+                android:textSize="15dp" />
+
+            <RadioButton
+                android:id="@+id/share_group_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="share_group" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:layout_marginLeft="30dp"
+            android:background="#e6e6e6" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp">
+
+
+            <TextView
+                android:id="@+id/share_me"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="share_me"
+                android:text="비공개"
+                android:textSize="15dp" />
+
+            <RadioButton
+                android:id="@+id/share_me_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:onClick="share_me" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="#e6e6e6" />
     </LinearLayout>
 </LinearLayout>
 

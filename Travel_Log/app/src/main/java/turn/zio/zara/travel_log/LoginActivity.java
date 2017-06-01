@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void Travel_login (View view){
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, LoginActivity2.class);
         startActivity(intent);
     }
 
