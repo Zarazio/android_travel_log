@@ -1,10 +1,12 @@
 package turn.zio.zara.travel_log;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.RectF;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -12,7 +14,6 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 
 import org.json.JSONArray;
@@ -40,9 +41,12 @@ public class CameraOverlayView  extends View implements SensorEventListener {
     private int mWidth;
     private int mHeight;
     private int mShadowXMargin;
+    private Paint mPopPaint;
+    private RectF mPopRect;
     private int mShadowYMargin;
     private Paint mPaint;
     private Paint mShadowPaint;
+    private int mTouchedItem;
     private List<PointF> mPointFList = null;
     private HashMap<Integer, String> mPointHashMap;
     private int mCounter = 0;
@@ -50,12 +54,15 @@ public class CameraOverlayView  extends View implements SensorEventListener {
     private float mTouchedX;
     private Paint mTouchEffectPaint;
     private boolean mScreenTouched = false;
+    private boolean mTouched = false;
+    private Bitmap mPalaceIconBitmap;
 
 
     public CameraOverlayView(Context context) {
         super(context);
         mContext = (CameraActivity) context;
 
+        // 비트맵, 센서, 페인트, DB 핸들러 초기화
         initSensor(context);
         initPaints();
     }
@@ -66,18 +73,29 @@ public class CameraOverlayView  extends View implements SensorEventListener {
 
         // DB의 레코드를 읽어들이고, 그림
         interpretDB(canvas);
-
-        // 회전된 카메라를 원상복귀함
-        canvas.restore();
-        /*if (mScreenTouched == true && mCounter < 15) {
+        if (mScreenTouched == true && mCounter < 15) {
             drawTouchEffect(canvas);
             mCounter++;
         } else {
             mScreenTouched = false;
             mCounter = 0;
-        }*/
+        }
+        // 회전된 카메라를 원상복귀함
+        canvas.restore();
+// 아이템이 터치된 상태일때 팝업을 그림
+        if (mTouched == true) {
+            //drawPopup(canvas);
+        }
     }
-
+    private void drawTouchEffect(Canvas pCanvas) {
+        // TODO Auto-generated method stub
+        pCanvas.drawCircle(mTouchedX, mTouchedY, mCounter * 1,
+                mTouchEffectPaint);
+        pCanvas.drawCircle(mTouchedX, mTouchedY, mCounter * 2,
+                mTouchEffectPaint);
+        pCanvas.drawCircle(mTouchedX, mTouchedY, mCounter * 3,
+                mTouchEffectPaint);
+    }
     private void initPaints() {
         // TODO Auto-generated method stub
         mShadowXMargin = 2;
@@ -90,37 +108,15 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         mShadowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mShadowPaint.setColor(Color.BLACK);
         mShadowPaint.setTextSize(40);
+
+        mTouchEffectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mTouchEffectPaint.setColor(Color.rgb(205, 92, 92));
+        mTouchEffectPaint.setStrokeWidth(5);
+        mTouchEffectPaint.setStyle(Paint.Style.STROKE);
     }
-    // 스크린이 터치될때의 효과를 그림 원 3개를 물결처럼 그림
-    private void drawTouchEffect(Canvas pCanvas) {
-        // TODO Auto-generated method stub
-        pCanvas.drawCircle(mTouchedX, mTouchedY, mCounter * 1,
-                mTouchEffectPaint);
-        pCanvas.drawCircle(mTouchedX, mTouchedY, mCounter * 2,
-                mTouchEffectPaint);
-        pCanvas.drawCircle(mTouchedX, mTouchedY, mCounter * 3,
-                mTouchEffectPaint);
-    }
-    public boolean onTouchEvent(MotionEvent event) {
-        // TODO Auto-generated method stub
 
-        // 화면이 회전되었기에 좌표도 변환함
-        float convertedX, convertedY, temp;
-        convertedX = event.getX();
-        convertedY = event.getY();
-        convertedX = convertedX - mWidth / 2;
-        convertedY = convertedY - mHeight / 2;
-        temp = convertedX;
-        convertedX = -convertedY;
-        convertedY = temp;
 
-        mTouchedX = event.getX();
-        mTouchedY = event.getY();
 
-        mScreenTouched = true;
-
-        return super.onTouchEvent(event);
-    }
     // 센서 초기화
     // TYPE_ORIENTATION 사용할수 있게 설정
     private void initSensor(Context context) {
@@ -254,7 +250,6 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.d("result",s);
         String[][] parsedata = new String[0][9];
 
         String title;
@@ -274,6 +269,7 @@ public class CameraOverlayView  extends View implements SensorEventListener {
                 parsedata[i][6] = jobject.getString("user_id");
                 parsedata[i][7] = jobject.getString("board_Date");
 
+                int item_code = Integer.parseInt(parsedata[i][0]);
                 title = parsedata[i][1];
                 content = parsedata[i][2];
                 tBx = Double.parseDouble(parsedata[i][3]);
@@ -284,7 +280,8 @@ public class CameraOverlayView  extends View implements SensorEventListener {
                 tPoint = drawGrid(tAx, tAy, tBx, tBy, pCanvas, mPaint, title, content,placeY);
 
                 mPointFList.add(tPoint);
-                mPointHashMap.put(i, content);
+                Log.d("dd",mPointFList.get(0).toString());
+                mPointHashMap.put(item_code, title);
 
             }
         } catch (JSONException e) {
