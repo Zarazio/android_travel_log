@@ -21,13 +21,13 @@
                 android:id="@+id/bakcMain_icon"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="9dp"
                 android:layout_marginLeft="10dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:background="@android:color/transparent"
                 android:onClick="bakcMain"
-                android:src="@drawable/backbutton" />
+                android:src="@drawable/backbutton2" />
 
         </LinearLayout>
 
@@ -44,7 +44,7 @@
                 android:layout_height="45dp"
                 android:layout_alignBottom="@+id/backmain"
                 android:layout_alignParentTop="true"
-                android:src="@drawable/loginlogo" />
+                android:src="@drawable/mainlogoblack" />
         </LinearLayout>
 
     </LinearLayout>
@@ -62,9 +62,9 @@
             android:layout_alignStart="@+id/user_login_pass"
             android:layout_marginTop="80dp"
             android:ems="10"
-            android:hint="이메일"
+            android:hint=" 이메일"
             android:inputType="textEmailAddress"
-            android:textColorHint="#FFFFFF" />
+            android:textColorHint="#999999" />
 
         <EditText
             android:id="@+id/user_phone"
@@ -73,10 +73,10 @@
             android:layout_below="@+id/user_login_id"
             android:layout_centerHorizontal="true"
             android:ems="10"
-            android:hint="휴대폰"
+            android:hint=" 휴대폰"
             android:maxLength="11"
             android:inputType="phone"
-            android:textColorHint="#FFFFFF" />
+            android:textColorHint="#999999" />
         <TextView
             android:id="@+id/viewmove_pass"
             android:layout_width="wrap_content"
@@ -84,8 +84,9 @@
             android:layout_alignStart="@+id/user_login_pass"
             android:layout_below="@+id/user_login_pass"
             android:onClick="findpass"
+            android:layout_marginLeft="15dp"
             android:text="비밀번호가 기억나지 않으세요?"
-            android:textColor="#FFFFFF" />
+            android:textColor="#999999" />
         </LinearLayout>
 
     <Button

@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:background="#acacac"
+    android:background="#ffffff"
     tools:context="turn.zio.zara.travel_log.FindPassActivity">
 
     <LinearLayout
@@ -22,13 +22,13 @@
                 android:id="@+id/bakcMain_icon"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="9dp"
                 android:layout_marginLeft="10dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:background="@android:color/transparent"
                 android:onClick="bakcMain"
-                android:src="@drawable/backbutton" />
+                android:src="@drawable/backbutton2" />
 
         </LinearLayout>
 
@@ -45,7 +45,7 @@
                 android:layout_height="45dp"
                 android:layout_alignBottom="@+id/backmain"
                 android:layout_alignParentTop="true"
-                android:src="@drawable/loginlogo" />
+                android:src="@drawable/mainlogoblack" />
         </LinearLayout>
 
     </LinearLayout>
@@ -63,9 +63,9 @@
             android:layout_alignStart="@+id/user_login_pass"
             android:layout_marginTop="80dp"
             android:ems="10"
-            android:hint="아이디"
+            android:hint=" 아이디"
             android:inputType="textPersonName"
-            android:textColorHint="#FFFFFF" />
+            android:textColorHint="#999999" />
 
         <EditText
             android:id="@+id/user_email"
@@ -74,9 +74,9 @@
             android:layout_below="@+id/user_login_id"
             android:layout_centerHorizontal="true"
             android:ems="10"
-            android:hint="이메일"
+            android:hint=" 이메일"
             android:inputType="textEmailAddress"
-            android:textColorHint="#FFFFFF" />
+            android:textColorHint="#999999" />
         <TextView
             android:id="@+id/view_move_idfine"
             android:layout_width="wrap_content"
@@ -84,8 +84,9 @@
             android:onClick="findid"
             android:layout_alignStart="@+id/user_login_pass"
             android:layout_below="@+id/user_login_pass"
+            android:layout_marginLeft="15dp"
             android:text="아이디가 기억나지 않으세요?"
-            android:textColor="#FFFFFF" />
+            android:textColor="#999999" />
         </LinearLayout>
 
     <Button

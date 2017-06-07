@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void PictureSel(View v){
         switch(v.getId()){
-            case R.id.addFile:
+            case R.id.Camera_sel_pop:
                 Log.d("TAG", "click button list dialog.......");
                 showListDialog();
                 break;

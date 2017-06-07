@@ -24,7 +24,7 @@ public class FindSuccessActivity extends AppCompatActivity {
     }
 
     public void movelogin(View view){
-        Intent intent = new Intent(this, LoginActivity2.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         intent.putExtra("user_id", user_id);
         startActivity(intent);
     }

@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/background_logWrite_view"
+    android:background="#fafafa"
     tools:context="turn.zio.zara.travel_log.Life_LogActivity">
 
     <LinearLayout
@@ -13,10 +14,12 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="3dp"
         android:layout_marginTop="8dp"
+        android:background="#fafafa"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="wrap_content"
+            android:background="#fafafa"
             android:layout_height="wrap_content">
 
             <ImageView
@@ -25,6 +28,7 @@
                 android:layout_height="30dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
+                android:background="#fafafa"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:onClick="bakcMain"
@@ -43,6 +47,7 @@
                 android:id="@+id/log_Write_Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="#fafafa"
                 android:layout_weight="1"
                 android:text="새 게시글"
                 android:textSize="30sp" />
@@ -52,6 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
+            android:background="#fafafa"
             android:layout_marginTop="-40dp">
 
             <Button
@@ -72,9 +78,16 @@
         android:background="#000000"
         />
 
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="#e6e6e6"
+        />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#fafafa"
         android:orientation="vertical">
 
         <LinearLayout
@@ -96,11 +109,23 @@
                 android:focusableInTouchMode="true"
                 android:hint="제목"
                 android:inputType="textPersonName"
-                android:textSize="30dp" />
+                android:textSize="24sp" />
 
             <View
                 android:layout_width="fill_parent"
-                android:layout_height="1dip"
+                android:layout_height="0.2dip"
+                android:background="#e6e6e6" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:background="#fafafa">
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="0.2dip"
                 android:background="#e6e6e6" />
 
             <LinearLayout
@@ -131,7 +156,10 @@
                     android:ems="10"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
-                    android:hint="내용 입력"
+                    android:hint="내용 입력
+
+
+"
                     android:inputType="textMultiLine" />
             </LinearLayout>
 
@@ -146,25 +174,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:layout_weight="0.82"
             android:orientation="vertical">
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:background="#fafafa"
+                android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/place_text"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:background="#fafafa"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
                 android:text="위치"
                 android:textSize="15dp" />
-
+            </LinearLayout>
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="1dip"
                 android:background="#e6e6e6" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="3dp"
                 android:layout_marginTop="3dp">
@@ -177,9 +209,10 @@
 
                 <TextView
                     android:id="@+id/user_place_info"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:layout_marginLeft="15dp"
                     android:text="현재 내 위치"
                     android:textSize="20dp" />
             </LinearLayout>
@@ -196,17 +229,21 @@
             android:layout_marginTop="20dp"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:background="#fafafa"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/hash_Text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:text="해시태그"
-                android:textSize="15dp" />
-
+                <TextView
+                    android:id="@+id/hash_Text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="#fafafa"
+                    android:text="해시태그"
+                    android:textSize="15dp" />
+            </LinearLayout>
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="1dip"
@@ -222,7 +259,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="15dp"
                     android:layout_marginRight="5dp">
 
                     <TextView
@@ -230,7 +267,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="#"
-                        android:textSize="25dp" />
+                        android:textSize="26dp" />
 
                 </LinearLayout>
 
@@ -262,19 +299,23 @@
                 </LinearLayout>
 
             </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:background="#e6e6e6"
-        />
+            <View
+                android:id="@+id/view2"
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:layout_weight="1"
+                android:background="#e6e6e6" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:background="#fafafa"
         android:orientation="vertical">
 
         <LinearLayout
@@ -288,6 +329,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="#fafafa"
                 android:text="공개설정" />
         </LinearLayout>
 
@@ -298,15 +340,16 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="share_all"
-            android:layout_marginLeft="30dp">
+            android:layout_height="26dp"
+            android:onClick="share_all">
 
             <TextView
                 android:id="@+id/share_all"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
+                android:layout_weight="1.11"
+                android:gravity="center_vertical"
                 android:onClick="share_all"
                 android:text="전체공개"
                 android:textSize="15dp" />
@@ -321,22 +364,22 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dip"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="15dp"
             android:background="#e6e6e6" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp">
-
+            android:layout_height="26dp">
 
             <TextView
                 android:id="@+id/share_group"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
                 android:layout_weight="1"
-                android:text="그룹공개"
+                android:gravity="center_vertical"
                 android:onClick="share_group"
+                android:text="그룹공개"
                 android:textSize="15dp" />
 
             <RadioButton
@@ -349,20 +392,21 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dip"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="15dp"
             android:background="#e6e6e6" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp">
+            android:layout_height="26dp">
 
 
             <TextView
                 android:id="@+id/share_me"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
                 android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:onClick="share_me"
                 android:text="비공개"
                 android:textSize="15dp" />

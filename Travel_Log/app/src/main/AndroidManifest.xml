@@ -34,8 +34,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".LoginMenuActivity" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".LoginActivity2" />
         <activity android:name=".RegisterActivity" />
         <activity
             android:name=".MainActivity"

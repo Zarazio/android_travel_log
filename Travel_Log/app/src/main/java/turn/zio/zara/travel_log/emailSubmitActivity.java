@@ -17,7 +17,7 @@ public class emailSubmitActivity extends AppCompatActivity {
     }
 
     public void movelogin(View view){
-        Intent intent = new Intent(this, LoginActivity2.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
 }
