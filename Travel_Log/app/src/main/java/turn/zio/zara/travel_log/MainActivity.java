@@ -114,10 +114,11 @@ public class MainActivity extends AppCompatActivity {
         }
         return address;
     }
-    public void Log_Write(View view){
-
+    public void log_Write(View view){
+        Intent intent = new Intent(this, Life_LogActivity.class);
+        startActivity(intent);
     }
-    public void addFile(View v){
+    public void PictureSel(View v){
         switch(v.getId()){
             case R.id.addFile:
                 Log.d("TAG", "click button list dialog.......");

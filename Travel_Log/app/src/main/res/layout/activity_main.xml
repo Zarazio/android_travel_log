@@ -30,6 +30,7 @@
 
                     <ImageView
                         android:id="@+id/Camera_sel_pop"
+                        android:onClick="PictureSel"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_weight="1"
@@ -184,6 +185,7 @@
 
         <ImageView
             android:id="@+id/view_logWrite_icon"
+            android:onClick="log_Write"
             android:layout_width="50dp"
             android:layout_height="60dp"
             android:layout_weight="1"
