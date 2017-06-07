@@ -1,6 +1,8 @@
 package turn.zio.zara.travel_log;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
@@ -14,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -33,13 +36,27 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences login;
     SharedPreferences.Editor editor;
 
+    LinearLayout mainPage;
+    LinearLayout searchPage;
+    LinearLayout likeFollowPage;
+    LinearLayout myPage;
+
+    private BackPressCloseHandler backPressCloseHandler;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        backPressCloseHandler = new BackPressCloseHandler(this);
+
         user_place = (TextView) findViewById(R.id.user_place_info);
         user_main_id = (TextView) findViewById(R.id.main_user_id);
+
+        mainPage = (LinearLayout) findViewById(R.id.main_page);
+        searchPage = (LinearLayout) findViewById(R.id.search_page);
+        likeFollowPage = (LinearLayout) findViewById(R.id.like_follow);
+        myPage = (LinearLayout) findViewById(R.id.my_page);
 
         login = getSharedPreferences("LoginKeep", MODE_PRIVATE);
         editor = login.edit();
@@ -60,6 +77,36 @@ public class MainActivity extends AppCompatActivity {
                 1, // 통지사이의 최소 변경거리 (m)
                 mLocationListener);
     }
+
+    public void viewPageChange(View v){
+        switch (v.getId()){
+            case R.id.view_home_icon:
+                mainPage.setVisibility(v.VISIBLE);
+                searchPage.setVisibility(v.INVISIBLE);
+                likeFollowPage.setVisibility(v.INVISIBLE);
+                myPage.setVisibility(v.INVISIBLE);
+                break;
+            case R.id.view_search_icon:
+                searchPage.setVisibility(v.VISIBLE);
+                mainPage.setVisibility(v.INVISIBLE);
+                likeFollowPage.setVisibility(v.INVISIBLE);
+                myPage.setVisibility(v.INVISIBLE);
+                break;
+            case R.id.view_heart_icon:
+                likeFollowPage.setVisibility(v.VISIBLE);
+                searchPage.setVisibility(v.INVISIBLE);
+                mainPage.setVisibility(v.INVISIBLE);
+                myPage.setVisibility(v.INVISIBLE);
+                break;
+            case R.id.view_mypage_icon:
+                myPage.setVisibility(v.VISIBLE);
+                likeFollowPage.setVisibility(v.INVISIBLE);
+                searchPage.setVisibility(v.INVISIBLE);
+                mainPage.setVisibility(v.INVISIBLE);
+                break;
+        }
+    }
+
     private final LocationListener mLocationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
             //여기서 위치값이 갱신되면 이벤트가 발생한다.
@@ -128,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private void showListDialog(){
 
-        String[] item = getResources().getStringArray(R.array.list_dialog_list_item);
+        String[] item = getResources().getStringArray(R.array.list_dialog_main_item);
 
         List<String> listItem = Arrays.asList(item);
         ArrayList<String> itemArrayList = new ArrayList<String> (listItem);
@@ -186,6 +233,44 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        if(mainPage.getVisibility() == View.VISIBLE){
+            backPressCloseHandler.onBackPressed();
+        }else {
+            mainPage.setVisibility(View.VISIBLE);
+            searchPage.setVisibility(View.INVISIBLE);
+            likeFollowPage.setVisibility(View.INVISIBLE);
+            myPage.setVisibility(View.INVISIBLE);
+        }
+    }
 
-
+    public void bakcMain(View view){
+        mainPage.setVisibility(View.VISIBLE);
+        searchPage.setVisibility(View.INVISIBLE);
+        likeFollowPage.setVisibility(View.INVISIBLE);
+        myPage.setVisibility(View.INVISIBLE);
+    }
+    public void user_logout(View view){
+        AlertDialog.Builder alert_confirm = new AlertDialog.Builder(MainActivity.this);
+        alert_confirm.setMessage("TravelLog에서 로그아웃 하시겠습니까?").setCancelable(false).setPositiveButton("로그아웃",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 'YES'
+                        editor.clear();
+                        editor.commit();
+                        finish();
+                    }
+                }).setNegativeButton("취소",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        return;
+                    }
+                });
+        AlertDialog alert = alert_confirm.create();
+        alert.show();
+    }
 }

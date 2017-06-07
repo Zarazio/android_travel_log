@@ -5,36 +5,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#fafafa"
     tools:context="turn.zio.zara.travel_log.MainActivity">
 
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:background="#fafafa"
         android:layout_weight="1">
-
+        <!--메인홈페이지-->
         <LinearLayout
+            android:id="@+id/main_page"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#fafafa"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="#fafafa"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="8dp">
 
                     <ImageView
                         android:id="@+id/Camera_sel_pop"
-                        android:onClick="PictureSel"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_weight="1"
-                        android:background="@android:color/transparent"
+                        android:background="#fafafa"
+                        android:onClick="PictureSel"
                         app:srcCompat="@drawable/camera" />
                 </LinearLayout>
 
@@ -42,12 +48,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:background="#fafafa"
                     android:layout_marginTop="-50dp">
 
                     <ImageView
                         android:id="@+id/view_mainlogo_icon"
                         android:layout_width="200dp"
                         android:layout_height="50dp"
+                        android:background="#fafafa"
                         android:layout_alignBottom="@+id/backmain"
                         android:layout_alignParentTop="true"
                         android:src="@drawable/mainlogo2" />
@@ -57,6 +65,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
+                    android:background="#fafafa"
                     android:layout_marginRight="8dp"
                     android:layout_marginTop="-50dp">
 
@@ -64,11 +73,12 @@
                         android:id="@+id/view_calender_icon"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
+                        android:background="#fafafa"
                         android:layout_weight="1"
-                        android:background="@android:color/transparent"
                         app:srcCompat="@drawable/calender" />
                 </LinearLayout>
             </LinearLayout>
+
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="2dip"
@@ -83,22 +93,24 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="50dp">
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
-                    <ImageView
-                        android:id="@+id/profile_picture"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginLeft="10dp"
-                        app:srcCompat="@drawable/camera" />
+
+                        <ImageView
+                            android:id="@+id/profile_picture"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_marginLeft="10dp"
+                            app:srcCompat="@drawable/camera" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
                         android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
                         android:orientation="vertical">
 
                         <TextView
@@ -133,34 +145,262 @@
                         android:layout_weight="1"
                         android:text="로그뷰" />
                 </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dip"
+                    android:background="#e6e6e6" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/log_Likes"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="5dp"
+                        app:srcCompat="@android:drawable/btn_star" />
+
+                    <ImageView
+                        android:id="@+id/log_Comments"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="5dp"
+                        app:srcCompat="@drawable/log_comments" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+        <!--검색 페이지-->
+        <LinearLayout
+            android:id="@+id/search_page"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </LinearLayout>
+        <!--라이크and 팔로우페이지-->
+        <LinearLayout
+            android:id="@+id/like_follow"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </LinearLayout>
+
+            <!--마이페이지-->
+        <LinearLayout
+            android:id="@+id/my_page"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#fafafa"
+            android:orientation="vertical"
+            android:visibility="invisible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
+                android:layout_marginTop="8dp"
+                android:background="#fafafa"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#fafafa">
+
+                    <ImageView
+                        android:id="@+id/bakcMain"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="5dp"
+                        android:background="#fafafa"
+                        android:layout_marginBottom="8dp"
+                        android:onClick="bakcMain"
+                        android:src="@drawable/backbutton2" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="-32dp"
+                    android:adjustViewBounds="false">
+
+                    <TextView
+                        android:id="@+id/log_Write_Title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#fafafa"
+                        android:text="옵션"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+            </LinearLayout>
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:background="#e6e6e6" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/user_edit_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="18dp"
+                        android:text="계정" />
+                </LinearLayout>
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dip"
+                    android:background="#e6e6e6" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/profile_change"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="7dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="7dp"
+                        android:layout_weight="1"
+                        android:text="프로필 편집"
+                        android:textSize="22dp" />
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="1dip"
+                        android:layout_marginLeft="30dp"
+                        android:background="#e6e6e6" />
+
+                    <TextView
+                        android:id="@+id/pass_change"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="7dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="7dp"
+                        android:layout_weight="1"
+                        android:text="비밀번호 변경"
+                        android:textSize="22dp" />
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="1dip"
+                        android:layout_marginLeft="30dp"
+                        android:background="#e6e6e6" />
+
+                    <TextView
+                        android:id="@+id/user_like"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="7dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="7dp"
+                        android:layout_weight="1"
+                        android:text="회원님이 좋아한 게시물"
+                        android:textSize="22dp" />
+
+                </LinearLayout>
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="1dip"
                     android:background="#e6e6e6" />
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="60dp">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginBottom="10dp">
 
-                    <ImageView
-                        android:id="@+id/log_Likes"
-                        android:layout_marginLeft="5dp"
-                        android:layout_width="60dp"
-                        android:layout_height="match_parent"
-                        app:srcCompat="@android:drawable/btn_star" />
-                    <ImageView
-                        android:id="@+id/log_Comments"
-                        android:layout_marginLeft="5dp"
-                        android:layout_width="60dp"
-                        android:layout_height="match_parent"
-                        app:srcCompat="@drawable/log_comments" />
+                    <TextView
+                        android:id="@+id/user_edit_text2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="18dp"
+                        android:text="계정" />
+                </LinearLayout>
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dip"
+                    android:background="#e6e6e6" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/push_alram_seting"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="7dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="7dp"
+                        android:layout_weight="1"
+                        android:text="푸시 알림 설정 "
+                        android:textSize="22dp" />
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="1dip"
+                        android:layout_marginLeft="30dp"
+                        android:background="#e6e6e6" />
+
+                    <TextView
+                        android:id="@+id/logout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="7dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="7dp"
+                        android:layout_weight="1"
+                        android:onClick="user_logout"
+                        android:text="로그아웃"
+                        android:textSize="22dp" />
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="1dip"
+                        android:layout_weight="1"
+                        android:background="#e6e6e6" />
+
                 </LinearLayout>
             </LinearLayout>
+
         </LinearLayout>
+
     </FrameLayout>
+
     <View
+        android:id="@+id/view"
         android:layout_width="fill_parent"
         android:layout_height="1dip"
         android:background="#e6e6e6" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -169,43 +409,42 @@
 
         <ImageView
             android:id="@+id/view_home_icon"
-            android:layout_width="50dp"
-            android:layout_height="60dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
+            android:onClick="viewPageChange"
             app:srcCompat="@drawable/home" />
 
         <ImageView
             android:id="@+id/view_search_icon"
-            android:layout_width="50dp"
-            android:layout_height="60dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:onClick="viewPageChange"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
             app:srcCompat="@drawable/search" />
 
         <ImageView
             android:id="@+id/view_logWrite_icon"
-            android:onClick="log_Write"
-            android:layout_width="50dp"
-            android:layout_height="60dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
+            android:onClick="log_Write"
             app:srcCompat="@drawable/pen" />
 
         <ImageView
             android:id="@+id/view_heart_icon"
-            android:layout_width="50dp"
-            android:layout_height="60dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:onClick="viewPageChange"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
             app:srcCompat="@drawable/heart" />
 
         <ImageView
-            android:id="@+id/virw_mypage_icon"
-            android:layout_width="50dp"
-            android:layout_height="60dp"
+            android:id="@+id/view_mypage_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:onClick="viewPageChange"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
             app:srcCompat="@drawable/person" />
     </LinearLayout>
 

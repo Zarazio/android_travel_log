@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="아이디"
-            android:textColorHint="#FFFFFF"
+            android:textColorHint="#999999"
             android:inputType="textPersonName" />
 
         <EditText
@@ -71,7 +71,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="패스워드"
-            android:textColorHint="#FFFFFF"
+            android:textColorHint="#999999"
             android:inputType="textPassword" />
 
         <EditText
@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="패스워드확인"
-            android:textColorHint="#FFFFFF"
+            android:textColorHint="#999999"
             android:inputType="textPassword" />
 
         <RadioGroup
@@ -96,14 +96,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:textColor="#FFFFFF"
+                android:textColor="#999999"
                 android:text="남자" />
 
             <RadioButton
                 android:id="@+id/woman"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#FFFFFF"
+                android:textColor="#999999"
                 android:text="여자" />
         </RadioGroup>
 
@@ -113,7 +113,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="생년월일"
-            android:textColorHint="#FFFFFF"
+            android:textColorHint="#999999"
             android:inputType="textPersonName" />
 
         <EditText
@@ -122,7 +122,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="전화번호"
-            android:textColorHint="#FFFFFF"
+            android:textColorHint="#999999"
             android:inputType="phone"
             android:maxLength="11" />
 
@@ -132,7 +132,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="이메일"
-            android:textColorHint="#FFFFFF"
+            android:textColorHint="#999999"
             android:inputType="textEmailAddress" />
 
     </LinearLayout>
@@ -148,7 +148,7 @@
             android:id="@+id/view_regi_pro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
+            android:textColor="#999999"
             android:text="약관" />
 
         <Button
