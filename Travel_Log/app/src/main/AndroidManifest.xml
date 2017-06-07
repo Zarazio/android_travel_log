@@ -63,6 +63,10 @@
         <activity
             android:name=".Life_LogActivity"
             android:theme="@style/mainTheme" />
+        <activity android:name=".profileEditActivity"
+            android:theme="@style/mainTheme" />
+        <activity android:name=".passWordChangeActivity"
+            android:theme="@style/mainTheme"/>
     </application>
 
 </manifest>

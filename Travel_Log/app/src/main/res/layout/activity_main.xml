@@ -184,7 +184,7 @@
         <LinearLayout
             android:id="@+id/like_follow"
             android:orientation="vertical"
-            android:visibility="invisible"
+            android:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -268,7 +268,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textSize="18dp"
-                        android:text="계정" />
+                        android:text="설정" />
                 </LinearLayout>
                 <View
                     android:layout_width="fill_parent"

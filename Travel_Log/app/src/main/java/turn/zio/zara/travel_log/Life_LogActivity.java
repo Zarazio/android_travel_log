@@ -502,7 +502,7 @@ public class Life_LogActivity extends AppCompatActivity {
 
     private void showListDialog(){
 
-        String[] item = getResources().getStringArray(R.array.list_dialog_main_item);
+        String[] item = getResources().getStringArray(R.array.list_dialog_list_item);
 
         List<String> listItem = Arrays.asList(item);
         ArrayList<String> itemArrayList = new ArrayList<String> (listItem);
