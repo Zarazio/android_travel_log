@@ -9,5 +9,11 @@
         <item>취소</item>
     </string-array>
 
+    <string-array name="list_dialog_main_item">
+        <item>AR CAMERA</item>
+        <item>LIFE CAMERA</item>
+        <item>취소</item>
+    </string-array>
+
     <string name="action_settings">Settings</string>
 </resources>

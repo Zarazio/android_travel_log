@@ -102,6 +102,8 @@ public class Life_LogActivity extends AppCompatActivity {
         shareMeText = (TextView)findViewById(R.id.share_me);
         background = (LinearLayout)findViewById(R.id.background_logWrite_view);
 
+        Drawable drawable = getResources().getDrawable(R.drawable.addfile);
+        image.setImageDrawable(drawable);
 
        /* background.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -500,7 +502,7 @@ public class Life_LogActivity extends AppCompatActivity {
 
     private void showListDialog(){
 
-        String[] item = getResources().getStringArray(R.array.list_dialog_list_item);
+        String[] item = getResources().getStringArray(R.array.list_dialog_main_item);
 
         List<String> listItem = Arrays.asList(item);
         ArrayList<String> itemArrayList = new ArrayList<String> (listItem);
@@ -519,7 +521,7 @@ public class Life_LogActivity extends AppCompatActivity {
                     intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
                     startActivityForResult(intent, position);
                 } else if (position == 1){
-                    Intent intent = new Intent(getApplicationContext(), VoiceRecording.class);
+                    Intent intent = new Intent(getApplicationContext(), TravelCameraActivity.class);
                     startActivityForResult(intent, position);
                 } else if(position == 2){
                     image.setImageBitmap(null);

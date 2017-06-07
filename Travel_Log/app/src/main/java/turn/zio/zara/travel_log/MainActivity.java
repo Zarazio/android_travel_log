@@ -1,27 +1,64 @@
 package turn.zio.zara.travel_log;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+
+
 public class MainActivity extends AppCompatActivity {
 
-    TextView tv;
+    TextView user_place;
+    TextView user_main_id;
+    LocationManager lm;
+
+    private ListViewDialog mDialog;
+
+    SharedPreferences login;
+    SharedPreferences.Editor editor;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_main);
+
+        user_place = (TextView) findViewById(R.id.user_place_info);
+        user_main_id = (TextView) findViewById(R.id.main_user_id);
+
+        login = getSharedPreferences("LoginKeep", MODE_PRIVATE);
+        editor = login.edit();
 
 
+        SharedPreferences user = getSharedPreferences("LoginKeep", MODE_PRIVATE);
+        String user_id = user.getString("user_id", "0");
 
+        user_main_id.setText(user_id);
+        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, // 등록할 위치제공자
+                1000, // 통지사이의 최소 시간간격 (miliSecond)
+                1, // 통지사이의 최소 변경거리 (m)
+                mLocationListener);
+        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, // 등록할 위치제공자
+                1000, // 통지사이의 최소 시간간격 (miliSecond)
+                1, // 통지사이의 최소 변경거리 (m)
+                mLocationListener);
     }
     private final LocationListener mLocationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
@@ -31,14 +68,10 @@ public class MainActivity extends AppCompatActivity {
             Log.d("test", "onLocationChanged, location:" + location);
             double longitude = location.getLongitude(); //경도
             double latitude = location.getLatitude();   //위도
-            double altitude = location.getAltitude();   //고도
-            float accuracy = location.getAccuracy();    //정확도
-            String provider = location.getProvider();   //위치제공자
             //Gps 위치제공자에 의한 위치변화. 오차범위가 좁다.
             //Network 위치제공자에 의한 위치변화
             //Network 위치는 Gps에 비해 정확도가 많이 떨어진다.
-            tv.setText("위치정보 : " + provider + "\n위도 : " + longitude + "\n경도 : " + latitude
-                    + "\n고도 : " + altitude + "\n정확도 : "  + accuracy);
+            user_place.setText(getAddress(latitude, longitude));
         }
         public void onProviderDisabled(String provider) {
             // Disabled시
@@ -56,26 +89,81 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    public String getAddress(double lat, double lng){
+        String address = null;
+
+        //위치정보를 활용하기 위한 구글 API 객체
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+
+        //주소 목록을 담기 위한 HashMap
+        List<Address> list = null;
+        try{
+            list = geocoder.getFromLocation(lat, lng, 1);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        if(list == null){
+            Log.e("getAddress", "주소 데이터 얻기 실패");
+            return null;
+        }
+        if(list.size() > 0){
+            Address addr = list.get(0);
+            address = addr.getAdminArea() + " "
+                    + addr.getLocality() + " "
+                    + addr.getThoroughfare() + " ";
+        }
+        return address;
+    }
     public void Log_Write(View view){
 
     }
-    class arData extends AsyncTask<String, Void, String> {
+    public void addFile(View v){
+        switch(v.getId()){
+            case R.id.addFile:
+                Log.d("TAG", "click button list dialog.......");
+                showListDialog();
+                break;
+        }
+    }
+    private void showListDialog(){
+
+        String[] item = getResources().getStringArray(R.array.list_dialog_list_item);
+
+        List<String> listItem = Arrays.asList(item);
+        ArrayList<String> itemArrayList = new ArrayList<String> (listItem);
+        mDialog = new ListViewDialog(this, getString(R.string.list_dialog_title), itemArrayList);
+        mDialog.getWindow().setGravity(Gravity.BOTTOM);
+        mDialog.onOnSetItemClickListener(new ListViewDialog.ListViewDialogSelectListener(){
+
+
+            @Override
+
+            public void onSetOnItemClickListener(int position) {
+                // TODO Auto-generated method stub
+
+                if (position == 0){
+                    Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
+                    startActivity(intent);
+                } else if (position == 1){
+                    Intent intent = new Intent(getApplicationContext(), TravelCameraActivity.class);
+                    startActivity(intent);
+                } else if(position == 2){
+                    mDialog.dismiss();
+                }
+                mDialog.dismiss();
+            }
+        });
+        mDialog.show();
+    }
+
+    class unknown extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
             try{
 
 
-                String link="http://211.211.213.218:8084/android/ardata"; //92.168.25.25
-                HttpClient.Builder http = new HttpClient.Builder("GET", link);
 
-                // HTTP 요청 전송
-                HttpClient post = http.create();
-                post.request();
-                // 응답 상태코드 가져오기
-                int statusCode = post.getHttpStatusCode();
-                // 응답 본문 가져오기
-                String body = post.getBody();
-                return body;
+                return "s";
 
                 // Read Server Response
 
@@ -98,32 +186,5 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public  void googleMap(View view){
-        Intent intent = new Intent(this, Map_TestActivity.class);
-        startActivity(intent);
-    }
 
-    public void Log_out(View view){
-        SharedPreferences user = getSharedPreferences("LoginKeep", MODE_PRIVATE);
-        SharedPreferences.Editor editor = user.edit();
-        editor.clear();
-        editor.commit();
-
-        finish();
-    }
-    public void preview(View view){
-        Intent intent = new Intent(this, CameraActivity.class);
-        startActivity(intent);
-    }
-
-    public void travle_Camera(View view){
-        Intent intent = new Intent(getApplicationContext(), TravelCameraActivity.class);
-        intent.putExtra("action", "1");
-        startActivity(intent);
-    }
-
-    public void logmove(View view){
-        Intent intent = new Intent(this, Life_LogActivity.class);
-        startActivity(intent);
-    }
 }
