@@ -252,6 +252,12 @@ public class MainActivity extends AppCompatActivity {
         likeFollowPage.setVisibility(View.INVISIBLE);
         myPage.setVisibility(View.INVISIBLE);
     }
+
+    public void profile_change(View view){
+        Intent intent = new Intent(getApplicationContext(), profileEditActivity.class);
+        startActivity(intent);
+    }
+
     public void user_logout(View view){
         AlertDialog.Builder alert_confirm = new AlertDialog.Builder(MainActivity.this);
         alert_confirm.setMessage("TravelLog에서 로그아웃 하시겠습니까?").setCancelable(false).setPositiveButton("로그아웃",
@@ -272,5 +278,15 @@ public class MainActivity extends AppCompatActivity {
                 });
         AlertDialog alert = alert_confirm.create();
         alert.show();
+    }
+
+    public void passChangeView(View view){
+        Intent intent = new Intent(getApplicationContext(), passWordChangeActivity.class);
+        startActivity(intent);
+    }
+
+    public void push_alram_setting(View view){
+        Intent intent = new Intent(getApplicationContext(), pushAlramSettingActivity.class);
+        startActivity(intent);
     }
 }

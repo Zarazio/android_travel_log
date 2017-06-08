@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -48,7 +49,7 @@ public class Life_LogActivity extends AppCompatActivity {
 
     private String mImgPath = null;
     private String mImgTitle = null;
-    private String mImgOrient = null;
+    private String mImgOri = null;
     String voiceData = null;
     private String user_id;
 
@@ -176,18 +177,18 @@ public class Life_LogActivity extends AppCompatActivity {
         String[] proj={
                 MediaStore.Images.Media.DATA,
                 MediaStore.Images.Media.TITLE,
-                MediaStore.Images.Media.ORIENTATION
+                MediaStore.Images.Media.ORIENTATION,
         };
         Cursor cursor = this.getContentResolver().query(data, proj, null, null, null);
         cursor.moveToFirst();
 
         int column_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         int column_title = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.TITLE);
-        int column_orientation= cursor.getColumnIndexOrThrow(MediaStore.Images.Media.ORIENTATION);
+        int column_ori = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.ORIENTATION);
 
         mImgPath = cursor.getString(column_data);
         mImgTitle = cursor.getString(column_title);
-        mImgOrient = cursor.getString(column_orientation);
+        mImgOri = cursor.getString(column_ori);
 
     }
 
@@ -521,7 +522,7 @@ public class Life_LogActivity extends AppCompatActivity {
                     intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
                     startActivityForResult(intent, position);
                 } else if (position == 1){
-                    Intent intent = new Intent(getApplicationContext(), TravelCameraActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), VoiceRecording.class);
                     startActivityForResult(intent, position);
                 } else if(position == 2){
                     image.setImageBitmap(null);
@@ -566,9 +567,6 @@ public class Life_LogActivity extends AppCompatActivity {
     public void bakcMain(View view){
         finish();
     }
-    public void HashTagAdd(View view){
-        log_Content.append("#");
-    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == 0) {
@@ -577,10 +575,28 @@ public class Life_LogActivity extends AppCompatActivity {
                     voiceData = null;
                     //이미지 데이터를 비트맵으로 받아온다.
                     Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                    getImageName(data.getData());
-                    //배치해놓은 ImageView에 set
-                    image.setImageBitmap(image_bitmap);
+                    int width = image_bitmap.getWidth();
+                    int height = image_bitmap.getHeight();
 
+                    getImageName(data.getData());
+                    Matrix matrix = new Matrix();
+                    if(mImgOri.equals("180")){
+                        matrix.postRotate(180);
+                    }else if(mImgOri.equals("270")){
+                        matrix.postRotate(270);
+                    }else if(mImgOri.equals("90")){
+                        matrix.postRotate(90);
+                    }else{
+                        matrix.postRotate(0);
+                    }
+                    //배치해놓은 ImageView에 set
+
+                    //화면에 표시할 데이터
+
+                    Bitmap resizedBitmap = Bitmap.createBitmap(image_bitmap, 0, 0, width, height, matrix, true);
+
+                    image.setImageBitmap(resizedBitmap);
+                    image.setScaleType(ImageView.ScaleType.FIT_XY );
                 } catch (FileNotFoundException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
