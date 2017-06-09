@@ -34,6 +34,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Travel Story(일정, 여비, 지도, 준비물, 그룹) /START -->
+        <activity android:name=".TravelStoryActivity" />
+        <activity android:name=".SmartCostActivity" />
+        <activity android:name=".TravelMapActivity" />
+        <activity android:name=".TravelSupplyActivity" />
+        <activity android:name=".TravelGroupActivity" />
+        <!-- Travel Story(일정, 여비, 지도, 준비물, 그룹) /START -->
+
         <activity android:name=".LoginMenuActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />

@@ -161,6 +161,12 @@ public class MainActivity extends AppCompatActivity {
         }
         return address;
     }
+    // 메인 -> 트레벌 스토리 이동
+    public void travel_Story(View view){
+        Intent intent = new Intent(this, TravelStoryActivity.class);
+
+        startActivity(intent);
+    }
     public void log_Write(View view){
         Intent intent = new Intent(this, Life_LogActivity.class);
         startActivity(intent);
