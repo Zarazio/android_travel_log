@@ -238,7 +238,15 @@ public class CameraOverlayView  extends View implements SensorEventListener {
                if(touch_board_Code == sel_board_Code){
 
                     Intent intent = new Intent(mContext, LifeLogViewActivity.class);
-                    mContext.startActivity(intent);
+                   intent.putExtra("board_Code",parsedata[i][0]);
+                   intent.putExtra("board_Title",parsedata[i][1]);
+                   intent.putExtra("board_Content",parsedata[i][2]);
+                   intent.putExtra("log_longtitude",parsedata[i][3]);
+                   intent.putExtra("log_latitude",parsedata[i][4]);
+                   intent.putExtra("user_id",parsedata[i][6]);
+                   intent.putExtra("board_Date",parsedata[i][7]);
+
+                   mContext.startActivity(intent);
                 }
             }
         } catch (JSONException e) {
