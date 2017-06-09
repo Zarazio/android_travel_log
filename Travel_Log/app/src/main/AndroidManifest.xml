@@ -78,7 +78,10 @@
         <activity
             android:name=".passWordChangeActivity"
             android:theme="@style/mainTheme" />
-        <activity android:name=".pushAlramSettingActivity"></activity>
+        <activity android:name=".pushAlramSettingActivity" />
+        <activity
+            android:name=".LifeLogViewActivity"
+            android:theme="@android:style/Theme.Dialog" />
     </application>
 
 </manifest>

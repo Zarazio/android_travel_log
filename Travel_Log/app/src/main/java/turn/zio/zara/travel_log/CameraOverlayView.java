@@ -1,6 +1,7 @@
 package turn.zio.zara.travel_log;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -96,7 +97,7 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         canvas.restore();
 // 아이템이 터치된 상태일때 팝업을 그림
         if (mTouched == true) {
-            //drawPopup(canvas);
+            drawPopup();
         }
     }
     private void drawTouchEffect(Canvas pCanvas) {
@@ -169,9 +170,6 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         convertedY = event.getY();
         convertedX = convertedX - mWidth / 2;
         convertedY = convertedY - mHeight / 2;
-        temp = convertedX;
-        convertedX = -convertedY;
-        convertedY = temp;
         Log.d("convertedX", convertedX+"");
         Log.d("convertedY", convertedY+"");
 
@@ -197,13 +195,14 @@ public class CameraOverlayView  extends View implements SensorEventListener {
             int hightSize = boxsize.get(sizehkey);
             Log.d(sizewkey,widthSize+"");
             Log.d(sizehkey,hightSize+"");
-
+            Log.d("pointx",(tPoint.x - (widthSize/2))+"작고"+ (tPoint.x + (widthSize/2)) + "크고");
+            Log.d("pointy",(tPoint.y - (hightSize/2))+"작고"+ (tPoint.y + (hightSize/2)) + "크고");
             if (convertedX > tPoint.x - (widthSize/2)
                     && convertedX < tPoint.x + (widthSize/2)
                     && convertedY > tPoint.y - (hightSize/2)
                     && convertedY < tPoint.y + (hightSize/2)) {
                 mTouched = true;
-                mTouchedItem = i;
+                mTouchedItem = item_key;
                 Log.d("터치아이템",mPointHashMap.get(item_key)+"");
 
 
@@ -212,10 +211,11 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         return super.onTouchEvent(event);
     }
 
-    private void drawPopup(Canvas pCanvas) {
+    private void drawPopup() {
         // TODO Auto-generated method stub
-        int tName = mPointHashMap.get(mTouchedItem);
-
+        int touch_board_Code = mPointHashMap.get(mTouchedItem);
+        Log.d("이거 클릭",touch_board_Code+"");
+        mTouched = false;
         String[][] parsedata = new String[0][9];
 
         JSONArray json = null;
@@ -234,31 +234,17 @@ public class CameraOverlayView  extends View implements SensorEventListener {
                 parsedata[i][6] = jobject.getString("user_id");
                 parsedata[i][7] = jobject.getString("board_Date");
 
-                if(parsedata[i][0].equals(tName)){
+                int sel_board_Code = Integer.parseInt(parsedata[i][0]);
+               if(touch_board_Code == sel_board_Code){
 
+                    Intent intent = new Intent(mContext, LifeLogViewActivity.class);
+                    mContext.startActivity(intent);
                 }
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        /*// 터치된 아이템 정보를 보여줌
-        Iterator<DBRecord> dbRecordIterator = mDBRecordList.iterator();
-        for (int i = 0; i < mDBRecordList.size(); i++) {
-            DBRecord tDBRecord = dbRecordIterator.next();
-            if (tDBRecord.getName().equals(tName) == true) {
-                String tAbout = tDBRecord.getAbout();
-
-                pCanvas.drawText(tAbout, ((mWidth - mHeight) / 2) + mHeight
-                                / 20 + xMargin + mShadowXMargin,
-                        ((mHeight / 5) * 4 + 90) + yMargin + mShadowYMargin,
-                        mShadowPaint);
-
-                pCanvas.drawText(tAbout, ((mWidth - mHeight) / 2) + mHeight
-                                / 20 + xMargin, ((mHeight / 5) * 4 + 90) + yMargin,
-                        mPaint);
-            }
-        }*/
     }
 
     private void drawGrid(double tAx, double tAy, double tBx, double tBy,
@@ -336,7 +322,6 @@ public class CameraOverlayView  extends View implements SensorEventListener {
 
                         int widthbox = (int)(r.right-r.left);
                         int heightbox = (int)(r.bottom-r.top);
-
                         boxsize.put(title+"width",widthbox);
                         boxsize.put(title+"height",heightbox);
 
@@ -457,8 +442,8 @@ public class CameraOverlayView  extends View implements SensorEventListener {
     //핸재위치 갱신
     public void setCurrentPoint(double longitude, double latitude) {
 
-        mlongitude = longitude;
-        mlatitude = latitude;
+        mlongitude = 128.546043;
+        mlatitude = 35.945686;
     }
 
     public void viewDestory() {
