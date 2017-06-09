@@ -14,6 +14,7 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 import org.json.JSONArray;
@@ -22,6 +23,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -43,6 +45,7 @@ public class CameraOverlayView  extends View implements SensorEventListener {
     private int mShadowXMargin;
     private Paint mPopPaint;
     private RectF mPopRect;
+    private Paint mbackgroundPaint;
     private int mShadowYMargin;
     private Paint mPaint;
     private Paint mShadowPaint;
@@ -56,6 +59,13 @@ public class CameraOverlayView  extends View implements SensorEventListener {
     private boolean mScreenTouched = false;
     private boolean mTouched = false;
     private Bitmap mPalaceIconBitmap;
+
+    private float boxLeftWidth;
+    private float boxRightWidth;
+    private float boxTopHeigth;
+    private float boxBottomtHeigth;
+
+    String s = null;
 
 
     public CameraOverlayView(Context context) {
@@ -84,7 +94,7 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         canvas.restore();
 // 아이템이 터치된 상태일때 팝업을 그림
         if (mTouched == true) {
-            //drawPopup(canvas);
+            drawPopup(canvas);
         }
     }
     private void drawTouchEffect(Canvas pCanvas) {
@@ -108,6 +118,9 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         mShadowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mShadowPaint.setColor(Color.BLACK);
         mShadowPaint.setTextSize(40);
+
+        mbackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mbackgroundPaint.setColor(Color.rgb(32, 178, 170));
 
         mTouchEffectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mTouchEffectPaint.setColor(Color.rgb(205, 92, 92));
@@ -144,6 +157,101 @@ public class CameraOverlayView  extends View implements SensorEventListener {
 
     }
 
+    public boolean onTouchEvent(MotionEvent event) {
+        // TODO Auto-generated method stub
+
+        // 화면이 회전되었기에 좌표도 변환함
+        float convertedX, convertedY, temp;
+        convertedX = event.getX();
+        convertedY = event.getY();
+        convertedX = convertedX - mWidth / 2;
+        convertedY = convertedY - mHeight / 2;
+        temp = convertedX;
+        convertedX = -convertedY;
+        convertedY = temp;
+        Log.d("convertedX", convertedX+"");
+        Log.d("convertedY", convertedY+"");
+
+        mTouchedX = event.getX();
+        mTouchedY = event.getY();
+
+        mScreenTouched = true;
+
+        mTouched = false;
+        PointF tPoint = new PointF();
+        Iterator<PointF> pointIterator = mPointFList.iterator();
+        for (int i = 0; i < mPointFList.size(); i++) {
+            tPoint = pointIterator.next();
+            if (convertedX > tPoint.x
+                    && convertedX < tPoint.x
+                    && convertedY > tPoint.y
+                    && convertedY < tPoint.y) {
+                mTouched = true;
+                mTouchedItem = i;
+
+
+    }
+}
+        return super.onTouchEvent(event);
+    }
+
+    private void drawPopup(Canvas pCanvas) {
+        // TODO Auto-generated method stub
+        pCanvas.drawRoundRect(mPopRect, 20, 20, mPopPaint);
+
+        int xMargin = 20;
+        int yMargin = 0;
+
+        // 터치된 아이템을 이용하여 이름이 무엇인지 알아내고 보여줌
+        String tName = mPointHashMap.get(mTouchedItem);
+        pCanvas.drawText(tName, ((mWidth - mHeight) / 2) + mHeight / 20
+                + xMargin + mShadowXMargin, ((mHeight / 5) * 4 + 40) + yMargin
+                + mShadowYMargin, mShadowPaint);
+
+        pCanvas.drawText(tName, ((mWidth - mHeight) / 2) + mHeight / 20
+                + xMargin, ((mHeight / 5) * 4 + 40) + yMargin, mPaint);
+
+        String[][] parsedata = new String[0][9];
+
+        JSONArray json = null;
+        try {
+            json = new JSONArray(s);
+            parsedata = new String[json.length()][9];
+            for (int i = 0; i < json.length(); i++) {
+                JSONObject jobject = json.getJSONObject(i);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        /*// 터치된 아이템 정보를 보여줌
+        Iterator<DBRecord> dbRecordIterator = mDBRecordList.iterator();
+        for (int i = 0; i < mDBRecordList.size(); i++) {
+            DBRecord tDBRecord = dbRecordIterator.next();
+            if (tDBRecord.getName().equals(tName) == true) {
+                String tAbout = tDBRecord.getAbout();
+
+                pCanvas.drawText(tAbout, ((mWidth - mHeight) / 2) + mHeight
+                                / 20 + xMargin + mShadowXMargin,
+                        ((mHeight / 5) * 4 + 90) + yMargin + mShadowYMargin,
+                        mShadowPaint);
+
+                pCanvas.drawText(tAbout, ((mWidth - mHeight) / 2) + mHeight
+                                / 20 + xMargin, ((mHeight / 5) * 4 + 90) + yMargin,
+                        mPaint);
+            }
+        }*/
+
+        String tInfo = "자세히 보기 - 터치";
+
+        pCanvas.drawText(tInfo, ((mWidth - mHeight) / 2) + mHeight / 20
+                + xMargin + mShadowXMargin, ((mHeight / 5) * 4 + 140) + yMargin
+                + mShadowYMargin, mShadowPaint);
+
+        pCanvas.drawText(tInfo, ((mWidth - mHeight) / 2) + mHeight / 20
+                + xMargin, ((mHeight / 5) * 4 + 140) + yMargin, mPaint);
+    }
+
     private PointF drawGrid(double tAx, double tAy, double tBx, double tBy,
                             Canvas pCanvas, Paint pPaint, String title, String content, int placeY) {
         // TODO Auto-generated method stub
@@ -169,6 +277,8 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         } else if (mXDegree + mXCompassDegree >= 360) {
             mXDegree = mXDegree + mXCompassDegree - 360;
         }
+
+
 
         // 계산된 각도 만큼 기기 정중앙 화면 기준 어디에 나타날지 계산함
         // 정중앙은 90도, 시야각은 30도로 75 ~ 105 사이일때만 화면에 나타남
@@ -198,24 +308,25 @@ public class CameraOverlayView  extends View implements SensorEventListener {
 
                 int distance = (int) locationA.distanceTo(locationB);
 
-
+                Paint tPaint = mbackgroundPaint;
                 // 데이터에 거리에 들어오면 데이터 보임
                 if (distance <= mVisibleDistance * 1000) {
                     if (distance < 1000) {
-
+                        pPaint.setColor(Color.WHITE);
+                        pPaint.setTextSize(50);
+                        mShadowPaint.setTextSize(50);
+                        tPaint.setColor(Color.BLACK);
+                        tPaint.setAlpha(125);
+                        RectF r = new RectF(mX-pPaint.measureText(title) / 2-60 , mY+placeY-70, mX+pPaint.measureText(title) / 2+60, mY+placeY+30);
+                        boxTopHeigth =  mY+placeY-70;
+                        boxBottomtHeigth = mY+placeY+30;
+                        boxLeftWidth = mX-pPaint.measureText(title) / 2-60;
+                        boxRightWidth = mX+pPaint.measureText(title) / 2+60;
+                        pCanvas.drawRoundRect(r, 20, 20, tPaint);
                         pCanvas.drawText(title, mX - pPaint.measureText(title) / 2
                                 + mShadowXMargin, mY+placeY
                                 + mShadowYMargin, mShadowPaint);
-
                         pCanvas.drawText(title, mX - pPaint.measureText(title) / 2, mY+placeY, pPaint);
-
-                        pCanvas.drawText(distance + "m",
-                                mX - pPaint.measureText(distance + "m") / 2
-                                        + mShadowXMargin, mY+30+placeY + mShadowYMargin, mShadowPaint);
-
-                        pCanvas.drawText(distance + "m",
-                                mX - pPaint.measureText(distance + "m") / 2, mY+30+placeY
-                                , pPaint);
 
                     }
                 }
@@ -226,16 +337,16 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         // 현재의 회전되기전의 좌표를 회전된 좌표로 변환한후 반환함
         PointF tPoint = new PointF();
 
-        tPoint.set(mX - mWidth / 2, mY - mHeight / 2);
+        tPoint.set(mX - mWidth / 2, mY - mHeight / 2 +placeY);
         return tPoint;
     }
+
     private void interpretDB(Canvas pCanvas) {
 
         // TODO Auto-generated method stub
         double tAx, tAy, tBx, tBy;
 
         arData task = new arData();
-        String s = null;
 
         PointF tPoint;
 
@@ -280,7 +391,6 @@ public class CameraOverlayView  extends View implements SensorEventListener {
                 tPoint = drawGrid(tAx, tAy, tBx, tBy, pCanvas, mPaint, title, content,placeY);
 
                 mPointFList.add(tPoint);
-                Log.d("dd",mPointFList.get(0).toString());
                 mPointHashMap.put(item_code, title);
 
             }

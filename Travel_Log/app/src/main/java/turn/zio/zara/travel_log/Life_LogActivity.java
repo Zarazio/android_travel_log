@@ -319,7 +319,7 @@ public class Life_LogActivity extends AppCompatActivity {
                     conn.setDoInput(true); //input을 사용하도록 설정 (default : true)
                     conn.setDoOutput(true); //output을 사용하도록 설정 (default : false)
 
-                    conn.setConnectTimeout(60); //타임아웃 시간 설정 (default : 무한대기)
+                    //conn.setConnectTimeout(60); //타임아웃 시간 설정 (default : 무한대기)
                     conn.setRequestMethod("POST");
                     conn.setRequestProperty("Connection", "Keep-Alive");
                     conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);

@@ -11,7 +11,9 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -29,6 +31,11 @@ public class profileEditActivity extends AppCompatActivity {
 
         profile_Picutre = (ImageView)findViewById(R.id.profile_picture);
 
+        Spinner userGender = (Spinner)findViewById(R.id.user_gender);
+        ArrayAdapter userAdapter = ArrayAdapter.createFromResource(this,
+                R.array.user_gender, android.R.layout.simple_spinner_item);
+        userAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        userGender.setAdapter(userAdapter);
     }
 
     public void bakcMain(View view){
