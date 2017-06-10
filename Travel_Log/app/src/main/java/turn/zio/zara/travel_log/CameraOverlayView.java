@@ -2,7 +2,6 @@ package turn.zio.zara.travel_log;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -26,7 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * Created by 하루마다 on 2017-04-29.
@@ -41,39 +40,37 @@ public class CameraOverlayView  extends View implements SensorEventListener {
     private Sensor mOriSensor;
     private double mlongitude;
     private double mlatitude;
-    private double mVisibleDistance = 1;
+    public static double mVisibleDistance = 0.25;
     private int mWidth;
     private int mHeight;
     private int mShadowXMargin;
-    private Paint mPopPaint;
-    private RectF mPopRect;
     private Paint mbackgroundPaint;
     private int mShadowYMargin;
     private Paint mPaint;
     private Paint mShadowPaint;
     private int mTouchedItem;
     private List<PointF> mPointFList = null;
-    private HashMap<Integer, Integer> mPointHashMap;
-    private HashMap<String, Integer> boxsize;
-    private int mCounter = 0;
-    private float mTouchedY;
-    private float mTouchedX;
-    private Paint mTouchEffectPaint;
-    private boolean mScreenTouched = false;
+    private List<int[]> PointHashMap = null;
+    private List<int[]> boxsize = null;
     private boolean mTouched = false;
-    private Bitmap mPalaceIconBitmap;
 
-    private float boxLeftWidth;
-    private float boxRightWidth;
-    private float boxTopHeigth;
-    private float boxBottomtHeigth;
 
     String s = null;
+    private int item_code;
+    private RectF searchRect;
+    private RectF viewMode;
+    public static boolean DBselect = true;
+    public static String order_DB = "1";
+    public static String hashTag;
+    private int themeRectWidth;
 
 
     public CameraOverlayView(Context context) {
         super(context);
         mContext = (CameraActivity) context;
+
+        hashTag="없음";
+        DBselect = true;
 
         // 비트맵, 센서, 페인트, DB 핸들러 초기화
         initSensor(context);
@@ -83,16 +80,13 @@ public class CameraOverlayView  extends View implements SensorEventListener {
     public void onDraw(Canvas canvas) {
         canvas.save();
 
-
         // DB의 레코드를 읽어들이고, 그림
-        interpretDB(canvas);
-        if (mScreenTouched == true && mCounter < 15) {
-            drawTouchEffect(canvas);
-            mCounter++;
-        } else {
-            mScreenTouched = false;
-            mCounter = 0;
+        if(DBselect==true) {
+            interpretDB(canvas);
         }
+        initRectFs();
+
+        drawButton(canvas);
         // 회전된 카메라를 원상복귀함
         canvas.restore();
 // 아이템이 터치된 상태일때 팝업을 그림
@@ -100,15 +94,7 @@ public class CameraOverlayView  extends View implements SensorEventListener {
             drawPopup();
         }
     }
-    private void drawTouchEffect(Canvas pCanvas) {
-        // TODO Auto-generated method stub
-        pCanvas.drawCircle(mTouchedX, mTouchedY, mCounter * 1,
-                mTouchEffectPaint);
-        pCanvas.drawCircle(mTouchedX, mTouchedY, mCounter * 2,
-                mTouchEffectPaint);
-        pCanvas.drawCircle(mTouchedX, mTouchedY, mCounter * 3,
-                mTouchEffectPaint);
-    }
+
     private void initPaints() {
         // TODO Auto-generated method stub
         mShadowXMargin = 2;
@@ -125,14 +111,19 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         mbackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mbackgroundPaint.setColor(Color.rgb(32, 178, 170));
 
-
-        mTouchEffectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mTouchEffectPaint.setColor(Color.rgb(205, 92, 92));
-        mTouchEffectPaint.setStrokeWidth(5);
-        mTouchEffectPaint.setStyle(Paint.Style.STROKE);
     }
 
+    public void initRectFs() {
+        themeRectWidth = (mHeight - (mHeight / 20 * 2)) / 6;
 
+        viewMode = new RectF( ((mWidth - mHeight) / 2) + mHeight
+                / 20 + (float)(themeRectWidth * 2.4),10, ((mWidth - mHeight) / 2) + mHeight / 20
+                + (float)(themeRectWidth * 3.3),110);
+        
+        searchRect = new RectF( ((mWidth - mHeight) / 2) + mHeight / 20
+                + (float)(themeRectWidth * 4),10,((mWidth - mHeight) / 2) + mHeight / 20
+                + (float)(themeRectWidth * 5),110);
+    }
 
     // 센서 초기화
     // TYPE_ORIENTATION 사용할수 있게 설정
@@ -144,7 +135,23 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         mSensorManager.registerListener(this, mOriSensor,
                 SensorManager.SENSOR_DELAY_UI);
     }
+    private void drawButton(Canvas pCanvas) {
+        Paint tPaint = new Paint();
+        int yTextMargin = 8;
+        tPaint.setColor(Color.BLUE);
+        pCanvas.drawRoundRect(viewMode, 20, 20, tPaint);
+        pCanvas.drawText("Mode",
+                (viewMode.left + viewMode.right) / 2 - mPaint.measureText("모두")
+                        / 2,
+                (viewMode.top + viewMode.bottom) / 2 + yTextMargin, mPaint);
 
+        pCanvas.drawRoundRect(searchRect, 20, 20, tPaint);
+        pCanvas.drawText("필터",
+                (searchRect.left + searchRect.right) / 2 - mPaint.measureText("모두")
+                        / 2,
+                (searchRect.top + searchRect.bottom) / 2 + yTextMargin, mPaint);
+
+    }
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ORIENTATION) {
@@ -173,49 +180,57 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         Log.d("convertedX", convertedX+"");
         Log.d("convertedY", convertedY+"");
 
-        mTouchedX = event.getX();
-        mTouchedY = event.getY();
-
-        mScreenTouched = true;
-
         mTouched = false;
+
+
+        if (convertedX > searchRect.left - mWidth / 2
+                && convertedX < searchRect.right - mWidth / 2
+                && convertedY > searchRect.top - mHeight / 2
+                && convertedY < searchRect.bottom - mWidth / 2) {
+                Intent intent = new Intent(mContext, ARFilterActivity.class);
+                mContext.startActivity(intent);
+        }
+
+        if (convertedX > viewMode.left - mWidth / 2
+                && convertedX < viewMode.right - mWidth / 2
+                && convertedY > viewMode.top - mHeight / 2
+                && convertedY < viewMode.bottom - mWidth / 2) {
+                DBselect = false;
+        }
+
         PointF tPoint = new PointF();
-        Set key = mPointHashMap.keySet();
-        Set size = boxsize.keySet();
-        Iterator<Integer> iterator = key.iterator();
-        Iterator sizeiterator = size.iterator();
+
+        Iterator<int[]> iterator = PointHashMap.iterator();
+        Iterator<int[]> sizeiterator = boxsize.iterator();
         Iterator<PointF> pointIterator = mPointFList.iterator();
         for (int i = 0; i < mPointFList.size(); i++) {
             tPoint = pointIterator.next();
-            int item_key = iterator.next();
 
-            String sizewkey = (String) sizeiterator.next();
-            int widthSize = boxsize.get(sizewkey);
-            String sizehkey = (String) sizeiterator.next();
-            int hightSize = boxsize.get(sizehkey);
-            Log.d(sizewkey,widthSize+"");
-            Log.d(sizehkey,hightSize+"");
-            Log.d("pointx",(tPoint.x - (widthSize/2))+"작고"+ (tPoint.x + (widthSize/2)) + "크고");
-            Log.d("pointy",(tPoint.y - (hightSize/2))+"작고"+ (tPoint.y + (hightSize/2)) + "크고");
+            int[] box = sizeiterator.next();
+            int item_key = box[0];
+            int widthSize = box[1];
+
+            int[] item = iterator.next();
+            item_code = item[1];
+
+
             if (convertedX > tPoint.x - (widthSize/2)
                     && convertedX < tPoint.x + (widthSize/2)
-                    && convertedY > tPoint.y - (hightSize/2)
-                    && convertedY < tPoint.y + (hightSize/2)) {
+                    && convertedY > tPoint.y - (100/2)
+                    && convertedY < tPoint.y + (100/2)) {
                 mTouched = true;
-                mTouchedItem = item_key;
-                Log.d("터치아이템",mPointHashMap.get(item_key)+"");
+                mTouchedItem = item_code;
 
 
-     }
-}
+            }
+        }
         return super.onTouchEvent(event);
     }
 
     private void drawPopup() {
         // TODO Auto-generated method stub
-        int touch_board_Code = mPointHashMap.get(mTouchedItem);
+        int touch_board_Code = mTouchedItem;
         Log.d("이거 클릭",touch_board_Code+"");
-        mTouched = false;
         String[][] parsedata = new String[0][9];
 
         JSONArray json = null;
@@ -235,18 +250,20 @@ public class CameraOverlayView  extends View implements SensorEventListener {
                 parsedata[i][7] = jobject.getString("board_Date");
 
                 int sel_board_Code = Integer.parseInt(parsedata[i][0]);
-               if(touch_board_Code == sel_board_Code){
+                if(touch_board_Code == sel_board_Code){
 
                     Intent intent = new Intent(mContext, LifeLogViewActivity.class);
-                   intent.putExtra("board_Code",parsedata[i][0]);
-                   intent.putExtra("board_Title",parsedata[i][1]);
-                   intent.putExtra("board_Content",parsedata[i][2]);
-                   intent.putExtra("log_longtitude",parsedata[i][3]);
-                   intent.putExtra("log_latitude",parsedata[i][4]);
-                   intent.putExtra("user_id",parsedata[i][6]);
-                   intent.putExtra("board_Date",parsedata[i][7]);
+                    intent.putExtra("board_Code",parsedata[i][0]);
+                    intent.putExtra("board_Title",parsedata[i][1]);
+                    intent.putExtra("board_Content",parsedata[i][2]);
+                    intent.putExtra("log_longtitude",parsedata[i][3]);
+                    intent.putExtra("log_latitude",parsedata[i][4]);
+                    intent.putExtra("user_id",parsedata[i][6]);
+                    intent.putExtra("board_Date",parsedata[i][7]);
 
-                   mContext.startActivity(intent);
+                    mContext.startActivity(intent);
+                    DBselect =false;
+                    mTouched = false;
                 }
             }
         } catch (JSONException e) {
@@ -256,7 +273,7 @@ public class CameraOverlayView  extends View implements SensorEventListener {
     }
 
     private void drawGrid(double tAx, double tAy, double tBx, double tBy,
-                            Canvas pCanvas, Paint pPaint, String title, String content, int placeY, int item_code, int i) {
+                          Canvas pCanvas, Paint pPaint, String title, String content, int placeY, int item_code, int i) {
         // TODO Auto-generated method stub
 
         // 현재 위치와 데이터의 위치를 계산하는 공식
@@ -328,17 +345,17 @@ public class CameraOverlayView  extends View implements SensorEventListener {
                                 + mShadowYMargin, mShadowPaint);
                         pCanvas.drawText(title, mX - pPaint.measureText(title) / 2, mY+placeY, pPaint);
 
+
                         int widthbox = (int)(r.right-r.left);
                         int heightbox = (int)(r.bottom-r.top);
-                        boxsize.put(title+"width",widthbox);
-                        boxsize.put(title+"height",heightbox);
+
+                        boxsize.add(new int[]{item_code,widthbox,heightbox});
 
                         PointF tPoint = new PointF();
-
                         tPoint.set(mX - mWidth / 2, mY - mHeight / 2 +placeY);
 
                         mPointFList.add(tPoint);
-                        mPointHashMap.put(i, item_code);
+                        PointHashMap.add(new int[]{i, item_code});
                     }
                 }
             }
@@ -359,8 +376,9 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         PointF tPoint;
 
         mPointFList = new ArrayList<PointF>();
-        mPointHashMap = new HashMap<Integer, Integer>();
-        boxsize = new HashMap<String, Integer>();
+        PointHashMap = new ArrayList<int[]>();
+        boxsize = new ArrayList<int[]>();
+
         tAx = mlongitude;
         tAy = mlatitude;
 
@@ -408,9 +426,15 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         protected String doInBackground(String... params) {
             try{
 
+                Map<String, String> seldata = new HashMap<String,String>() ;
+
+                seldata.put("order_DB",order_DB) ;
+                seldata.put("hashTag",hashTag);
 
                 String link="http://211.211.213.218:8084/android/boardList"; //92.168.25.25
                 HttpClient.Builder http = new HttpClient.Builder("GET", link);
+
+                http.addAllParameters(seldata);
 
                 // HTTP 요청 전송
                 HttpClient post = http.create();
@@ -458,4 +482,5 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         mSensorManager.unregisterListener(this);
 
     }
+
 }

@@ -615,20 +615,7 @@ public class Life_LogActivity extends AppCompatActivity {
                 Drawable drawable = getResources().getDrawable(R.drawable.voice);
                 image.setImageDrawable(drawable);
             }
-        }/*else if (requestCode == 0){
-            if(resultCode== Activity.RESULT_OK) {
-                String path = data.getStringExtra("filepath");
-                String degrees = data.getStringExtra("degrees");
-                String file_name = data.getStringExtra("file_name");
-                Log.d("img",path);
-                mImgPath = path;
-                mImgOrient = degrees;
-                mImgTitle = file_name;
-                File imgFile = new  File(path);
-                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                image.setImageBitmap(myBitmap);
-            }
-        }*/
+        }
 
     }
 }

@@ -5,4 +5,12 @@
         <item>남자</item>
         <item>여자</item>
     </string-array>
+
+    <string-array name="view_mode">
+        <item>250m</item>
+        <item>500m</item>
+        <item>1km</item>
+        <item>3km</item>
+        <item>5km</item>
+    </string-array>
 </resources>
