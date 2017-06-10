@@ -125,7 +125,9 @@ public class LifeLogViewActivity extends Activity {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                loading = ProgressDialog.show(LifeLogViewActivity.this, "Please Wait", null, true, true);
+                loading = new ProgressDialog(LifeLogViewActivity.this);
+                loading.setProgressStyle(R.style.MyDialog);
+                loading.show();
             }
 
             @Override
@@ -174,6 +176,7 @@ public class LifeLogViewActivity extends Activity {
 
 
                     String link="http://211.211.213.218:8084/android/picture"; //92.168.25.25
+
                     HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
                     http.addAllParameters(picsel);
@@ -209,7 +212,6 @@ public class LifeLogViewActivity extends Activity {
                                     Bitmap bmImg = BitmapFactory.decodeStream(is);
                                     int width = bmImg.getWidth();
                                     int height = bmImg.getHeight();
-
                                     //화면에 표시할 데이터
                                     Matrix matrix = new Matrix();
                                     resizedBitmap = Bitmap.createBitmap(bmImg, 0, 0, width, height, matrix, true);
@@ -245,11 +247,14 @@ public class LifeLogViewActivity extends Activity {
     }
     public void backAR(View view){
         CameraOverlayView.DBselect = true;
+        popListView.touch= true;
         finish();
     }
     @Override
     public void onBackPressed(){
         CameraOverlayView.DBselect = true;
+        popListView.touch= true;
         finish();
     }
+
 }

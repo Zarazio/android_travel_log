@@ -1,10 +1,12 @@
 package turn.zio.zara.travel_log;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
@@ -16,16 +18,30 @@ public class ARFilterActivity extends AppCompatActivity {
 
     private EditText hash_Text;
 
+    private LinearLayout latest_view;
+    private LinearLayout view_moode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_arfilter);
 
+        Intent intent = getIntent();
+        String position = intent.getExtras().getString("position");
+
         latest_order_check = (RadioButton) findViewById(R.id.latest_order_check);
         like_order_check = (RadioButton) findViewById(R.id.like_order_check);
         hash_Text = (EditText) findViewById(R.id.hash_Text);
 
+        view_moode = (LinearLayout)findViewById(R.id.view_moode) ;
+
         latest_order_check.setChecked(true);
+
+        if(position.equals("1")){
+            view_moode.setVisibility(View.GONE);
+        }else{
+            view_moode.setVisibility(View.VISIBLE);
+        }
 
         AR_view_filter = (Spinner)findViewById(R.id.place_view_mode);
         ArrayAdapter filterAdapter = ArrayAdapter.createFromResource(this,
@@ -46,8 +62,10 @@ public class ARFilterActivity extends AppCompatActivity {
     }
 
     public void bakcMain(View v){
+        CameraOverlayView.DBselect = true;
         finish();
     }
+
 
     public void filter_submit(View v){
         String visible = AR_view_filter.getSelectedItem().toString();
@@ -76,7 +94,12 @@ public class ARFilterActivity extends AppCompatActivity {
         }else if(latest_order_check.isChecked()){
             CameraOverlayView.order_DB = "1";
         }
-
+        CameraOverlayView.DBselect = true;
+        finish();
+    }
+    @Override
+    public void onBackPressed(){
+        CameraOverlayView.DBselect = true;
         finish();
     }
 }

@@ -1,5 +1,6 @@
 package turn.zio.zara.travel_log;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -63,6 +64,7 @@ public class CameraOverlayView  extends View implements SensorEventListener {
     public static String order_DB = "1";
     public static String hashTag;
     private int themeRectWidth;
+    public static boolean drawtext;
 
 
     public CameraOverlayView(Context context) {
@@ -71,6 +73,7 @@ public class CameraOverlayView  extends View implements SensorEventListener {
 
         hashTag="없음";
         DBselect = true;
+        drawtext = true;
 
         // 비트맵, 센서, 페인트, DB 핸들러 초기화
         initSensor(context);
@@ -86,10 +89,12 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         }
         initRectFs();
 
-        drawButton(canvas);
+        if(drawtext==true) {
+            drawButton(canvas);
+        }
         // 회전된 카메라를 원상복귀함
         canvas.restore();
-// 아이템이 터치된 상태일때 팝업을 그림
+        // 아이템이 터치된 상태일때 팝업을 그림
         if (mTouched == true) {
             drawPopup();
         }
@@ -117,9 +122,9 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         themeRectWidth = (mHeight - (mHeight / 20 * 2)) / 6;
 
         viewMode = new RectF( ((mWidth - mHeight) / 2) + mHeight
-                / 20 + (float)(themeRectWidth * 2.4),10, ((mWidth - mHeight) / 2) + mHeight / 20
+                / 20 + (float)(themeRectWidth * 2.3),10, ((mWidth - mHeight) / 2) + mHeight / 20
                 + (float)(themeRectWidth * 3.3),110);
-        
+
         searchRect = new RectF( ((mWidth - mHeight) / 2) + mHeight / 20
                 + (float)(themeRectWidth * 4),10,((mWidth - mHeight) / 2) + mHeight / 20
                 + (float)(themeRectWidth * 5),110);
@@ -141,13 +146,13 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         tPaint.setColor(Color.BLUE);
         pCanvas.drawRoundRect(viewMode, 20, 20, tPaint);
         pCanvas.drawText("Mode",
-                (viewMode.left + viewMode.right) / 2 - mPaint.measureText("모두")
+                (viewMode.left + viewMode.right) / 2 - mPaint.measureText("Mode")
                         / 2,
                 (viewMode.top + viewMode.bottom) / 2 + yTextMargin, mPaint);
 
         pCanvas.drawRoundRect(searchRect, 20, 20, tPaint);
         pCanvas.drawText("필터",
-                (searchRect.left + searchRect.right) / 2 - mPaint.measureText("모두")
+                (searchRect.left + searchRect.right) / 2 - mPaint.measureText("필터")
                         / 2,
                 (searchRect.top + searchRect.bottom) / 2 + yTextMargin, mPaint);
 
@@ -187,7 +192,9 @@ public class CameraOverlayView  extends View implements SensorEventListener {
                 && convertedX < searchRect.right - mWidth / 2
                 && convertedY > searchRect.top - mHeight / 2
                 && convertedY < searchRect.bottom - mWidth / 2) {
+                DBselect = false;
                 Intent intent = new Intent(mContext, ARFilterActivity.class);
+            intent.putExtra("position","1");
                 mContext.startActivity(intent);
         }
 
@@ -195,7 +202,13 @@ public class CameraOverlayView  extends View implements SensorEventListener {
                 && convertedX < viewMode.right - mWidth / 2
                 && convertedY > viewMode.top - mHeight / 2
                 && convertedY < viewMode.bottom - mWidth / 2) {
-                DBselect = false;
+                drawtext = false;
+                Intent intent = new Intent(mContext, popListView.class);
+                intent.putExtra("jsonData",s);
+                intent.putExtra("mlongitude",mlongitude);
+            intent.putExtra("mlatitude",mlatitude);
+                mContext.startActivity(intent);
+                mTouched = false;
         }
 
         PointF tPoint = new PointF();
@@ -411,8 +424,9 @@ public class CameraOverlayView  extends View implements SensorEventListener {
 
                 int placeY = Integer.parseInt( parsedata[i][5]);
 
-                drawGrid(tAx, tAy, tBx, tBy, pCanvas, mPaint, title, content,placeY, item_code, i);
-
+                if(drawtext==true) {
+                    drawGrid(tAx, tAy, tBx, tBy, pCanvas, mPaint, title, content, placeY, item_code, i);
+                }
 
 
             }
@@ -461,7 +475,6 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-
         }
     }
     // 카메라 액티비티에서 오버레이 화면 크기를 설정함

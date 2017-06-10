@@ -84,6 +84,8 @@
             android:theme="@android:style/Theme.Dialog" />
         <activity android:name=".ARFilterActivity"
             android:theme="@style/mainTheme"></activity>
+        <activity android:name=".popListView"
+            android:theme="@android:style/Theme.Dialog"/>
     </application>
 
 </manifest>

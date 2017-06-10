@@ -8,45 +8,45 @@
     android:background="#cc000000"
     tools:context="turn.zio.zara.travel_log.LifeLogViewActivity">
     <LinearLayout
-        android:layout_width="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:orientation="vertical">
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp">
-
-            <ImageView
-                android:id="@+id/bakcMain_icon"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:background="@android:color/transparent"
-                android:onClick="backAR"
-                android:src="@drawable/backbutton" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="-45dp">
-
-            <ImageView
-                android:id="@+id/view_mainlogo_icon"
-                android:layout_width="200dp"
-                android:layout_height="50dp"
-                android:layout_alignBottom="@+id/backmain"
-                android:layout_alignParentTop="true"
-                android:src="@drawable/mainlogo" />
-        </LinearLayout>
-
+        <ImageView
+            android:id="@+id/bakcMain_icon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:background="@android:color/transparent"
+            android:onClick="backAR"
+            android:src="@drawable/backbutton" />
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="-45dp">
+
+        <ImageView
+            android:id="@+id/view_mainlogo_icon"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_alignBottom="@+id/backmain"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/mainlogo" />
+    </LinearLayout>
+
+</LinearLayout>
 
     <View
         android:layout_width="fill_parent"
