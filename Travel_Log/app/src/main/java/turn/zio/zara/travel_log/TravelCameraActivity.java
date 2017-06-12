@@ -1,8 +1,12 @@
 package turn.zio.zara.travel_log;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.hardware.SensorManager;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -28,6 +32,10 @@ public class TravelCameraActivity extends AppCompatActivity {
     private CameraSurfaceView cameraSurfaceView;
     private FrameLayout frameLayout;
 
+    String arr;
+
+    private ImageView previewImage;
+
     String action;
     int degrees = 90;
     @Override
@@ -35,17 +43,8 @@ public class TravelCameraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_travel_camera);
 
-        Intent intent = getIntent();
-        action = intent.getStringExtra("action");
+        previewImage = (ImageView) findViewById(R.id.previewImage);
 
-        Log.d("카메라",action);
-        /*if(action.equals("1")) {
-            String f = getIntent().getStringExtra("img");
-            iv2 = (ImageView) findViewById(R.id.imageView6);
-            Drawable alpha = iv2.getDrawable();
-            alpha.setAlpha(50);
-            iv2.setImageURI(Uri.parse(f));
-        }*/
         cameraSurfaceView = new CameraSurfaceView(getApplicationContext(),degrees);
         orientEventListener = new OrientationEventListener(this,
                 SensorManager.SENSOR_DELAY_NORMAL) {
@@ -77,7 +76,7 @@ public class TravelCameraActivity extends AppCompatActivity {
 
     public void memory(View view){
         Intent intent = new Intent(getApplicationContext(), AlbumSelectActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
     }
     public void autoFocus(View view) {
         cameraSurfaceView.camera.autoFocus(mAutoFocus) ;
@@ -144,23 +143,66 @@ public class TravelCameraActivity extends AppCompatActivity {
                     //Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length) ;
                    //saveBitmapToJpeg(bitmap,System.currentTimeMillis()+"_Travel_log");
 
-                   // String image = MediaStore.Images.Media.insertImage(getContentResolver(),bitmap , "","") ;
+                   //String image = MediaStore.Images.Media.insertImage(getContentResolver(),bitmap , "","") ;
 
-                        Toast.makeText(getApplicationContext(), "찍은 사진이 저장되었습니다", Toast.LENGTH_LONG).show();
-                        if(action.equals("1")){
-                            camera.startPreview();
-                        }
-                         else {
-                            camera.stopPreview();
-                            intent = new Intent();
-                            intent.putExtra("filepath" , path_root);
-                            intent.putExtra("file_name" , file_name);
-                            intent.putExtra("degrees" , degrees+"");
-                            setResult(RESULT_OK, intent);
-                            finish();
-                        }
+                    Toast.makeText(getApplicationContext(), "찍은 사진이 저장되었습니다", Toast.LENGTH_LONG).show();
+
+                    intent = new Intent();
+                    intent.putExtra("filepath" , path_root);
+                    intent.putExtra("file_name" , file_name);
+                    intent.putExtra("degrees" , degrees+"");
+                    setResult(RESULT_OK, intent);
+
                 }
 
         };
+    @Override
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) // 액티비티가 정상적으로 종료되었을 경우
+        {
+            if (requestCode == 1) // requestCode==1 로 호출한 경우에만 처리.
+            {
+                arr = data.getExtras().getString("data");
+
+                File imgFile = new  File(arr);
+                ExifInterface exif = null;
+                Matrix matrix = null;
+                try {
+                    exif = new ExifInterface(arr);
+                    int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, -1);
+                    Log.d("or9","우아아아");
+                    matrix = new Matrix();
+                    switch (orientation){
+                        case ExifInterface.ORIENTATION_ROTATE_180:
+                            matrix.postRotate(180);
+                            break;
+                        case ExifInterface.ORIENTATION_ROTATE_270:
+                            matrix.postRotate(270);
+                            break;
+                        case ExifInterface.ORIENTATION_ROTATE_90:
+                            matrix.postRotate(90);
+                            break;
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                int width = myBitmap.getWidth();
+                int height = myBitmap.getHeight();
+                Bitmap b2 = Bitmap.createBitmap(myBitmap, 0, 0, width, height, matrix, true);
+
+                previewImage.setVisibility(View.VISIBLE);
+                previewImage.setImageBitmap(b2);
+                previewImage.setScaleType(ImageView.ScaleType.FIT_XY );
+
+            }
+        }
+    }
+
 }
 

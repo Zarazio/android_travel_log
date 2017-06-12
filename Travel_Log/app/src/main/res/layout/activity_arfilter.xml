@@ -123,68 +123,72 @@
             android:layout_height="1dip"
             android:layout_marginLeft="30dp"
             android:background="#e6e6e6" />
+
         <LinearLayout
             android:id="@+id/view_moode"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginBottom="10dp"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/latest_order"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="최신순"
-                android:textSize="30dp" />
-
-            <RadioButton
-                android:id="@+id/latest_order_check"
-                android:layout_width="wrap_content"
-                android:onClick="latest_order_check"
-                android:layout_marginRight="10dp"
-                android:layout_height="match_parent" />
-
-        </LinearLayout>
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dip"
-            android:layout_marginLeft="30dp"
-            android:background="#e6e6e6" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="10dp">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/like_order"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="좋아요순"
-                android:textSize="30dp" />
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="10dp">
 
-            <RadioButton
-                android:id="@+id/like_order_check"
-                android:layout_marginRight="10dp"
-                android:onClick="like_order_check"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
+                <TextView
+                    android:id="@+id/latest_order"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="최신순"
+                    android:textSize="30dp" />
 
-        </LinearLayout>
+                <RadioButton
+                    android:id="@+id/latest_order_check"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:onClick="latest_order_check" />
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dip"
-            android:layout_marginLeft="30dp"
-            android:background="#e6e6e6" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:layout_marginLeft="30dp"
+                android:background="#e6e6e6" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:id="@+id/like_order"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="좋아요순"
+                    android:textSize="30dp" />
+
+                <RadioButton
+                    android:id="@+id/like_order_check"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:onClick="like_order_check" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:layout_marginLeft="30dp"
+                android:background="#e6e6e6" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"

@@ -1,6 +1,5 @@
 package turn.zio.zara.travel_log;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -18,16 +17,12 @@ public class ARFilterActivity extends AppCompatActivity {
 
     private EditText hash_Text;
 
-    private LinearLayout latest_view;
     private LinearLayout view_moode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_arfilter);
-
-        Intent intent = getIntent();
-        String position = intent.getExtras().getString("position");
 
         latest_order_check = (RadioButton) findViewById(R.id.latest_order_check);
         like_order_check = (RadioButton) findViewById(R.id.like_order_check);
@@ -36,12 +31,6 @@ public class ARFilterActivity extends AppCompatActivity {
         view_moode = (LinearLayout)findViewById(R.id.view_moode) ;
 
         latest_order_check.setChecked(true);
-
-        if(position.equals("1")){
-            view_moode.setVisibility(View.GONE);
-        }else{
-            view_moode.setVisibility(View.VISIBLE);
-        }
 
         AR_view_filter = (Spinner)findViewById(R.id.place_view_mode);
         ArrayAdapter filterAdapter = ArrayAdapter.createFromResource(this,

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -147,6 +148,8 @@ public class popListView extends Activity {
         });
     }
 
+
+
     public void backAR(View view){
         CameraOverlayView.drawtext = true;
         finish();
@@ -155,11 +158,6 @@ public class popListView extends Activity {
     public void onBackPressed(){
         CameraOverlayView.drawtext = true;
         finish();
-    }
-    public void filter(View view){
-        Intent intent = new Intent(this, ARFilterActivity.class);
-        intent.putExtra("position","2");
-        startActivity(intent);
     }
 
 }
@@ -221,6 +219,7 @@ class MultiAdapter extends BaseAdapter {
 
             //인플레이트합니다. 즉 화면에 뿌립니다.
             convertView = mInflater.inflate(R.layout.pop_log_list, parent, false);
+
         }
 
         //화면에 뿌린뒤 여기서 각항목에 해당하는 값을 바꿔주는 부분입니다.
@@ -231,7 +230,6 @@ class MultiAdapter extends BaseAdapter {
         TextView user_id = (TextView)convertView.findViewById(R.id.user_id);
         user_id.setText(arSrc.get(position).user_id);
 
-        Log.d("왜","한개 밖에 안나와");
 
         return convertView;//getCount만큼 반복한다고 했죠?
         //리스트의 갯수만큼 반복하게 됩니다.
