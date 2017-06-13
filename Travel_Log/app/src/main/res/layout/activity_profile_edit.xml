@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="#fafafa"
-                android:onClick="passChangesubmit"
+                android:onClick="profile_submit"
                 android:text="완료"
                 android:textSize="20sp" />
         </LinearLayout>

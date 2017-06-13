@@ -1,6 +1,7 @@
 package turn.zio.zara.travel_log;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,19 +14,27 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity   {
 
     TextView user_place;
     TextView user_main_id;
@@ -40,13 +49,23 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout searchPage;
     LinearLayout likeFollowPage;
     LinearLayout myPage;
+    LinearLayout serch_view;
+
+    TextView search_Text_view;
+    EditText search_Text;
 
     private BackPressCloseHandler backPressCloseHandler;
+    private String hashTagText;
 
+    listAll task;
+    listHashAll taskSearch;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        task = new listAll();
+        taskSearch = new listHashAll();
 
         backPressCloseHandler = new BackPressCloseHandler(this);
 
@@ -57,15 +76,25 @@ public class MainActivity extends AppCompatActivity {
         searchPage = (LinearLayout) findViewById(R.id.search_page);
         likeFollowPage = (LinearLayout) findViewById(R.id.like_follow);
         myPage = (LinearLayout) findViewById(R.id.my_page);
+        serch_view = (LinearLayout) findViewById(R.id.serch_view);
 
         login = getSharedPreferences("LoginKeep", MODE_PRIVATE);
         editor = login.edit();
 
+        search_Text = (EditText)findViewById(R.id.search_Text);
+        search_Text_view = (TextView) findViewById(R.id.search_Text_view);
 
         SharedPreferences user = getSharedPreferences("LoginKeep", MODE_PRIVATE);
         String user_id = user.getString("user_id", "0");
 
         user_main_id.setText(user_id);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+        int width = displayMetrics.widthPixels;// 가로
+        int height = displayMetrics.heightPixels;
+
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, // 등록할 위치제공자
@@ -76,8 +105,70 @@ public class MainActivity extends AppCompatActivity {
                 1000, // 통지사이의 최소 시간간격 (miliSecond)
                 1, // 통지사이의 최소 변경거리 (m)
                 mLocationListener);
+        search_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() { // 포커스를 얻으면
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) { // 포커스가 한뷰에서 다른뷰로 바뀔때
+                if(hasFocus == false)
+                {
+                    String hashhint = search_Text.getHint().toString();
+                    String hashtest = search_Text.getText().toString();
+                    serch_view.setVisibility(View.GONE);
+                    search_Text_view.setVisibility(View.VISIBLE);
+                    if(!hashtest.equals("")) {
+                        search_Text_view.setText(hashtest);
+                    }else{
+                        search_Text_view.setText("검색");
+                    }
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                }
+            }
+        });
+        search_Text.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                switch (actionId) {
+                    case EditorInfo.IME_ACTION_SEARCH:
+                        hashTagText = search_Text.getText().toString();
+                        try {
+                            String result = task.execute().get();
+                            Log.d("서치 결과값",result);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                        search_Text.clearFocus();
+                        break;
+                    default:
+                        Toast.makeText(getApplicationContext(), "기본", Toast.LENGTH_LONG).show();
+                        return false;
+                }
+                return true;
+            }
+        });
     }
 
+    public void backView(View view){
+        search_Text.clearFocus();
+    }
+
+    public void modeWrite(View view){
+        String hashtest = (String) search_Text_view.getText();
+        search_Text_view.setVisibility(view.GONE);
+        serch_view.setVisibility(view.VISIBLE);
+        Log.d("?",hashtest);
+        if(hashtest.equals("검색")){
+            Log.d("?1",hashtest);
+            search_Text.setHint("해시태그 검색");
+        }else {
+            search_Text.setText(hashtest);
+        }
+        search_Text.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+    }
     public void viewPageChange(View v){
         switch (v.getId()){
             case R.id.view_home_icon:
@@ -91,6 +182,14 @@ public class MainActivity extends AppCompatActivity {
                 mainPage.setVisibility(v.INVISIBLE);
                 likeFollowPage.setVisibility(v.INVISIBLE);
                 myPage.setVisibility(v.INVISIBLE);
+                try {
+                    String result = task.execute().get();
+                    Log.d("서치 결과값",result);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.view_heart_icon:
                 likeFollowPage.setVisibility(v.VISIBLE);
@@ -106,7 +205,79 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
+    class listAll extends AsyncTask<String, Void, String> {
+        ProgressDialog loading;
+        @Override
+        protected String doInBackground(String... params) {
+            try{
 
+                Map<String, String> seldata = new HashMap<String,String>() ;
+
+
+                String link="http://211.211.213.218:8084/android/all_list_View"; //92.168.25.25
+                HttpClient.Builder http = new HttpClient.Builder("GET", link);
+
+                // HTTP 요청 전송
+                HttpClient post = http.create();
+                post.request();
+                // 응답 상태코드 가져오기
+                int statusCode = post.getHttpStatusCode();
+                // 응답 본문 가져오기
+                String body = post.getBody();
+                return body;
+
+                // Read Server Response
+
+            }
+            catch(Exception e){
+                return new String("Exception: " + e.getMessage());
+            }
+        }
+    }
+    class listHashAll extends AsyncTask<String, Void, String> {
+        ProgressDialog loading;
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+
+                Map<String, String> seldata = new HashMap<String, String>();
+                seldata.put("hash_tag", hashTagText);
+
+                String link = "http://211.211.213.218:8084/android/all_list_View"; //92.168.25.25
+                HttpClient.Builder http = new HttpClient.Builder("GET", link);
+
+                // HTTP 요청 전송
+                HttpClient post = http.create();
+                post.request();
+                // 응답 상태코드 가져오기
+                int statusCode = post.getHttpStatusCode();
+                // 응답 본문 가져오기
+                String body = post.getBody();
+                return body;
+
+                // Read Server Response
+
+            } catch (Exception e) {
+                return new String("Exception: " + e.getMessage());
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loading = new ProgressDialog(MainActivity.this);
+            loading.setProgressStyle(R.style.MyDialog);
+            loading.show();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            loading.dismiss();
+        }
+    }
     private final LocationListener mLocationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
             //여기서 위치값이 갱신되면 이벤트가 발생한다.
@@ -261,7 +432,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void profile_change(View view){
         Intent intent = new Intent(getApplicationContext(), profileEditActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
     }
 
     public void user_logout(View view){
@@ -288,11 +459,26 @@ public class MainActivity extends AppCompatActivity {
 
     public void passChangeView(View view){
         Intent intent = new Intent(getApplicationContext(), passWordChangeActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 2);
     }
 
     public void push_alram_setting(View view){
         Intent intent = new Intent(getApplicationContext(), pushAlramSettingActivity.class);
         startActivity(intent);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) // 액티비티가 정상적으로 종료되었을 경우
+        {
+            if (requestCode == 1 || requestCode ==2) // requestCode==1 로 호출한 경우에만 처리.
+            {
+                editor.clear();
+                editor.commit();
+                finish();
+            }
+        }
     }
 }
