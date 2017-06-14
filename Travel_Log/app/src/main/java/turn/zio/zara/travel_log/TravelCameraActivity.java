@@ -171,6 +171,7 @@ public class TravelCameraActivity extends AppCompatActivity {
                 File imgFile = new  File(arr);
                 ExifInterface exif = null;
                 Matrix matrix = null;
+                Log.d("그거",arr);
                 try {
                     exif = new ExifInterface(arr);
                     int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, -1);

@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -21,11 +24,19 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -57,15 +68,19 @@ public class MainActivity extends AppCompatActivity   {
     private BackPressCloseHandler backPressCloseHandler;
     private String hashTagText;
 
-    listAll task;
-    listHashAll taskSearch;
+    private boolean[] menu;
+    Bitmap[] images;
+
+    String imageURL = "http://211.211.213.218:8084/android/resources/upload/";
+
+    private String[][] parsedata;
+    MyAdapter adapter;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        task = new listAll();
-        taskSearch = new listHashAll();
+        menu = new boolean[4];
 
         backPressCloseHandler = new BackPressCloseHandler(this);
 
@@ -84,6 +99,8 @@ public class MainActivity extends AppCompatActivity   {
         search_Text = (EditText)findViewById(R.id.search_Text);
         search_Text_view = (TextView) findViewById(R.id.search_Text_view);
 
+        GridView gv = (GridView) findViewById(R.id.list);
+
         SharedPreferences user = getSharedPreferences("LoginKeep", MODE_PRIVATE);
         String user_id = user.getString("user_id", "0");
 
@@ -96,7 +113,7 @@ public class MainActivity extends AppCompatActivity   {
         int height = displayMetrics.heightPixels;
 
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
+        /*위치정보*/
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, // 등록할 위치제공자
                 1000, // 통지사이의 최소 시간간격 (miliSecond)
                 1, // 통지사이의 최소 변경거리 (m)
@@ -105,6 +122,8 @@ public class MainActivity extends AppCompatActivity   {
                 1000, // 통지사이의 최소 시간간격 (miliSecond)
                 1, // 통지사이의 최소 변경거리 (m)
                 mLocationListener);
+
+        /*검색시 해시태그 View 클릭시*/
         search_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() { // 포커스를 얻으면
             @Override
             public void onFocusChange(View v, boolean hasFocus) { // 포커스가 한뷰에서 다른뷰로 바뀔때
@@ -124,6 +143,7 @@ public class MainActivity extends AppCompatActivity   {
                 }
             }
         });
+        /*해시태그 검색버튼 클릭시 엔터버튼을 검색버튼으로*/
         search_Text.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -131,8 +151,11 @@ public class MainActivity extends AppCompatActivity   {
                     case EditorInfo.IME_ACTION_SEARCH:
                         hashTagText = search_Text.getText().toString();
                         try {
-                            String result = task.execute().get();
-                            Log.d("서치 결과값",result);
+                            listHashAll taskSearch = new listHashAll();
+                            String result = taskSearch.execute().get();
+                            jsonParse(result);
+                            serpic setimage = new serpic();
+                            setimage.execute();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         } catch (ExecutionException e) {
@@ -147,12 +170,137 @@ public class MainActivity extends AppCompatActivity   {
                 return true;
             }
         });
+
+        /*list에 뿌려진 로그 클릭시*/
+        gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+
+                Intent intent = new Intent(getApplicationContext(), LifeLogViewActivity2.class);
+                intent.putExtra("board_Code",parsedata[position][0]);
+                intent.putExtra("board_Title",parsedata[position][1]);
+                intent.putExtra("board_Content",parsedata[position][2]);
+                intent.putExtra("log_longtitude",parsedata[position][3]);
+                intent.putExtra("log_latitude",parsedata[position][4]);
+                intent.putExtra("board_Date",parsedata[position][5]);
+                intent.putExtra("user_id",parsedata[position][6]);
+                intent.putExtra("file_Type",parsedata[position][7]);
+                intent.putExtra("file_Content", parsedata[position][8]);
+
+                startActivity(intent);
+            }
+        });
+
+
+    }
+
+    /*result JSon Parese*/
+    public void jsonParse(String s){
+
+        try {
+            JSONArray json = new JSONArray(s);
+            parsedata = new String[json.length()][9];
+            for (int i = 0; i < json.length(); i++) {
+                JSONObject jobject = json.getJSONObject(i);
+
+                parsedata[i][0] = jobject.getString("board_Code");
+                parsedata[i][1] = jobject.getString("board_Title");
+                parsedata[i][2] = jobject.getString("board_Content");
+                parsedata[i][3] = jobject.getString("log_longtitude");
+                parsedata[i][4] = jobject.getString("log_latitude");
+                parsedata[i][5] = jobject.getString("board_Date");
+                parsedata[i][6] = jobject.getString("user_id");
+                if(json.getJSONObject(i).isNull("file_Content") == false){
+                    parsedata[i][7] = jobject.getString("file_Type");
+                    parsedata[i][8] = jobject.getString("file_Content");
+                }else{
+                    parsedata[i][7] = "0";
+                    parsedata[i][8] = "1";
+                }
+
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void Apeter(Bitmap[] s){
+        String[] text = new String[parsedata.length];
+        String[] file_type = new String[parsedata.length];
+        for(int i=0; i < parsedata.length;i++){
+            if(parsedata[i][7].equals("0")){
+                text[i]=parsedata[i][1];
+            }else{
+                text[i]=parsedata[i][8];
+            }
+            file_type[i] = parsedata[i][7];
+        }
+        adapter = new MyAdapter (
+                MainActivity.this,
+                R.layout.pop_view_list,       // GridView 항목의 레이아웃 row.xml
+                text, file_type);
+        adapter.image(s);
+        GridView gv = (GridView)findViewById(R.id.list);
+        gv.setAdapter(adapter);
+
+    }
+
+
+
+    /*gridView 웹서버 이미지 뿌리기*/
+    class serpic extends AsyncTask<String, Void, Bitmap[]> {
+        ProgressDialog loading;
+        @Override
+        protected Bitmap[] doInBackground(String... params) {
+            images = new Bitmap[parsedata.length];
+            try{
+                for(int i=0; i < parsedata.length; i++) {
+
+                    if(parsedata[i][7].equals("1")){
+                        String url = imageURL + parsedata[i][8];
+                        InputStream is = (InputStream) new URL(url).getContent();
+
+                        Bitmap bmImg = BitmapFactory.decodeStream(is);
+                        int width = bmImg.getWidth();
+                        int height = bmImg.getHeight();
+                        //화면에 표시할 데이터
+                        Matrix matrix = new Matrix();
+                        Bitmap resizedBitmap = Bitmap.createBitmap(bmImg, 0, 0, width, height, matrix, true);
+                        images[i] = resizedBitmap;
+                    }
+                }
+                return images;
+
+                // Read Server Response
+
+            }
+            catch(Exception e){
+                images = null;
+                return images;
+            }
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loading = new ProgressDialog(MainActivity.this);
+            loading.setProgressStyle(R.style.MyDialog);
+            loading.show();
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap[] s) {
+            super.onPostExecute(s);
+            Apeter(s);
+            this.cancel(true);
+            loading.dismiss();
+        }
     }
 
     public void backView(View view){
         search_Text.clearFocus();
     }
-
+    /*뷰버튼을 editView로*/
     public void modeWrite(View view){
         String hashtest = (String) search_Text_view.getText();
         search_Text_view.setVisibility(view.GONE);
@@ -169,50 +317,77 @@ public class MainActivity extends AppCompatActivity   {
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 
     }
+    /*메뉴버튼을 눌러 뷰바꿀시*/
     public void viewPageChange(View v){
         switch (v.getId()){
             case R.id.view_home_icon:
-                mainPage.setVisibility(v.VISIBLE);
-                searchPage.setVisibility(v.INVISIBLE);
-                likeFollowPage.setVisibility(v.INVISIBLE);
-                myPage.setVisibility(v.INVISIBLE);
-                break;
-            case R.id.view_search_icon:
-                searchPage.setVisibility(v.VISIBLE);
-                mainPage.setVisibility(v.INVISIBLE);
-                likeFollowPage.setVisibility(v.INVISIBLE);
-                myPage.setVisibility(v.INVISIBLE);
-                try {
-                    String result = task.execute().get();
-                    Log.d("서치 결과값",result);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
+                if(menu[0]==false) {
+                    mainPage.setVisibility(v.VISIBLE);
+                    searchPage.setVisibility(v.INVISIBLE);
+                    likeFollowPage.setVisibility(v.INVISIBLE);
+                    myPage.setVisibility(v.INVISIBLE);
+                    menu[0] = true;
+                    menu[1] = false;
+                    menu[2] = false;
+                    menu[3] = false;
                 }
                 break;
+            case R.id.view_search_icon:
+                if(menu[1]==false) {
+                    searchPage.setVisibility(v.VISIBLE);
+                    mainPage.setVisibility(v.INVISIBLE);
+                    likeFollowPage.setVisibility(v.INVISIBLE);
+                    myPage.setVisibility(v.INVISIBLE);
+                    menu[1] = true;
+                    menu[0] = false;
+                    menu[2] = false;
+                    menu[3] = false;
+                }
+
+                    try {
+                        listAll task = new listAll();
+                        String result = task.execute().get();
+                        jsonParse(result);
+                        serpic setimage = new serpic();
+                        setimage.execute();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                break;
             case R.id.view_heart_icon:
-                likeFollowPage.setVisibility(v.VISIBLE);
-                searchPage.setVisibility(v.INVISIBLE);
-                mainPage.setVisibility(v.INVISIBLE);
-                myPage.setVisibility(v.INVISIBLE);
+                if(menu[2]==false) {
+                    likeFollowPage.setVisibility(v.VISIBLE);
+                    searchPage.setVisibility(v.INVISIBLE);
+                    mainPage.setVisibility(v.INVISIBLE);
+                    myPage.setVisibility(v.INVISIBLE);
+                    menu[2] =true;
+                    menu[1] = false;
+                    menu[0] = false;
+                    menu[3] = false;
+                }
                 break;
             case R.id.view_mypage_icon:
-                myPage.setVisibility(v.VISIBLE);
-                likeFollowPage.setVisibility(v.INVISIBLE);
-                searchPage.setVisibility(v.INVISIBLE);
-                mainPage.setVisibility(v.INVISIBLE);
+                if(menu[3]==false) {
+                    myPage.setVisibility(v.VISIBLE);
+                    likeFollowPage.setVisibility(v.INVISIBLE);
+                    searchPage.setVisibility(v.INVISIBLE);
+                    mainPage.setVisibility(v.INVISIBLE);
+                    menu[3]=true;
+                    menu[1] = false;
+                    menu[2] = false;
+                    menu[0] = false;
+                }
                 break;
         }
     }
+    /*검색 클릭시 db시*/
     class listAll extends AsyncTask<String, Void, String> {
         ProgressDialog loading;
         @Override
         protected String doInBackground(String... params) {
             try{
-
-                Map<String, String> seldata = new HashMap<String,String>() ;
-
 
                 String link="http://211.211.213.218:8084/android/all_list_View"; //92.168.25.25
                 HttpClient.Builder http = new HttpClient.Builder("GET", link);
@@ -233,7 +408,22 @@ public class MainActivity extends AppCompatActivity   {
                 return new String("Exception: " + e.getMessage());
             }
         }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loading = new ProgressDialog(MainActivity.this);
+            loading.setProgressStyle(R.style.MyDialog);
+            loading.show();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            this.cancel(true);
+            loading.dismiss();
+        }
     }
+    /*검색 DB 해시태그 검색시*/
     class listHashAll extends AsyncTask<String, Void, String> {
         ProgressDialog loading;
 
@@ -244,8 +434,10 @@ public class MainActivity extends AppCompatActivity   {
                 Map<String, String> seldata = new HashMap<String, String>();
                 seldata.put("hash_tag", hashTagText);
 
-                String link = "http://211.211.213.218:8084/android/all_list_View"; //92.168.25.25
+                String link = "http://211.211.213.218:8084/android/search_View"; //92.168.25.25
                 HttpClient.Builder http = new HttpClient.Builder("GET", link);
+
+                http.addAllParameters(seldata);
 
                 // HTTP 요청 전송
                 HttpClient post = http.create();

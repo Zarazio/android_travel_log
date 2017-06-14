@@ -53,6 +53,7 @@ public class LifeLogViewActivity extends Activity {
     private String file_Type;
     private String file_Content;
 
+    MediaPlayer player;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,7 +148,6 @@ public class LifeLogViewActivity extends Activity {
                             public  void onClick(View v){
                                 if(v.getId() == R.id.log_picture){
                                     try {
-                                        MediaPlayer player;
                                         player = new MediaPlayer();
                                         player.setDataSource(url);
                                         player.prepare();
@@ -248,12 +248,22 @@ public class LifeLogViewActivity extends Activity {
     public void backAR(View view){
         CameraOverlayView.DBselect = true;
         popListView.touch= true;
+        if(player != null){
+            player.stop();
+            player.release();
+            player = null;
+        }
         finish();
     }
     @Override
     public void onBackPressed(){
         CameraOverlayView.DBselect = true;
         popListView.touch= true;
+        if(player != null){
+            player.stop();
+            player.release();
+            player = null;
+        }
         finish();
     }
 

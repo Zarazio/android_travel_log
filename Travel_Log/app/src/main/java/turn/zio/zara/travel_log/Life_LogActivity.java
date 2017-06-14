@@ -5,8 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
@@ -14,11 +14,10 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
+import android.media.ExifInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -34,7 +33,6 @@ import android.widget.Toast;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -83,6 +81,7 @@ public class Life_LogActivity extends AppCompatActivity {
 
     SharedPreferences login;
     SharedPreferences.Editor editor;
+    private String arr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,25 +171,6 @@ public class Life_LogActivity extends AppCompatActivity {
         shareAll.setChecked(false);
     }
 
-    public void getImageName(Uri data){
-        Log.d("Dd",data+"");
-        String[] proj={
-                MediaStore.Images.Media.DATA,
-                MediaStore.Images.Media.TITLE,
-                MediaStore.Images.Media.ORIENTATION,
-        };
-        Cursor cursor = this.getContentResolver().query(data, proj, null, null, null);
-        cursor.moveToFirst();
-
-        int column_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        int column_title = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.TITLE);
-        int column_ori = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.ORIENTATION);
-
-        mImgPath = cursor.getString(column_data);
-        mImgTitle = cursor.getString(column_title);
-        mImgOri = cursor.getString(column_ori);
-
-    }
 
     private final LocationListener mLocationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
@@ -518,8 +498,7 @@ public class Life_LogActivity extends AppCompatActivity {
                 // TODO Auto-generated method stub
 
                 if (position == 0){
-                    Intent intent = new Intent(Intent.ACTION_PICK);
-                    intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
+                    Intent intent = new Intent(getApplicationContext(), AlbumSelectActivity.class);
                     startActivityForResult(intent, position);
                 } else if (position == 1){
                     Intent intent = new Intent(getApplicationContext(), VoiceRecording.class);
@@ -569,52 +548,58 @@ public class Life_LogActivity extends AppCompatActivity {
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == 0) {
+
             if(resultCode== Activity.RESULT_OK) {
+                if(requestCode == 0) {
                 try {
+
                     voiceData = null;
-                    //이미지 데이터를 비트맵으로 받아온다.
-                    Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                    int width = image_bitmap.getWidth();
-                    int height = image_bitmap.getHeight();
+                    arr = data.getExtras().getString("data");
 
-                    getImageName(data.getData());
-                    Matrix matrix = new Matrix();
-                    if(mImgOri.equals("180")){
-                        matrix.postRotate(180);
-                    }else if(mImgOri.equals("270")){
-                        matrix.postRotate(270);
-                    }else if(mImgOri.equals("90")){
-                        matrix.postRotate(90);
-                    }else{
-                        matrix.postRotate(0);
+                    File imgFile = new  File(arr);
+                    ExifInterface exif = null;
+                    Matrix matrix = null;
+                    Log.d("그거",arr);
+                    try {
+                        exif = new ExifInterface(arr);
+                        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, -1);
+                        matrix = new Matrix();
+                        mImgPath = arr;
+                        Log.d("이름",mImgPath);
+                        switch (orientation){
+                            case ExifInterface.ORIENTATION_ROTATE_180:
+                                matrix.postRotate(180);
+                                break;
+                            case ExifInterface.ORIENTATION_ROTATE_270:
+                                matrix.postRotate(270);
+                                break;
+                            case ExifInterface.ORIENTATION_ROTATE_90:
+                                matrix.postRotate(90);
+                                break;
+                        }
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    //배치해놓은 ImageView에 set
+                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                    int width = myBitmap.getWidth();
+                    int height = myBitmap.getHeight();
+                    Bitmap b2 = Bitmap.createBitmap(myBitmap, 0, 0, width, height, matrix, true);
 
-                    //화면에 표시할 데이터
-
-                    Bitmap resizedBitmap = Bitmap.createBitmap(image_bitmap, 0, 0, width, height, matrix, true);
-
-                    image.setImageBitmap(resizedBitmap);
+                    image.setImageBitmap(b2);
                     image.setScaleType(ImageView.ScaleType.FIT_XY );
-                } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (Exception e)
+                }  catch (Exception e)
                 {
                     e.printStackTrace();
                 }
             }
-        }else if(requestCode == 1) {
-            if(resultCode == Activity.RESULT_OK) {
-                mImgPath = null;
-                voiceData = data.getStringExtra("VoicePath");
-                Drawable drawable = getResources().getDrawable(R.drawable.voice);
-                image.setImageDrawable(drawable);
-            }
+                else if(requestCode == 1) {
+                        mImgPath = null;
+                        voiceData = data.getStringExtra("VoicePath");
+                        Drawable drawable = getResources().getDrawable(R.drawable.voice);
+                        image.setImageDrawable(drawable);
+
+                }
         }
 
     }
