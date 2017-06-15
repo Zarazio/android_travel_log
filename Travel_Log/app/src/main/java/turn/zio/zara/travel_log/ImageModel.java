@@ -2,9 +2,6 @@ package turn.zio.zara.travel_log;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.widget.ImageView;
-
-import java.io.File;
 
 /**
  * Created by YunSungHyun on 2017-05-26.

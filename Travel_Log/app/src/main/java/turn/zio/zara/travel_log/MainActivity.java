@@ -69,19 +69,21 @@ public class MainActivity extends AppCompatActivity   {
     private String hashTagText;
 
     private boolean[] menu;
-    Bitmap[] images;
 
     String imageURL = "http://211.211.213.218:8084/android/resources/upload/";
 
+    int mode;
     private String[][] parsedata;
     MyAdapter adapter;
+    MainAdapter mainapter;
+    String user_id;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        /*처음 DB 실행*/
+        mode = 1;
         menu = new boolean[4];
-
         backPressCloseHandler = new BackPressCloseHandler(this);
 
         user_place = (TextView) findViewById(R.id.user_place_info);
@@ -102,7 +104,9 @@ public class MainActivity extends AppCompatActivity   {
         GridView gv = (GridView) findViewById(R.id.list);
 
         SharedPreferences user = getSharedPreferences("LoginKeep", MODE_PRIVATE);
-        String user_id = user.getString("user_id", "0");
+        user_id = user.getString("user_id", "0");
+
+        mainDB();
 
         user_main_id.setText(user_id);
 
@@ -194,6 +198,21 @@ public class MainActivity extends AppCompatActivity   {
 
     }
 
+    public void mainDB(){
+        mainlistAll task = new mainlistAll();
+        String result = null;
+        try {
+            result = task.execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        jsonParse(result);
+        serpic setimage = new serpic();
+        setimage.execute();
+    }
+
     /*result JSon Parese*/
     public void jsonParse(String s){
 
@@ -224,8 +243,32 @@ public class MainActivity extends AppCompatActivity   {
             e.printStackTrace();
         }
     }
+    public void mainApeter(Bitmap[] images){
+        String[] title = new String[parsedata.length];
+        String[] Content = new String[parsedata.length];
+        String[] date = new String[parsedata.length];
+        String[] writeuser_id = new String[parsedata.length];
+        String[] file_type = new String[parsedata.length];
+        String[] adress = new String[parsedata.length];
+        for(int i=0; i < parsedata.length;i++){
+            title[i] = parsedata[i][1];
+            Content[i] = parsedata[i][2];
+            adress[i] = getAddress(Double.parseDouble(parsedata[i][4]), Double.parseDouble(parsedata[i][3]));
+            date[i] = parsedata[i][5];
+            writeuser_id[i] = parsedata[i][6];
+            file_type[i] = parsedata[i][7];
+        }
+        Log.d("image",images+"");
+        mainapter = new MainAdapter (
+                MainActivity.this,
+                R.layout.main_log_view,       // GridView 항목의 레이아웃 row.xml
+                title, Content, date, writeuser_id, file_type,adress);
+        mainapter.image(images);
+        GridView gv = (GridView)findViewById(R.id.main_list);
+        gv.setAdapter(mainapter);
 
-    public void Apeter(Bitmap[] s){
+    }
+    public void Apeter(Bitmap[] images){
         String[] text = new String[parsedata.length];
         String[] file_type = new String[parsedata.length];
         for(int i=0; i < parsedata.length;i++){
@@ -240,7 +283,7 @@ public class MainActivity extends AppCompatActivity   {
                 MainActivity.this,
                 R.layout.pop_view_list,       // GridView 항목의 레이아웃 row.xml
                 text, file_type);
-        adapter.image(s);
+        adapter.image(images);
         GridView gv = (GridView)findViewById(R.id.list);
         gv.setAdapter(adapter);
 
@@ -253,14 +296,14 @@ public class MainActivity extends AppCompatActivity   {
         ProgressDialog loading;
         @Override
         protected Bitmap[] doInBackground(String... params) {
-            images = new Bitmap[parsedata.length];
+            Bitmap[] images = new Bitmap[parsedata.length];
             try{
                 for(int i=0; i < parsedata.length; i++) {
 
                     if(parsedata[i][7].equals("1")){
                         String url = imageURL + parsedata[i][8];
+                        Log.d("URL", url);
                         InputStream is = (InputStream) new URL(url).getContent();
-
                         Bitmap bmImg = BitmapFactory.decodeStream(is);
                         int width = bmImg.getWidth();
                         int height = bmImg.getHeight();
@@ -291,8 +334,12 @@ public class MainActivity extends AppCompatActivity   {
         @Override
         protected void onPostExecute(Bitmap[] s) {
             super.onPostExecute(s);
-            Apeter(s);
             this.cancel(true);
+            if(mode==1){
+                mainApeter(s);
+            }else{
+                Apeter(s);
+            }
             loading.dismiss();
         }
     }
@@ -305,9 +352,7 @@ public class MainActivity extends AppCompatActivity   {
         String hashtest = (String) search_Text_view.getText();
         search_Text_view.setVisibility(view.GONE);
         serch_view.setVisibility(view.VISIBLE);
-        Log.d("?",hashtest);
         if(hashtest.equals("검색")){
-            Log.d("?1",hashtest);
             search_Text.setHint("해시태그 검색");
         }else {
             search_Text.setText(hashtest);
@@ -321,8 +366,9 @@ public class MainActivity extends AppCompatActivity   {
     public void viewPageChange(View v){
         switch (v.getId()){
             case R.id.view_home_icon:
+                mode = 1;
+                mainPage.setVisibility(v.VISIBLE);
                 if(menu[0]==false) {
-                    mainPage.setVisibility(v.VISIBLE);
                     searchPage.setVisibility(v.INVISIBLE);
                     likeFollowPage.setVisibility(v.INVISIBLE);
                     myPage.setVisibility(v.INVISIBLE);
@@ -331,10 +377,12 @@ public class MainActivity extends AppCompatActivity   {
                     menu[2] = false;
                     menu[3] = false;
                 }
+                mainDB();
                 break;
             case R.id.view_search_icon:
+                mode = 2;
+                searchPage.setVisibility(v.VISIBLE);
                 if(menu[1]==false) {
-                    searchPage.setVisibility(v.VISIBLE);
                     mainPage.setVisibility(v.INVISIBLE);
                     likeFollowPage.setVisibility(v.INVISIBLE);
                     myPage.setVisibility(v.INVISIBLE);
@@ -343,22 +391,21 @@ public class MainActivity extends AppCompatActivity   {
                     menu[2] = false;
                     menu[3] = false;
                 }
-
-                    try {
-                        listAll task = new listAll();
-                        String result = task.execute().get();
-                        jsonParse(result);
-                        serpic setimage = new serpic();
-                        setimage.execute();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    listAll task = new listAll();
+                    String result = task.execute().get();
+                    jsonParse(result);
+                    serpic setimage = new serpic();
+                    setimage.execute();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.view_heart_icon:
+                likeFollowPage.setVisibility(v.VISIBLE);
                 if(menu[2]==false) {
-                    likeFollowPage.setVisibility(v.VISIBLE);
                     searchPage.setVisibility(v.INVISIBLE);
                     mainPage.setVisibility(v.INVISIBLE);
                     myPage.setVisibility(v.INVISIBLE);
@@ -369,8 +416,8 @@ public class MainActivity extends AppCompatActivity   {
                 }
                 break;
             case R.id.view_mypage_icon:
+                myPage.setVisibility(v.VISIBLE);
                 if(menu[3]==false) {
-                    myPage.setVisibility(v.VISIBLE);
                     likeFollowPage.setVisibility(v.INVISIBLE);
                     searchPage.setVisibility(v.INVISIBLE);
                     mainPage.setVisibility(v.INVISIBLE);
@@ -382,6 +429,52 @@ public class MainActivity extends AppCompatActivity   {
                 break;
         }
     }
+    /*메인 클릭시 db시*/
+    class mainlistAll extends AsyncTask<String, Void, String> {
+        ProgressDialog loading;
+        @Override
+        protected String doInBackground(String... params) {
+            try{
+
+                Map<String, String> seldata = new HashMap<String, String>();
+                seldata.put("user_id", user_id);
+
+                String link = "http://211.211.213.218:8084/android/main_View_DB"; //92.168.25.25
+                HttpClient.Builder http = new HttpClient.Builder("GET", link);
+
+                http.addAllParameters(seldata);
+
+                // HTTP 요청 전송
+                HttpClient post = http.create();
+                post.request();
+                // 응답 상태코드 가져오기
+                int statusCode = post.getHttpStatusCode();
+                // 응답 본문 가져오기
+                String body = post.getBody();
+                return body;
+                // Read Server Response
+
+            }
+            catch(Exception e){
+                return new String("Exception: " + e.getMessage());
+            }
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loading = new ProgressDialog(MainActivity.this);
+            loading.setProgressStyle(R.style.MyDialog);
+            loading.show();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            this.cancel(true);
+            loading.dismiss();
+        }
+    }
+
     /*검색 클릭시 db시*/
     class listAll extends AsyncTask<String, Void, String> {
         ProgressDialog loading;
@@ -573,35 +666,6 @@ public class MainActivity extends AppCompatActivity   {
         mDialog.show();
     }
 
-    class unknown extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... params) {
-            try{
-
-
-
-                return "s";
-
-                // Read Server Response
-
-            }
-            catch(Exception e){
-                return new String("Exception: " + e.getMessage());
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            Log.d("result", s);
-
-        }
-    }
     @Override
     public void onBackPressed() {
         //super.onBackPressed();

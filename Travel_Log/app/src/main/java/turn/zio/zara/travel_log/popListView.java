@@ -1,21 +1,15 @@
 package turn.zio.zara.travel_log;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.GridView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -104,8 +98,8 @@ public class popListView extends Activity {
         MultiAdapter MyAdapter = new MultiAdapter(this, arItem);
 
         //리스트뷰를 만들고
-        ListView MyList;
-        MyList = (ListView)findViewById(R.id.list);
+        GridView MyList;
+        MyList = (GridView)findViewById(R.id.list);
         MyList.setAdapter(MyAdapter);//이어줍니다.
 
         MyList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -161,79 +155,4 @@ public class popListView extends Activity {
     }
 
 }
-class ListItem{
-    String title;
-    String user_id;
-    String board_Code;
 
-    ListItem(String board_Code, String title, String user_id){
-        this.board_Code= board_Code;
-        this.title = title;
-        this.user_id = user_id;
-    }
-
-
-    public String board_Code() {
-        return this.board_Code;
-    }
-}
-
-class MultiAdapter extends BaseAdapter {
-
-
-    LayoutInflater mInflater;
-    ArrayList<ListItem> arSrc;
-
-    //생성자
-    public MultiAdapter(Context context, ArrayList<ListItem> arItem) {
-        //인플레이트 준비를 합니다.
-        mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        arSrc = arItem;
-    }
-
-    @Override
-    public int getCount() {
-        // TODO Auto-generated method stub
-        return arSrc.size();
-    }
-
-    @Override
-    public ListItem getItem(int position) {
-        // TODO Auto-generated method stub
-        return arSrc.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        // TODO Auto-generated method stub
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
-        //최초 호출이면 항목 뷰를 생성한다.
-        //타입별로 뷰를 다르게 디자인 할 수 있으며 높이가 달라도 상관없다.
-        if(convertView == null){
-
-
-            //인플레이트합니다. 즉 화면에 뿌립니다.
-            convertView = mInflater.inflate(R.layout.pop_log_list, parent, false);
-
-        }
-
-        //화면에 뿌린뒤 여기서 각항목에 해당하는 값을 바꿔주는 부분입니다.
-
-        //화면에 뿌린뒤 여기서 각항목에 해당하는 값을 바꿔주는 부분입니다.
-        TextView title = (TextView)convertView.findViewById(R.id.log_title);
-        title.setText(arSrc.get(position).title);
-        TextView user_id = (TextView)convertView.findViewById(R.id.user_id);
-        user_id.setText(arSrc.get(position).user_id);
-
-
-        return convertView;//getCount만큼 반복한다고 했죠?
-        //리스트의 갯수만큼 반복하게 됩니다.
-    }
-
-
-}

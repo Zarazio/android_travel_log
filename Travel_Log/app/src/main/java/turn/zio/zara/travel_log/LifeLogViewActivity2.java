@@ -41,12 +41,15 @@ public class LifeLogViewActivity2 extends AppCompatActivity {
     String file_Content;
     MediaPlayer player;
     String imageURL = "http://211.211.213.218:8084/android/resources/upload/";
+    private LinearLayout mLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_life_log_view);
 
+        mLayout = (LinearLayout) findViewById(R.id.mLayout);
         log_title = (TextView) findViewById(R.id.log_title) ;
         log_Content = (TextView) findViewById(R.id.log_cotennt) ;
         log_Place = (TextView) findViewById(R.id.log_place) ;
