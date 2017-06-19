@@ -69,8 +69,8 @@
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:background="#fafafa"
-                            android:onClick="step_log"
-                            app:srcCompat="@drawable/calender" />
+                            android:onClick="stepon"
+                            app:srcCompat="@drawable/offsteplog" />
                     </LinearLayout>
 
                     <LinearLayout

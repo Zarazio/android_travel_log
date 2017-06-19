@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     android:orientation="vertical"
     tools:context="turn.zio.zara.travel_log.LifeLogViewActivity">
     <LinearLayout
@@ -43,7 +44,7 @@
             android:layout_height="50dp"
             android:layout_alignBottom="@+id/backmain"
             android:layout_alignParentTop="true"
-            android:src="@drawable/mainlogo" />
+            android:src="@drawable/mainlogo2" />
     </LinearLayout>
 
 </LinearLayout>
@@ -164,6 +165,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1">
@@ -174,6 +176,16 @@
                         android:layout_height="wrap_content"
                         android:text="로그 내용" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/MapContainer"
+                    android:visibility="gone"
+                    android:layout_alignParentEnd="true">
+                </LinearLayout>
+
             </LinearLayout>
         </LinearLayout>
 

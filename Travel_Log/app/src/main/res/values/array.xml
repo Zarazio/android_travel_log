@@ -13,4 +13,10 @@
         <item>3km</item>
         <item>5km</item>
     </string-array>
+    <string-array name="list_dialog_step_log_item">
+        <item>전체공재</item>
+        <item>그룹공개</item>
+        <item>비공개</item>
+        <item>취소</item>
+</string-array>
 </resources>

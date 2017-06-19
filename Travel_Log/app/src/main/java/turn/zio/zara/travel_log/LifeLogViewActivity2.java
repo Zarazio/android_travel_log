@@ -1,5 +1,6 @@
 package turn.zio.zara.travel_log;
 
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -19,11 +20,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.MapFragment;
+import com.nhn.android.maps.NMapController;
+import com.nhn.android.maps.NMapView;
+
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.Locale;
-
 
 public class LifeLogViewActivity2 extends AppCompatActivity {
 
@@ -34,6 +38,8 @@ public class LifeLogViewActivity2 extends AppCompatActivity {
     private TextView profile_user_id;
 
     private LinearLayout picutre_Linear;
+    private LinearLayout text;
+    private LinearLayout goomap;
 
     private ImageView image;
     private ImageView bakcMain_icon;
@@ -41,6 +47,15 @@ public class LifeLogViewActivity2 extends AppCompatActivity {
     String file_Content;
     MediaPlayer player;
     String imageURL = "http://211.211.213.218:8084/android/resources/upload/";
+
+    public static final String API_KEY = "Ao5To6qq05xL8fmhSOTK";  //<---맨위에서 발급받은 본인 ClientID 넣으세요.
+    // 네이버 맵 객체
+    NMapView mMapView = null;
+    // 맵 컨트롤러
+    NMapController mMapController = null;
+
+    LinearLayout MapContainer;
+
     private LinearLayout mLayout;
 
     @Override
@@ -49,7 +64,6 @@ public class LifeLogViewActivity2 extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_life_log_view);
 
-        mLayout = (LinearLayout) findViewById(R.id.mLayout);
         log_title = (TextView) findViewById(R.id.log_title) ;
         log_Content = (TextView) findViewById(R.id.log_cotennt) ;
         log_Place = (TextView) findViewById(R.id.log_place) ;
@@ -59,9 +73,15 @@ public class LifeLogViewActivity2 extends AppCompatActivity {
         image = (ImageView) findViewById(R.id.log_picture);
         bakcMain_icon = (ImageView) findViewById(R.id.bakcMain_icon);
         picutre_Linear= (LinearLayout) findViewById(R.id.log_picture_Linear);
-        Drawable drawable = getResources().getDrawable(R.drawable.backbutton2);
+        text = (LinearLayout) findViewById(R.id.text);
+        goomap = (LinearLayout) findViewById(R.id.MapContainer);
 
-        bakcMain_icon.setImageDrawable(drawable);
+        MapFragment mMapFragment = MapFragment.newInstance();
+        FragmentTransaction fragmentTransaction =
+                getFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.MapContainer, mMapFragment);
+        fragmentTransaction.commit();
+
         Intent intent = getIntent();
         int board_code = Integer.parseInt(intent.getExtras().getString("board_Code"));
         String boder_Title = intent.getExtras().getString("board_Title");
@@ -104,8 +124,13 @@ public class LifeLogViewActivity2 extends AppCompatActivity {
         String address = getAddress(log_latitude, log_longtitude);
 
         log_title.setText(boder_Title);
-        log_Content.setText(board_Content);
-        log_Place.setText(address);
+        if(!file_Type.equals("3")) {
+            log_Content.setText(board_Content);
+            log_Place.setText(address);
+        }else{
+            goomap.setVisibility(View.VISIBLE);
+            text.setVisibility(View.GONE);
+        }
         profile_user_id.setText(user_id);
         log_date.setText(String_Date);
     }

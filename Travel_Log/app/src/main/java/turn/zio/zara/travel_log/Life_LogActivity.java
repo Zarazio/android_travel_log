@@ -40,8 +40,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class Life_LogActivity extends AppCompatActivity {
 
@@ -82,6 +84,7 @@ public class Life_LogActivity extends AppCompatActivity {
     SharedPreferences login;
     SharedPreferences.Editor editor;
     private String arr;
+    private String stepLogCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,17 +108,6 @@ public class Life_LogActivity extends AppCompatActivity {
         Drawable drawable = getResources().getDrawable(R.drawable.addfile);
         image.setImageDrawable(drawable);
 
-       /* background.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()){
-                    case MotionEvent.ACTION_DOWN:
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-                }
-                return true;
-            }
-        });*/
 
         login = getSharedPreferences("LoginKeep", MODE_PRIVATE);
         editor = login.edit();
@@ -123,6 +115,15 @@ public class Life_LogActivity extends AppCompatActivity {
         //SharedPreferences값이 있으면 유저아이디를 없으면 널값을
         SharedPreferences user = getSharedPreferences("LoginKeep", MODE_PRIVATE);
         user_id = user.getString("user_id", "0");
+
+        Intent intent =getIntent();
+        String step_Log = intent.getStringExtra("stepLog");
+
+        if(step_Log.equals("1")){
+           StepInsert(user_id);
+        }else{
+            step_Log = "0";
+        }
 
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -170,7 +171,62 @@ public class Life_LogActivity extends AppCompatActivity {
         shareMe.setChecked(true);
         shareAll.setChecked(false);
     }
+    /*스탭로그 켜져있을시 스탭로그의 code*/
+    private void StepInsert(String user_id) {
 
+        class insertData extends AsyncTask<String, Void, String> {
+            ProgressDialog loading;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                loading = ProgressDialog.show(Life_LogActivity.this, "Please Wait", null, true, true);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                Log.d("result", s);
+                stepLogCode = s;
+                loading.dismiss();
+
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+
+                try {
+                    String user_id = (String)params[0];
+
+                    Map<String, String> loginParam = new HashMap<String,String>() ;
+
+                    loginParam.put("user_id",user_id) ;
+
+                    String link = "http://211.211.213.218:8084/android/stepCodeSelect"; //92.168.25.25
+                    HttpClient.Builder http = new HttpClient.Builder("POST", link);
+
+                    http.addAllParameters(loginParam);
+
+                    // HTTP 요청 전송
+                    HttpClient post = http.create();
+                    post.request();
+                    // 응답 상태코드 가져오기
+                    int statusCode = post.getHttpStatusCode();
+                    // 응답 본문 가져오기
+                    String body = post.getBody();
+                    return body;
+
+                    // Read Server Response
+
+                } catch (Exception e) {
+                    return new String("Exception: " + e.getMessage());
+                }
+
+            }
+        }
+        insertData task = new insertData();
+        task.execute(user_id);
+    }
 
     private final LocationListener mLocationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
@@ -372,7 +428,12 @@ public class Life_LogActivity extends AppCompatActivity {
                     dos.writeBytes(lineEnd);
                     dos.write(user_id.getBytes("EUC_KR"));
                     dos.writeBytes( lineEnd);
-
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+                    dos.writeBytes("Content-Disposition: form-data; name=\"step_log\""
+                            + lineEnd);
+                    dos.writeBytes(lineEnd);
+                    dos.write(stepLogCode.getBytes("EUC_KR"));
+                    dos.writeBytes( lineEnd);
                     if(mImgPath != null) {
                         dos.writeBytes(twoHyphens + boundary + lineEnd);
                         Log.d("dd",mImgPath);
