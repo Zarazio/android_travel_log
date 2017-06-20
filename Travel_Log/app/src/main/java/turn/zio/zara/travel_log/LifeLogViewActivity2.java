@@ -76,6 +76,8 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
     MapFragment mMapFragment;
     private LinearLayout mLayout;
     private GoogleMap mMap;
+    private int board_code;
+    public static boolean oneView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +98,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
         goomap = (LinearLayout) findViewById(R.id.MapContainer);
 
         Intent intent = getIntent();
-        int board_code = Integer.parseInt(intent.getExtras().getString("board_Code"));
+        board_code = Integer.parseInt(intent.getExtras().getString("board_Code"));
         String boder_Title = intent.getExtras().getString("board_Title");
         String board_Content = intent.getExtras().getString("board_Content");
         String user_id = intent.getExtras().getString("user_id");
@@ -309,8 +311,8 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
                 if(mMap != null) {
 
 
-                    String[] coo = location.get((location.size()-1/2)).toString().split(",");
-                    Log.d("size", location.get((location.size()-1/2)).toString().trim());
+                    String[] coo = location.get(((location.size()-1)/2)).toString().split(",");
+                    Log.d("size", location.get(((location.size()-1)/2)).toString().trim());
                     LatLng startPoint = new LatLng(Double.parseDouble(coo[1]), Double.parseDouble(coo[0]));
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startPoint, 15));
 
@@ -342,8 +344,11 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
                             @Override
                             public boolean onMarkerClick(Marker marker) {
                                 for(int i = 0; i< parsedata.length; i++){
+
                                     if(marker.getPosition().latitude == Double.parseDouble(parsedata[i][4])
-                                            && marker.getPosition().longitude == Double.parseDouble(parsedata[i][3])){
+                                            && marker.getPosition().longitude == Double.parseDouble(parsedata[i][3])
+                                            && oneView){
+                                        oneView = false;
                                         Intent intent = new Intent(getApplicationContext(), LifeLogViewActivity.class);
                                         intent.putExtra("board_Code",parsedata[i][0]);
                                         intent.putExtra("board_Title",parsedata[i][1]);
@@ -371,7 +376,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
 
                     Map<String, String> loginParam = new HashMap<String,String>() ;
 
-                    loginParam.put("step_log_code",step_log_code);
+                    loginParam.put("step_log_code",board_code+"");
 
 
                     String link="http://211.211.213.218:8084/android/step_log_select"; //92.168.25.25

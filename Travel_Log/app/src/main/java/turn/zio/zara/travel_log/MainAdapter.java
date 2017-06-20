@@ -55,6 +55,7 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
     String[] file_type;
     String[] adress;
     String[] file_Content;
+    String[] board_code;
 
     Drawable drawable;
 
@@ -66,6 +67,7 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
     String[] step_log_code;
     String imageURL = "http://211.211.213.218:8084/android/resources/upload/";
 
+    String board_codetext;
     String titletext;
     String Contenttext;
     String datetext;
@@ -77,12 +79,13 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
 
     ArrayList<String> location = new ArrayList<String>();
     //생성자
-    public MainAdapter(Context context, int layout, String[] title, String[] Content, String[] date,
+    public MainAdapter(Context context, int layout, String[] board_code, String[] title, String[] Content, String[] date,
                        String[] writeuser_id, String[] file_type, String[] adress, String[] file_Content, String[] step_log_code) {
         //인플레이트 준비를 합니다.
         this.context = context;
         this.layout = layout;
         mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.board_code = board_code;
         this.title = title;
         this.Content = Content;
         this.date = date;
@@ -172,6 +175,7 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
             picView.setVisibility(View.GONE);
             map.setVisibility(View.VISIBLE);
             text.setVisibility(View.GONE);
+            board_codetext = board_code[position];
             titletext = title[position];
             Contenttext = Content[position];
             datetext = date[position];
@@ -188,24 +192,24 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
                 mMapFragment.getMapAsync(this);
                 selFile();
                 flag=false;
-                if(mMap != null){
-                    mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                        @Override
-                        public void onMapClick(LatLng latLng) {
-                            Log.d("dd","dd");
-                            Intent intent = new Intent(context, LifeLogViewActivity2.class);
-                            intent.putExtra("board_Code",titletext);
-                            intent.putExtra("board_Title",titletext);
-                            intent.putExtra("board_Content",Contenttext);
-                            intent.putExtra("board_Date",datetext);
-                            intent.putExtra("user_id",writeuser_idtext);
-                            intent.putExtra("file_Type",file_typetext);
-                            intent.putExtra("file_Content", kmlFile);
-                            intent.putExtra("step_log_code", step_log_codetext);
-                            context.startActivity(intent);
-                        }
-                    });
-                }
+            }
+            if(mMap != null) {
+                mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng latLng) {
+                        Log.d("dd", "dd");
+                        Intent intent = new Intent(context, LifeLogViewActivity2.class);
+                        intent.putExtra("board_Code", board_codetext);
+                        intent.putExtra("board_Title", titletext);
+                        intent.putExtra("board_Content", Contenttext);
+                        intent.putExtra("board_Date", datetext);
+                        intent.putExtra("user_id", writeuser_idtext);
+                        intent.putExtra("file_Type", file_typetext);
+                        intent.putExtra("file_Content", kmlFile);
+                        intent.putExtra("step_log_code", step_log_codetext);
+                        context.startActivity(intent);
+                    }
+                });
             }
         }
 
@@ -234,7 +238,7 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
 
                 if(mMap != null) {
 
-                    String[] coo = location.get((location.size()-1/2)).toString().split(",");
+                    String[] coo = location.get(((location.size()-1)/2)).toString().split(",");
                     LatLng startPoint = new LatLng(Double.parseDouble(coo[1]), Double.parseDouble(coo[0]));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(startPoint));
                     CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);

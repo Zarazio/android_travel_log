@@ -406,7 +406,7 @@ public class MainActivity extends AppCompatActivity{
         Log.d("image",images+"");
         mainapter = new MainAdapter (
                 MainActivity.this,
-                R.layout.main_log_view,       // GridView 항목의 레이아웃 row.xml
+                R.layout.main_log_view,board_code,       // GridView 항목의 레이아웃 row.xml
                 title, Content, date, writeuser_id, file_type,adress, file_Content, step_log_code);
         mainapter.image(images);
         GridView gv = (GridView)findViewById(R.id.main_list);

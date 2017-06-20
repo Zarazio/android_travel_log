@@ -247,6 +247,7 @@ public class LifeLogViewActivity extends Activity {
     }
     public void backAR(View view){
         CameraOverlayView.DBselect = true;
+        LifeLogViewActivity2.oneView =true;
         popListView.touch= true;
         if(player != null){
             player.stop();
@@ -258,6 +259,7 @@ public class LifeLogViewActivity extends Activity {
     @Override
     public void onBackPressed(){
         CameraOverlayView.DBselect = true;
+        LifeLogViewActivity2.oneView =true;
         popListView.touch= true;
         if(player != null){
             player.stop();
