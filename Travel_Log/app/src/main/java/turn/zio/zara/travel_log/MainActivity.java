@@ -1,7 +1,6 @@
 package turn.zio.zara.travel_log;
 
 import android.app.AlertDialog;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -33,8 +32,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.maps.MapFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,6 +77,7 @@ public class MainActivity extends AppCompatActivity{
     private boolean[] menu;
 
     private ArrayList<LocationInfo> steparr;
+    int placeTime;
 
     String imageURL = "http://211.211.213.218:8084/android/resources/upload/";
 
@@ -97,7 +95,7 @@ public class MainActivity extends AppCompatActivity{
         /*처음 DB 실행*/
         mode = 1;
         menu = new boolean[4];
-
+        placeTime = 1000;
         backPressCloseHandler = new BackPressCloseHandler(this);
 
         user_place = (TextView) findViewById(R.id.user_place_info);
@@ -157,11 +155,11 @@ public class MainActivity extends AppCompatActivity{
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         /*위치정보*/
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, // 등록할 위치제공자
-                1000, // 통지사이의 최소 시간간격 (miliSecond)
+                placeTime, // 통지사이의 최소 시간간격 (miliSecond)
                 1, // 통지사이의 최소 변경거리 (m)
                 mLocationListener);
         lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, // 등록할 위치제공자
-                1000, // 통지사이의 최소 시간간격 (miliSecond)
+                placeTime, // 통지사이의 최소 시간간격 (miliSecond)
                 1, // 통지사이의 최소 변경거리 (m)
                 mLocationListener);
 
@@ -229,13 +227,13 @@ public class MainActivity extends AppCompatActivity{
                 intent.putExtra("user_id",parsedata[position][6]);
                 intent.putExtra("file_Type",parsedata[position][7]);
                 intent.putExtra("file_Content", parsedata[position][8]);
-
+                if(parsedata[position][7].equals("3")){
+                    intent.putExtra("step_log_code", parsedata[position][9]);
+                }
                 startActivity(intent);
             }
         });
 
-        GridView main_gv = (GridView) findViewById(R.id.main_list);
-        /*main_list에 뿌려진 로그 클릭시*/
     }
     /*스탭로그 키거나 끄기*/
     public void stepon(View view){
@@ -351,7 +349,7 @@ public class MainActivity extends AppCompatActivity{
 
         try {
             JSONArray json = new JSONArray(s);
-            parsedata = new String[json.length()][9];
+            parsedata = new String[json.length()][10];
             for (int i = 0; i < json.length(); i++) {
                 JSONObject jobject = json.getJSONObject(i);
 
@@ -369,7 +367,9 @@ public class MainActivity extends AppCompatActivity{
                     parsedata[i][7] = "0";
                     parsedata[i][8] = "1";
                 }
-
+                if(parsedata[i][7].equals("3")){
+                    parsedata[i][9] = jobject.getString("step_Log_Code");
+                }
 
             }
         } catch (JSONException e) {
@@ -378,25 +378,36 @@ public class MainActivity extends AppCompatActivity{
     }
     /*메인 gridview에 뿌리기*/
     public void mainApeter(Bitmap[] images){
+        String[] board_code = new String[parsedata.length];
         String[] title = new String[parsedata.length];
         String[] Content = new String[parsedata.length];
         String[] date = new String[parsedata.length];
         String[] writeuser_id = new String[parsedata.length];
         String[] file_type = new String[parsedata.length];
         String[] adress = new String[parsedata.length];
+        String[] file_Content = new String[parsedata.length];
+        String[] step_log_code = new String[parsedata.length];
+
         for(int i=0; i < parsedata.length;i++){
+            board_code[i] = parsedata[i][0];
             title[i] = parsedata[i][1];
             Content[i] = parsedata[i][2];
             adress[i] = getAddress(Double.parseDouble(parsedata[i][4]), Double.parseDouble(parsedata[i][3]));
             date[i] = parsedata[i][5];
             writeuser_id[i] = parsedata[i][6];
             file_type[i] = parsedata[i][7];
+            file_Content[i] = parsedata[i][8];
+            if(file_type.equals("3")){
+                step_log_code[i] = parsedata[i][9];
+            }else{
+                step_log_code[i] = "0";
+            }
         }
         Log.d("image",images+"");
         mainapter = new MainAdapter (
                 MainActivity.this,
                 R.layout.main_log_view,       // GridView 항목의 레이아웃 row.xml
-                title, Content, date, writeuser_id, file_type,adress);
+                title, Content, date, writeuser_id, file_type,adress, file_Content, step_log_code);
         mainapter.image(images);
         GridView gv = (GridView)findViewById(R.id.main_list);
         gv.setAdapter(mainapter);
@@ -468,12 +479,12 @@ public class MainActivity extends AppCompatActivity{
         @Override
         protected void onPostExecute(Bitmap[] s) {
             super.onPostExecute(s);
-            this.cancel(true);
             if(mode==1){
                 mainApeter(s);
             }else{
                 Apeter(s);
             }
+            this.cancel(true);
             loading.dismiss();
         }
     }
@@ -515,8 +526,8 @@ public class MainActivity extends AppCompatActivity{
                 break;
             case R.id.view_search_icon:
                 mode = 2;
-                searchPage.setVisibility(v.VISIBLE);
                 if(menu[1]==false) {
+                searchPage.setVisibility(v.VISIBLE);
                     mainPage.setVisibility(v.INVISIBLE);
                     likeFollowPage.setVisibility(v.INVISIBLE);
                     myPage.setVisibility(v.INVISIBLE);
@@ -524,18 +535,19 @@ public class MainActivity extends AppCompatActivity{
                     menu[0] = false;
                     menu[2] = false;
                     menu[3] = false;
+                    try {
+                        listAll task = new listAll();
+                        String result = task.execute().get();
+                        jsonParse(result);
+                        serpic setimage = new serpic();
+                        setimage.execute();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
                 }
-                try {
-                    listAll task = new listAll();
-                    String result = task.execute().get();
-                    jsonParse(result);
-                    serpic setimage = new serpic();
-                    setimage.execute();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
+
                 break;
             case R.id.view_heart_icon:
                 likeFollowPage.setVisibility(v.VISIBLE);
@@ -650,6 +662,7 @@ public class MainActivity extends AppCompatActivity{
             loading.dismiss();
         }
     }
+
     /*검색 DB 해시태그 검색시*/
     class listHashAll extends AsyncTask<String, Void, String> {
         ProgressDialog loading;
@@ -694,6 +707,7 @@ public class MainActivity extends AppCompatActivity{
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
+            this.cancel(true);
             loading.dismiss();
         }
     }

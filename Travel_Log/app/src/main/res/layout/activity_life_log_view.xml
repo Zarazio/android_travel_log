@@ -30,7 +30,7 @@
             android:layout_alignParentTop="true"
             android:background="@android:color/transparent"
             android:onClick="backAR"
-            android:src="@drawable/backbutton" />
+            android:src="@drawable/backbutton2" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="wrap_content"
@@ -214,12 +214,6 @@
                 android:layout_marginLeft="5dp"
                 app:srcCompat="@drawable/log_comments" />
 
-            <TextView
-                android:id="@+id/textView12"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="이미지가 나왔지만 안보이는거임" />
         </LinearLayout>
     </LinearLayout>
 
