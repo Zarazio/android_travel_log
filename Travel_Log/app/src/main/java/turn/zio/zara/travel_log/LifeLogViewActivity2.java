@@ -77,7 +77,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
     private LinearLayout mLayout;
     private GoogleMap mMap;
     private int board_code;
-    public static boolean oneView;
+    public static boolean oneView = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

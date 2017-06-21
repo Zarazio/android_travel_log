@@ -147,6 +147,8 @@ public class TravelCameraActivity extends AppCompatActivity {
 
                     Toast.makeText(getApplicationContext(), "찍은 사진이 저장되었습니다", Toast.LENGTH_LONG).show();
 
+                    camera.startPreview();
+
                     intent = new Intent();
                     intent.putExtra("filepath" , path_root);
                     intent.putExtra("file_name" , file_name);
