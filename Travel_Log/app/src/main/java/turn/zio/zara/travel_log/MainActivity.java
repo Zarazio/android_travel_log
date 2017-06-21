@@ -535,19 +535,19 @@ public class MainActivity extends AppCompatActivity{
                     menu[0] = false;
                     menu[2] = false;
                     menu[3] = false;
-                    try {
-                        listAll task = new listAll();
-                        String result = task.execute().get();
-                        jsonParse(result);
-                        serpic setimage = new serpic();
-                        setimage.execute();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    }
-                }
 
+                }
+                try {
+                    listAll task = new listAll();
+                    String result = task.execute().get();
+                    jsonParse(result);
+                    serpic setimage = new serpic();
+                    setimage.execute();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.view_heart_icon:
                 likeFollowPage.setVisibility(v.VISIBLE);

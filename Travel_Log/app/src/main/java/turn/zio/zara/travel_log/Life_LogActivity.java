@@ -428,12 +428,15 @@ public class Life_LogActivity extends AppCompatActivity {
                     dos.writeBytes(lineEnd);
                     dos.write(user_id.getBytes("EUC_KR"));
                     dos.writeBytes( lineEnd);
+
+                    if(!stepLogCode.equals("0")) {
                     dos.writeBytes(twoHyphens + boundary + lineEnd);
                     dos.writeBytes("Content-Disposition: form-data; name=\"step_log\""
                             + lineEnd);
                     dos.writeBytes(lineEnd);
-                    dos.write(stepLogCode.getBytes("EUC_KR"));
-                    dos.writeBytes( lineEnd);
+                        dos.write(stepLogCode.getBytes("EUC_KR"));
+                        dos.writeBytes(lineEnd);
+                    }
                     if(mImgPath != null) {
                         dos.writeBytes(twoHyphens + boundary + lineEnd);
                         Log.d("dd",mImgPath);
