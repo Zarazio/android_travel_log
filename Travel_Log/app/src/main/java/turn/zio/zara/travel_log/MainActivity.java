@@ -346,31 +346,32 @@ public class MainActivity extends AppCompatActivity{
 
     /*result JSon Parese*/
     public void jsonParse(String s){
-
+        Log.d("json",s);
         try {
             JSONArray json = new JSONArray(s);
             parsedata = new String[json.length()][10];
             for (int i = 0; i < json.length(); i++) {
                 JSONObject jobject = json.getJSONObject(i);
 
-                parsedata[i][0] = jobject.getString("board_Code");
-                parsedata[i][1] = jobject.getString("board_Title");
-                parsedata[i][2] = jobject.getString("board_Content");
+                parsedata[i][0] = jobject.getString("board_code");
+                parsedata[i][1] = jobject.getString("board_title");
+                parsedata[i][2] = jobject.getString("board_content");
                 parsedata[i][3] = jobject.getString("log_longtitude");
                 parsedata[i][4] = jobject.getString("log_latitude");
-                parsedata[i][5] = jobject.getString("board_Date");
+                parsedata[i][5] = jobject.getString("board_date");
                 parsedata[i][6] = jobject.getString("user_id");
-                if(json.getJSONObject(i).isNull("file_Content") == false){
-                    parsedata[i][7] = jobject.getString("file_Type");
-                    parsedata[i][8] = jobject.getString("file_Content");
+                if(json.getJSONObject(i).isNull("file_content") == false){
+                    parsedata[i][7] = jobject.getString("file_type");
+                    parsedata[i][8] = jobject.getString("file_content");
                 }else{
                     parsedata[i][7] = "0";
                     parsedata[i][8] = "1";
                 }
                 if(parsedata[i][7].equals("3")){
-                    parsedata[i][9] = jobject.getString("step_Log_Code");
+                    parsedata[i][9] = jobject.getString("step_log_code");
                 }
-
+                Log.d("jsonafter", parsedata[i][0] + " / " + parsedata[i][1] + " / " + parsedata[i][2] + " / " + parsedata[i][3] + " / " + parsedata[i][4] + " / " +
+                        parsedata[i][5] + " / " + parsedata[i][6] + " / " + parsedata[i][7] + " / " + parsedata[i][8] + " / " + parsedata[i][9]);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -392,7 +393,6 @@ public class MainActivity extends AppCompatActivity{
             board_code[i] = parsedata[i][0];
             title[i] = parsedata[i][1];
             Content[i] = parsedata[i][2];
-            adress[i] = getAddress(Double.parseDouble(parsedata[i][4]), Double.parseDouble(parsedata[i][3]));
             date[i] = parsedata[i][5];
             writeuser_id[i] = parsedata[i][6];
             file_type[i] = parsedata[i][7];
@@ -586,7 +586,7 @@ public class MainActivity extends AppCompatActivity{
                 seldata.put("user_id", user_id);
 
                 String link = "http://211.211.213.218:8084/android/main_View_DB"; //92.168.25.25
-                HttpClient.Builder http = new HttpClient.Builder("GET", link);
+                HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
                 http.addAllParameters(seldata);
 
