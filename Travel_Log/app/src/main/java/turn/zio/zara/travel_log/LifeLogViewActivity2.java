@@ -287,16 +287,16 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
                     for (int i = 0; i < json.length(); i++) {
                         JSONObject jobject = json.getJSONObject(i);
 
-                        parsedata[i][0] = jobject.getString("board_Code");
-                        parsedata[i][1] = jobject.getString("board_Title");
-                        parsedata[i][2] = jobject.getString("board_Content");
+                        parsedata[i][0] = jobject.getString("board_code");
+                        parsedata[i][1] = jobject.getString("board_title");
+                        parsedata[i][2] = jobject.getString("board_content");
                         parsedata[i][3] = jobject.getString("log_longtitude");
                         parsedata[i][4] = jobject.getString("log_latitude");
-                        parsedata[i][5] = jobject.getString("board_Date");
+                        parsedata[i][5] = jobject.getString("board_date");
                         parsedata[i][6] = jobject.getString("user_id");
-                        if(json.getJSONObject(i).isNull("file_Content") == false){
-                            parsedata[i][7] = jobject.getString("file_Type");
-                            parsedata[i][8] = jobject.getString("file_Content");
+                        if(json.getJSONObject(i).isNull("file_content") == false){
+                            parsedata[i][7] = jobject.getString("file_type");
+                            parsedata[i][8] = jobject.getString("file_content");
                         }else{
                             parsedata[i][7] = "0";
                             parsedata[i][8] = "1";

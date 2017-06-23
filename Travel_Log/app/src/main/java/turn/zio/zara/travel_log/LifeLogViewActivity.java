@@ -80,6 +80,7 @@ public class LifeLogViewActivity extends Activity {
         Double log_latitude = Double.parseDouble(intent.getExtras().getString("log_latitude"));
         String user_id = intent.getExtras().getString("user_id");
         String String_Date = intent.getExtras().getString("board_Date");
+        String write_type = intent.getExtras().getString("write_type");
         Log.d("dd", String_Date);
         String address = getAddress(log_latitude, log_longtitude);
 

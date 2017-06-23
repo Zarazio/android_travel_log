@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,7 +61,6 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
     Drawable drawable;
 
     private Bitmap[] images;
-    private boolean flag = true;
     private GoogleMap mMap;
     private String kmlFile;
     private InputStream is;
@@ -74,13 +74,13 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
     String writeuser_idtext;
     String file_typetext;
     String adresstext;
-    String file_Contenttext;
     String step_log_codetext;
-
+    String[] write_type;
+    String[] coo;
     ArrayList<String> location = new ArrayList<String>();
     //생성자
     public MainAdapter(Context context, int layout, String[] board_code, String[] title, String[] Content, String[] date,
-                       String[] writeuser_id, String[] file_type, String[] adress, String[] file_Content, String[] step_log_code) {
+                       String[] writeuser_id, String[] file_type, String[] adress, String[] file_Content, String[] step_log_code, String[] write_type) {
         //인플레이트 준비를 합니다.
         this.context = context;
         this.layout = layout;
@@ -94,7 +94,7 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
         this.adress = adress;
         this.file_Content = file_Content;
         this.step_log_code = step_log_code;
-
+        this.write_type = write_type;
         inf = (LayoutInflater) context.getSystemService
                 (Context.LAYOUT_INFLATER_SERVICE);
 
@@ -133,7 +133,6 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
         TextView titles = (TextView)convertView.findViewById(R.id.log_title);
         titles.setText(title[position]);
         TextView Contents = (TextView)convertView.findViewById(R.id.log_cotennt);
-        Contents.setText(Content[position]);
         TextView log_place = (TextView)convertView.findViewById(R.id.log_place);
         log_place.setText(adress[position]);
         TextView log_date = (TextView)convertView.findViewById(R.id.log_date);
@@ -146,34 +145,25 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
         LinearLayout map = (LinearLayout) convertView.findViewById(R.id.MapContainer);
         LinearLayout text = (LinearLayout) convertView.findViewById(R.id.text);
 
-        float mScale = context.getResources().getDisplayMetrics().density;
         if(file_type[position].equals("0")) {
-            int calHeight = (int)(60*mScale);
             picView.setVisibility(View.GONE);
             text.setVisibility(View.VISIBLE);
             map.setVisibility(View.GONE);
-            Contents.setHeight(calHeight);
-            flag = true;
         }
         else if (file_type[position].equals("1")) {
-            int calHeight = (int)(40*mScale);
             picView.setVisibility(View.VISIBLE);
             map.setVisibility(View.GONE);
             iv.setImageBitmap(images[position]);
-            Contents.setHeight(calHeight);
-            flag = true;
             iv.setScaleType(ImageView.ScaleType.FIT_XY);
         } else if(file_type[position].equals("2")){
-            int calHeight = (int)(40*mScale);
             picView.setVisibility(View.VISIBLE);
             map.setVisibility(View.GONE);
-            Contents.setHeight(calHeight);
-            flag = true;
             drawable = context.getResources().getDrawable(R.drawable.voice);
             iv.setImageDrawable(drawable);
         }else if(file_type[position].equals("3")){
-            picView.setVisibility(View.GONE);
+            Log.d("dd","들어옴");
             map.setVisibility(View.VISIBLE);
+            picView.setVisibility(View.GONE);
             text.setVisibility(View.GONE);
             board_codetext = board_code[position];
             titletext = title[position];
@@ -184,20 +174,17 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
             adresstext = adress[position];
             kmlFile = file_Content[position];
             step_log_codetext = step_log_code[position];
-            if(flag){
-                FragmentTransaction fragmentTransaction = ((Activity) context).getFragmentManager().beginTransaction();
-                MapFragment mMapFragment = MapFragment.newInstance();
-                fragmentTransaction.add(R.id.MapContainer, mMapFragment);
-                fragmentTransaction.commit();
-                mMapFragment.getMapAsync(this);
-                selFile();
-                flag=false;
-            }
+            FragmentTransaction fragmentTransaction = ((Activity) context).getFragmentManager().beginTransaction();
+            MapFragment mMapFragment = MapFragment.newInstance();
+            fragmentTransaction.add(R.id.MapContainer, mMapFragment);
+            fragmentTransaction.commit();
+            mMapFragment.getMapAsync(this);
+            selFile();
             if(mMap != null) {
                 mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
                     public void onMapClick(LatLng latLng) {
-                        Log.d("dd", "dd");
+                        Log.d("dd", Double.parseDouble(coo[0])+"/"+ Double.parseDouble(coo[1]));
                         Intent intent = new Intent(context, LifeLogViewActivity2.class);
                         intent.putExtra("board_Code", board_codetext);
                         intent.putExtra("board_Title", titletext);
@@ -206,6 +193,8 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
                         intent.putExtra("user_id", writeuser_idtext);
                         intent.putExtra("file_Type", file_typetext);
                         intent.putExtra("file_Content", kmlFile);
+                        intent.putExtra("log_longtitude", Double.parseDouble(coo[0]));
+                        intent.putExtra("log_latitude", Double.parseDouble(coo[1]));
                         intent.putExtra("step_log_code", step_log_codetext);
                         context.startActivity(intent);
                     }
@@ -213,12 +202,57 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
             }
         }
 
+        /*웹으로쓴 글일때*/
+        if(write_type[position].equals("0")){
+            ArrayList<Integer> posstart = new ArrayList<Integer>();
+            ArrayList<Integer> posend = new ArrayList<Integer>();
+            Content[position] = Content[position].replaceAll("<br>","");
+            int poss = Content[position].indexOf("<img");
+            int pose = Content[position].indexOf(";\">");
+            Log.d("pos",Content[position].indexOf("<img")+"");
+            int j = 0;
+            while(poss > -1){
+                posstart.add(poss);
+                poss =  Content[position].indexOf("<img", poss + 1);
+                Log.d("startindex", posstart.get(j).toString());
+                j++;
+            }
+            j = 0;
+            while(pose > -1){
+                posend.add(pose);
+                pose =  Content[position].indexOf(";\">", pose+1);
+                Log.d("endindex", posend.get(j).toString());
+                j++;
+            }
+            String testData = null;
+            for(int i=posstart.size()-1; i>=0; i--){
+                Log.d("result", Content[position]);
+                testData = replaceLast(Content[position],Content[position].substring(Integer.parseInt(posstart.get(i).toString()), (Integer.parseInt(posend.get(i).toString()))+3),"");
+                Log.d("result", testData);
+                Content[position] =testData;
+
+            }
+            Contents.setText(Html.fromHtml(Content[position]));
+        }/*앱이면*/
+        else{
+
+            Contents.setText(Content[position]);
+        }
         return convertView;//getCount만큼 반복한다고 했죠?
         //리스트의 갯수만큼 반복하게 됩니다.
+    }
+    public static String replaceLast(String str, String regex, String replacement) {
+        int regexIndexOf = str.lastIndexOf(regex);
+        if(regexIndexOf == -1){
+            return str;
+        }else{
+            return str.substring(0, regexIndexOf) + replacement + str.substring(regexIndexOf + regex.length());
+        }
     }
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        Log.d("dd","들어옴2");
     }
     private void selFile(){
 
@@ -238,7 +272,7 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
 
                 if(mMap != null) {
 
-                    String[] coo = location.get(((location.size()-1)/2)).toString().split(",");
+                    coo = location.get(((location.size()-1)/2)).toString().split(",");
                     LatLng startPoint = new LatLng(Double.parseDouble(coo[1]), Double.parseDouble(coo[0]));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(startPoint));
                     CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
@@ -248,7 +282,6 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
                     option.color(Color.BLACK);
                     for(int i=0; i< location.size(); i++) {
                         String[] coos = location.get(i).toString().split(",");
-                        Log.d("draw",location.get(i).toString());
                         LatLng point = new LatLng(Double.parseDouble(coos[1]), Double.parseDouble(coos[0]));
                         option.add(point);
                     }

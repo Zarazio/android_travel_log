@@ -93,12 +93,11 @@ public class HttpClient {
 
     private String readStream(HttpURLConnection connection) {
         String result = ""; BufferedReader reader = null;
-
         try {
             reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line = null;
             while ((line = reader.readLine()) != null) {
-                result += line; }
+                result += line;}
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

@@ -230,6 +230,7 @@ public class MainActivity extends AppCompatActivity{
                 if(parsedata[position][7].equals("3")){
                     intent.putExtra("step_log_code", parsedata[position][9]);
                 }
+                intent.putExtra("write_type", parsedata[position][10]);
                 startActivity(intent);
             }
         });
@@ -349,7 +350,7 @@ public class MainActivity extends AppCompatActivity{
         Log.d("json",s);
         try {
             JSONArray json = new JSONArray(s);
-            parsedata = new String[json.length()][10];
+            parsedata = new String[json.length()][11];
             for (int i = 0; i < json.length(); i++) {
                 JSONObject jobject = json.getJSONObject(i);
 
@@ -370,8 +371,7 @@ public class MainActivity extends AppCompatActivity{
                 if(parsedata[i][7].equals("3")){
                     parsedata[i][9] = jobject.getString("step_log_code");
                 }
-                Log.d("jsonafter", parsedata[i][0] + " / " + parsedata[i][1] + " / " + parsedata[i][2] + " / " + parsedata[i][3] + " / " + parsedata[i][4] + " / " +
-                        parsedata[i][5] + " / " + parsedata[i][6] + " / " + parsedata[i][7] + " / " + parsedata[i][8] + " / " + parsedata[i][9]);
+                parsedata[i][10] = jobject.getString("write_type");
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -388,6 +388,7 @@ public class MainActivity extends AppCompatActivity{
         String[] adress = new String[parsedata.length];
         String[] file_Content = new String[parsedata.length];
         String[] step_log_code = new String[parsedata.length];
+        String[] write_type = new String[parsedata.length];
 
         for(int i=0; i < parsedata.length;i++){
             board_code[i] = parsedata[i][0];
@@ -402,12 +403,13 @@ public class MainActivity extends AppCompatActivity{
             }else{
                 step_log_code[i] = "0";
             }
+            write_type[i] = parsedata[i][10];
         }
         Log.d("image",images+"");
         mainapter = new MainAdapter (
                 MainActivity.this,
                 R.layout.main_log_view,board_code,       // GridView 항목의 레이아웃 row.xml
-                title, Content, date, writeuser_id, file_type,adress, file_Content, step_log_code);
+                title, Content, date, writeuser_id, file_type,adress, file_Content, step_log_code,write_type);
         mainapter.image(images);
         GridView gv = (GridView)findViewById(R.id.main_list);
         gv.setAdapter(mainapter);
@@ -513,7 +515,6 @@ public class MainActivity extends AppCompatActivity{
             case R.id.view_home_icon:
                 mode = 1;
                 mainPage.setVisibility(v.VISIBLE);
-                if(menu[0]==false) {
                     searchPage.setVisibility(v.INVISIBLE);
                     likeFollowPage.setVisibility(v.INVISIBLE);
                     myPage.setVisibility(v.INVISIBLE);
@@ -521,12 +522,10 @@ public class MainActivity extends AppCompatActivity{
                     menu[1] = false;
                     menu[2] = false;
                     menu[3] = false;
-                }
                 mainDB();
                 break;
             case R.id.view_search_icon:
                 mode = 2;
-                if(menu[1]==false) {
                 searchPage.setVisibility(v.VISIBLE);
                     mainPage.setVisibility(v.INVISIBLE);
                     likeFollowPage.setVisibility(v.INVISIBLE);
@@ -535,8 +534,6 @@ public class MainActivity extends AppCompatActivity{
                     menu[0] = false;
                     menu[2] = false;
                     menu[3] = false;
-
-                }
                 try {
                     listAll task = new listAll();
                     String result = task.execute().get();
@@ -551,7 +548,6 @@ public class MainActivity extends AppCompatActivity{
                 break;
             case R.id.view_heart_icon:
                 likeFollowPage.setVisibility(v.VISIBLE);
-                if(menu[2]==false) {
                     searchPage.setVisibility(v.INVISIBLE);
                     mainPage.setVisibility(v.INVISIBLE);
                     myPage.setVisibility(v.INVISIBLE);
@@ -559,11 +555,9 @@ public class MainActivity extends AppCompatActivity{
                     menu[1] = false;
                     menu[0] = false;
                     menu[3] = false;
-                }
                 break;
             case R.id.view_mypage_icon:
                 myPage.setVisibility(v.VISIBLE);
-                if(menu[3]==false) {
                     likeFollowPage.setVisibility(v.INVISIBLE);
                     searchPage.setVisibility(v.INVISIBLE);
                     mainPage.setVisibility(v.INVISIBLE);
@@ -571,7 +565,6 @@ public class MainActivity extends AppCompatActivity{
                     menu[1] = false;
                     menu[2] = false;
                     menu[0] = false;
-                }
                 break;
         }
     }

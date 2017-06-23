@@ -260,6 +260,7 @@ public class CameraOverlayView  extends View implements SensorEventListener {
                 parsedata[i][5] = jobject.getString("randomViewY");
                 parsedata[i][6] = jobject.getString("user_id");
                 parsedata[i][7] = jobject.getString("board_Date");
+                parsedata[i][8] = jobject.getString("write_type");
 
                 int sel_board_Code = Integer.parseInt(parsedata[i][0]);
                 if(touch_board_Code == sel_board_Code){
@@ -272,6 +273,7 @@ public class CameraOverlayView  extends View implements SensorEventListener {
                     intent.putExtra("log_latitude",parsedata[i][4]);
                     intent.putExtra("user_id",parsedata[i][6]);
                     intent.putExtra("board_Date",parsedata[i][7]);
+                    intent.putExtra("write_type",parsedata[i][8]);
 
                     mContext.startActivity(intent);
                     DBselect =false;
