@@ -66,7 +66,7 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
     private String kmlFile;
     private InputStream is;
     String[] step_log_code;
-    String imageURL = "http://211.211.213.218:8084/android/resources/upload/";
+    String imageURL = "http://211.211.213.218:8084/turn/resources/upload/";
 
     String board_codetext;
     String titletext;

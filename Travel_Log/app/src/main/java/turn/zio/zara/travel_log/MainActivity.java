@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity{
     private ArrayList<LocationInfo> steparr;
     int placeTime;
 
-    String imageURL = "http://211.211.213.218:8084/android/resources/upload/";
+    String imageURL = "http://211.211.213.218:8084/turn/resources/upload/logs/";
 
     String steplogkeep;
     int mode;

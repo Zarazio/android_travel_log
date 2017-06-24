@@ -70,7 +70,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
     MediaPlayer player;
     ArrayList<String> location = new ArrayList<String>();
 
-    String imageURL = "http://211.211.213.218:8084/android/resources/upload/";
+    String imageURL = "http://211.211.213.218:8084/turn/resources/upload/";
 
     LinearLayout MapContainer;
     MapFragment mMapFragment;
@@ -126,7 +126,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
                 Log.d("뷰",file_Content);
                 picutre_Linear.setVisibility(View.VISIBLE);
                 address = getAddress(log_latitude, log_longtitude);
-                final String url = "http://211.211.213.218:8084/android/resources/upload/" + file_Content;
+                final String url = "http://211.211.213.218:8084/android/resources/upload/logs/" + file_Content;
                 drawable = getResources().getDrawable(R.drawable.voice);
                 image.setImageDrawable(drawable);
                 image.setOnClickListener(new View.OnClickListener(){
@@ -218,7 +218,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
         protected Bitmap doInBackground(String... params) {
             try{
 
-                        String url = imageURL + file_Content;
+                        String url = imageURL+"logs/" + file_Content;
                         Log.d("url",url);
                         InputStream is = (InputStream) new URL(url).getContent();
 

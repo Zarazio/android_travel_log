@@ -143,7 +143,7 @@ public class LifeLogViewActivity extends Activity {
                         image.setImageBitmap(resizedBitmap);
                         image.setScaleType(ImageView.ScaleType.FIT_XY);
                     }else if(file_Type.equals("2")){
-                        final String url = "http://211.211.213.218:8084/android/resources/upload/" + file_Content;
+                        final String url = "http://211.211.213.218:8084/android/resources/upload/logs/" + file_Content;
                         image.setImageDrawable(drawable);
                         image.setOnClickListener(new View.OnClickListener(){
                             public  void onClick(View v){
@@ -204,7 +204,7 @@ public class LifeLogViewActivity extends Activity {
                                 file_Type = parsedata[i][1];
                                 file_Content =  parsedata[i][0];
                             }
-                            String url = "http://211.211.213.218:8084/android/resources/upload/" + file_Content;
+                            String url = "http://211.211.213.218:8084/android/resources/upload/logs/" + file_Content;
                             if (file_Type.equals("1")) {
                                 try {
 
