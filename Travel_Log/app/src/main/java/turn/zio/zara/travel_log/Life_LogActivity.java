@@ -122,7 +122,7 @@ public class Life_LogActivity extends AppCompatActivity {
         if(step_Log.equals("1")){
            StepInsert(user_id);
         }else{
-            step_Log = "0";
+            stepLogCode = "0";
         }
 
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -186,8 +186,10 @@ public class Life_LogActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                Log.d("result", s);
-                stepLogCode = s;
+                Log.d("result", s+"출력");
+                if(s.equals("")) {
+                    stepLogCode = s;
+                }
                 loading.dismiss();
 
             }

@@ -14,6 +14,7 @@ import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -47,6 +48,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
 
 
 public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapReadyCallback {
@@ -105,6 +107,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
         String String_Date = intent.getExtras().getString("board_Date");
         String file_Type = intent.getExtras().getString("file_Type");
         file_Content = intent.getExtras().getString("file_Content");
+        String write_type = intent.getExtras().getString("write_type");
         Double log_longtitude= null;
         Double log_latitude = null;
         if(!file_Type.equals("3")) {
@@ -150,11 +153,44 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
             fragmentTransaction.commit();
             mMapFragment.getMapAsync(this);
         }
-
         log_title.setText(boder_Title);
         if(!file_Type.equals("3")) {
-            log_Content.setText(board_Content);
             log_Place.setText(address);
+            /*웹으로쓴 글일때*/
+            if(write_type.equals("0")){
+                ArrayList<Integer> posstart = new ArrayList<Integer>();
+                ArrayList<Integer> posend = new ArrayList<Integer>();
+                board_Content = board_Content.replaceAll("<br>","");
+                int poss = board_Content.indexOf("<img");
+                int pose = board_Content.indexOf(";\">");
+                Log.d("pos",board_Content.indexOf("<img")+"");
+                int j = 0;
+                while(poss > -1){
+                    posstart.add(poss);
+                    poss =  board_Content.indexOf("<img", poss + 1);
+                    Log.d("startindex", posstart.get(j).toString());
+                    j++;
+                }
+                j = 0;
+                while(pose > -1){
+                    posend.add(pose);
+                    pose =  board_Content.indexOf(";\">", pose+1);
+                    Log.d("endindex", posend.get(j).toString());
+                    j++;
+                }
+                String testData = null;
+                for(int i=posstart.size()-1; i>=0; i--){
+                    Log.d("result", board_Content);
+                    testData = replaceLast(board_Content,board_Content.substring(Integer.parseInt(posstart.get(i).toString()), (Integer.parseInt(posend.get(i).toString()))+3),"");
+                    Log.d("result", testData);
+                    board_Content =testData;
+
+                }
+                log_Content.setText(Html.fromHtml(board_Content));
+            }/*앱이면*/
+            else{
+                log_Content.setText(board_Content);
+            }
         }else{
             goomap.setVisibility(View.VISIBLE);
             text.setVisibility(View.GONE);
@@ -162,7 +198,14 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
         profile_user_id.setText(user_id);
         log_date.setText(String_Date);
     }
-
+    public static String replaceLast(String str, String regex, String replacement) {
+        int regexIndexOf = str.lastIndexOf(regex);
+        if(regexIndexOf == -1){
+            return str;
+        }else{
+            return str.substring(0, regexIndexOf) + replacement + str.substring(regexIndexOf + regex.length());
+        }
+    }
     /** 위도와 경도 기반으로 주소를 리턴하는 메서드*/
     public String getAddress(double lat, double lng){
         String address = null;

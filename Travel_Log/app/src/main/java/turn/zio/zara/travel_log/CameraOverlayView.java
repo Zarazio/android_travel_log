@@ -252,14 +252,14 @@ public class CameraOverlayView  extends View implements SensorEventListener {
             for (int i = 0; i < json.length(); i++) {
                 JSONObject jobject = json.getJSONObject(i);
 
-                parsedata[i][0] = jobject.getString("board_Code");
-                parsedata[i][1] = jobject.getString("board_Title");
-                parsedata[i][2] = jobject.getString("board_Content");
+                parsedata[i][0] = jobject.getString("board_code");
+                parsedata[i][1] = jobject.getString("board_title");
+                parsedata[i][2] = jobject.getString("board_content");
                 parsedata[i][3] = jobject.getString("log_longtitude");
                 parsedata[i][4] = jobject.getString("log_latitude");
                 parsedata[i][5] = jobject.getString("randomViewY");
                 parsedata[i][6] = jobject.getString("user_id");
-                parsedata[i][7] = jobject.getString("board_Date");
+                parsedata[i][7] = jobject.getString("board_date");
                 parsedata[i][8] = jobject.getString("write_type");
 
                 int sel_board_Code = Integer.parseInt(parsedata[i][0]);
@@ -411,8 +411,8 @@ public class CameraOverlayView  extends View implements SensorEventListener {
             for (int i = 0; i < json.length(); i++) {
                 JSONObject jobject = json.getJSONObject(i);
 
-                parsedata[i][0] = jobject.getString("board_Code");
-                parsedata[i][1] = jobject.getString("board_Title");
+                parsedata[i][0] = jobject.getString("board_code");
+                parsedata[i][1] = jobject.getString("board_title");
                 parsedata[i][3] = jobject.getString("log_longtitude");
                 parsedata[i][4] = jobject.getString("log_latitude");
                 parsedata[i][5] = jobject.getString("randomViewY");

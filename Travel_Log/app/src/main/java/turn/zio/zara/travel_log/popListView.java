@@ -64,14 +64,14 @@ public class popListView extends Activity {
             for (int i = 0; i < json.length(); i++) {
                 JSONObject jobject = json.getJSONObject(i);
 
-                parsedata[i][0] = jobject.getString("board_Code");
-                parsedata[i][1] = jobject.getString("board_Title");
-                parsedata[i][2] = jobject.getString("board_Content");
+                parsedata[i][0] = jobject.getString("board_code");
+                parsedata[i][1] = jobject.getString("board_title");
+                parsedata[i][2] = jobject.getString("board_content");
                 parsedata[i][3] = jobject.getString("log_longtitude");
                 parsedata[i][4] = jobject.getString("log_latitude");
                 parsedata[i][5] = jobject.getString("randomViewY");
                 parsedata[i][6] = jobject.getString("user_id");
-                parsedata[i][7] = jobject.getString("board_Date");
+                parsedata[i][7] = jobject.getString("board_date");
 
                 Double tBx = Double.parseDouble(parsedata[i][3]);
                 Double tBy = Double.parseDouble(parsedata[i][4]);
@@ -111,14 +111,15 @@ public class popListView extends Activity {
                         JSONObject jobject = json.getJSONObject(i);
 
 
-                        parsedata[i][0] = jobject.getString("board_Code");
-                        parsedata[i][1] = jobject.getString("board_Title");
-                        parsedata[i][2] = jobject.getString("board_Content");
+                        parsedata[i][0] = jobject.getString("board_code");
+                        parsedata[i][1] = jobject.getString("board_title");
+                        parsedata[i][2] = jobject.getString("board_content");
                         parsedata[i][3] = jobject.getString("log_longtitude");
                         parsedata[i][4] = jobject.getString("log_latitude");
                         parsedata[i][5] = jobject.getString("randomViewY");
                         parsedata[i][6] = jobject.getString("user_id");
-                        parsedata[i][7] = jobject.getString("board_Date");
+                        parsedata[i][7] = jobject.getString("board_date");
+                        parsedata[i][8] = jobject.getString("write_type");
 
                         if(sel_boardCode.equals(parsedata[i][0]) && touch==true) {
                             Intent intent = new Intent(getApplicationContext(), LifeLogViewActivity.class);
@@ -130,6 +131,7 @@ public class popListView extends Activity {
                             intent.putExtra("log_latitude",parsedata[i][4]);
                             intent.putExtra("user_id",parsedata[i][6]);
                             intent.putExtra("board_Date",parsedata[i][7]);
+                            intent.putExtra("write_type",parsedata[i][8]);
 
                             startActivity(intent);
                             CameraOverlayView.DBselect = false;
