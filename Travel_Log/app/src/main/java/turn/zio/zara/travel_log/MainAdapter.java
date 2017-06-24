@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
@@ -78,6 +79,9 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
     String[] write_type;
     String[] coo;
     ArrayList<String> location = new ArrayList<String>();
+    private boolean flag2 = true;
+    private FragmentTransaction fragmentTransaction;
+    MapFragment mMapFragment;
     //생성자
     public MainAdapter(Context context, int layout, String[] board_code, String[] title, String[] Content, String[] date,
                        String[] writeuser_id, String[] file_type, String[] adress, String[] file_Content, String[] step_log_code, String[] write_type) {
@@ -97,7 +101,6 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
         this.write_type = write_type;
         inf = (LayoutInflater) context.getSystemService
                 (Context.LAYOUT_INFLATER_SERVICE);
-
     }
 
     @Override
@@ -149,20 +152,31 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
             picView.setVisibility(View.GONE);
             text.setVisibility(View.VISIBLE);
             map.setVisibility(View.GONE);
+            flag2 = true;
         }
         else if (file_type[position].equals("1")) {
             picView.setVisibility(View.VISIBLE);
             map.setVisibility(View.GONE);
             iv.setImageBitmap(images[position]);
             iv.setScaleType(ImageView.ScaleType.FIT_XY);
+            flag2 = true;
         } else if(file_type[position].equals("2")){
             picView.setVisibility(View.VISIBLE);
             map.setVisibility(View.GONE);
             drawable = context.getResources().getDrawable(R.drawable.voice);
             iv.setImageDrawable(drawable);
+            flag2 = true;
         }else if(file_type[position].equals("3")){
-            Log.d("dd","들어옴");
+            Log.d("flag2",flag2+"");
             map.setVisibility(View.VISIBLE);
+            if(flag2) {
+                fragmentTransaction = ((Activity) context).getFragmentManager().beginTransaction();
+                mMapFragment = MapFragment.newInstance();
+                fragmentTransaction.add(R.id.MapContainer, mMapFragment);
+                GoogleMapOptions options = new GoogleMapOptions().liteMode(true);
+                mMapFragment.getMapAsync(this);
+                fragmentTransaction.commit();
+            }
             picView.setVisibility(View.GONE);
             text.setVisibility(View.GONE);
             board_codetext = board_code[position];
@@ -174,12 +188,6 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
             adresstext = adress[position];
             kmlFile = file_Content[position];
             step_log_codetext = step_log_code[position];
-            FragmentTransaction fragmentTransaction = ((Activity) context).getFragmentManager().beginTransaction();
-            MapFragment mMapFragment = MapFragment.newInstance();
-            fragmentTransaction.add(R.id.MapContainer, mMapFragment);
-            fragmentTransaction.commit();
-            mMapFragment.getMapAsync(this);
-            selFile();
             if(mMap != null) {
                 mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
@@ -235,7 +243,6 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
             Contents.setText(Html.fromHtml(Content[position]));
         }/*앱이면*/
         else{
-
             Contents.setText(Content[position]);
         }
         return convertView;//getCount만큼 반복한다고 했죠?
@@ -252,7 +259,8 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Log.d("dd","들어옴2");
+        Log.d("GoogleMpa",mMap+"");
+        selFile();
     }
     private void selFile(){
 
@@ -271,7 +279,7 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
                 Log.d("result",s);
 
                 if(mMap != null) {
-
+                    Log.d("polyline",mMap+"2");
                     coo = location.get(((location.size()-1)/2)).toString().split(",");
                     LatLng startPoint = new LatLng(Double.parseDouble(coo[1]), Double.parseDouble(coo[0]));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(startPoint));
@@ -287,7 +295,7 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
                     }
                     mMap.addPolyline(option);
                 }
-
+                flag2 = false;
             }
 
             @Override
