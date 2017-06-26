@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -57,7 +56,7 @@ public class MainActivity extends AppCompatActivity{
 
     SharedPreferences login;
     SharedPreferences.Editor editor;
-
+    private SharedPreferences alram;
     SharedPreferences stepkeep;
 
     LinearLayout mainPage;
@@ -117,6 +116,14 @@ public class MainActivity extends AppCompatActivity{
         editor = stepkeep.edit();
         steplogkeep = stepkeep.getString("steplogkeep", "0");
         int stepsize = stepkeep.getInt("stepdatasize", 0);
+        login = getSharedPreferences("pushAlram", MODE_PRIVATE);
+        editor = login.edit();
+
+        alram = getSharedPreferences("LoginKeep", MODE_PRIVATE);
+        String alrammove = alram.getString("pushAlram", "0");
+        if(!alrammove.equals("0")){
+            AlramviewMove();
+        }
 
         Log.d("갯수", stepsize+"");
         search_Text = (EditText)findViewById(R.id.search_Text);
@@ -410,7 +417,7 @@ public class MainActivity extends AppCompatActivity{
                 MainActivity.this,
                 R.layout.main_log_view,board_code,       // GridView 항목의 레이아웃 row.xml
                 title, Content, date, writeuser_id, file_type,adress, file_Content, step_log_code,write_type);
-        mainapter.image(images);
+        mainapter.image(images, 1);
         GridView gv = (GridView)findViewById(R.id.main_list);
         gv.setAdapter(mainapter);
 
@@ -451,12 +458,14 @@ public class MainActivity extends AppCompatActivity{
                         String url = imageURL + parsedata[i][8];
                         Log.d("URL", url);
                         InputStream is = (InputStream) new URL(url).getContent();
-                        Bitmap bmImg = BitmapFactory.decodeStream(is);
-                        int width = bmImg.getWidth();
-                        int height = bmImg.getHeight();
-                        //화면에 표시할 데이터
-                        Matrix matrix = new Matrix();
-                        Bitmap resizedBitmap = Bitmap.createBitmap(bmImg, 0, 0, width, height, matrix, true);
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        if(mode==1) {
+                            options.inSampleSize = 1;
+                        }else {
+                            options.inSampleSize = 2;
+                        }
+                        options.inJustDecodeBounds = false;
+                        Bitmap resizedBitmap = BitmapFactory.decodeStream(is, null, options);
                         images[i] = resizedBitmap;
                     }
                 }
@@ -782,7 +791,10 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-
+    public void AlramviewMove(){
+        Intent intent = new Intent(this, PushAlramActivity.class);
+        startActivity(intent);
+    }
     private void showListDialog(){
 
             String[] item = getResources().getStringArray(R.array.list_dialog_main_item);

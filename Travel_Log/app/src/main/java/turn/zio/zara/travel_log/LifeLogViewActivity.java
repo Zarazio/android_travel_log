@@ -66,6 +66,9 @@ public class LifeLogViewActivity extends Activity {
         getWindow().setLayout(android.view.WindowManager.LayoutParams.MATCH_PARENT, android.view.WindowManager.LayoutParams.MATCH_PARENT);
         getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
+
+
+
         log_title = (TextView) findViewById(R.id.log_title) ;
         log_Content = (TextView) findViewById(R.id.log_cotennt) ;
         log_Place = (TextView) findViewById(R.id.log_place) ;
@@ -315,14 +318,14 @@ public class LifeLogViewActivity extends Activity {
     }
     @Override
     public void onDestroy(){
-        Drawable d = image.getDrawable();
-        if(d instanceof BitmapDrawable){
-            Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
-            bitmap.recycle();
-            bitmap = null;
+        if(file_Type.equals("1")) {
+            Drawable d = image.getDrawable();
+            if (d instanceof BitmapDrawable) {
+                Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
+                bitmap.recycle();
+                bitmap = null;
+            }
         }
-        d.setCallback(null);
-
         super.onDestroy();
     }
 }

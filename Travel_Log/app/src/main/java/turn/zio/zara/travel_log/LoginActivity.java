@@ -34,13 +34,6 @@ public class LoginActivity extends AppCompatActivity {
         login = getSharedPreferences("LoginKeep", MODE_PRIVATE);
         editor = login.edit();
 
-        //SharedPreferences값이 있으면 유저아이디를 없으면 널값을
-        SharedPreferences user = getSharedPreferences("LoginKeep", MODE_PRIVATE);
-        String userkeep = user.getString("user_id", "0");
-
-        if(!userkeep.equals("0")){
-            viewMove();
-        }
 
         userid = (EditText) findViewById(R.id.user_login_id);
         userpass = (EditText) findViewById(R.id.user_login_pass);
