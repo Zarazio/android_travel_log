@@ -54,7 +54,7 @@
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:background="#fafafa"
-                            android:onClick="travel_Story"
+                            android:onClick="travel_List"
                             app:srcCompat="@drawable/calender" />
                     </LinearLayout>
 

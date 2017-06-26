@@ -120,7 +120,7 @@ public class Life_LogActivity extends AppCompatActivity {
         String step_Log = intent.getStringExtra("stepLog");
 
         if(step_Log.equals("1")){
-           StepInsert(user_id);
+            StepInsert(user_id);
         }else{
             stepLogCode = "0";
         }
@@ -187,7 +187,7 @@ public class Life_LogActivity extends AppCompatActivity {
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 Log.d("result", s+"출력");
-                if(s.equals("")) {
+                if(!s.equals("")) {
                     stepLogCode = s;
                 }
                 loading.dismiss();

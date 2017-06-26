@@ -241,8 +241,8 @@ public class LifeLogViewActivity extends Activity {
                             for (int i = 0; i < json.length(); i++) {
                                 JSONObject jobject = json.getJSONObject(i);
 
-                                parsedata[i][0] = jobject.getString("file_Content");
-                                parsedata[i][1] = jobject.getString("file_Type");
+                                parsedata[i][0] = jobject.getString("file_content");
+                                parsedata[i][1] = jobject.getString("file_type");
                                 file_Type = parsedata[i][1];
                                 file_Content =  parsedata[i][0];
                             }

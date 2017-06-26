@@ -10,6 +10,10 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
+    <!-- 문자수신 -->
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-feature android:name="android.hardware.camera2" />
     <uses-feature android:name="android.hardware.camera" />
@@ -37,11 +41,33 @@
         </activity>
 
         <!-- Travel Story(일정, 여비, 지도, 준비물, 그룹) /START -->
-        <activity android:name=".TravelStoryActivity" />
-        <activity android:name=".SmartCostActivity" />
-        <activity android:name=".TravelMapActivity" />
-        <activity android:name=".TravelSupplyActivity" />
-        <activity android:name=".TravelGroupActivity" />
+        <activity
+            android:name=".TravelListActivity"
+            android:theme="@style/mainTheme" />
+        <activity
+            android:name=".TravelStoryActivity"
+            android:theme="@style/mainTheme" />
+        <activity
+            android:name=".SmartCostAddActivity"
+            android:theme="@style/mainTheme" />
+        <activity
+            android:name=".SmartCostSubActivity"
+            android:theme="@style/mainTheme" />
+        <activity
+            android:name=".InsertCoinActivity"
+            android:theme="@style/mainTheme" />
+        <activity
+            android:name=".InsertCoinSmsActivity"
+            android:theme="@style/mainTheme" />
+        <activity
+            android:name=".TravelMapActivity"
+            android:theme="@style/mainTheme" />
+        <activity
+            android:name=".TravelSupplyActivity"
+            android:theme="@style/mainTheme" />
+        <activity
+            android:name=".TravelGroupActivity"
+            android:theme="@style/mainTheme" />
         <!-- Travel Story(일정, 여비, 지도, 준비물, 그룹) /START -->
 
         <activity android:name=".LoginMenuActivity" />
@@ -100,6 +126,11 @@
         <activity
             android:name=".StepLogActivity"
             android:theme="@style/mainTheme" />
+        <receiver android:name=".SMSReceiver">
+            <intent-filter android:priority="10000">
+                <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

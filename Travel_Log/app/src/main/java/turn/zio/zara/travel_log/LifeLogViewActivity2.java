@@ -344,6 +344,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
                             parsedata[i][7] = "0";
                             parsedata[i][8] = "1";
                         }
+                        parsedata[i][9] = jobject.getString("write_type");
 
                     }
                 } catch (JSONException e) {
@@ -400,6 +401,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
                                         intent.putExtra("log_latitude",parsedata[i][4]);
                                         intent.putExtra("user_id",parsedata[i][6]);
                                         intent.putExtra("board_Date",parsedata[i][5]);
+                                        intent.putExtra("write_type",parsedata[i][9]);
                                         startActivity(intent);
                                     }
                                 }

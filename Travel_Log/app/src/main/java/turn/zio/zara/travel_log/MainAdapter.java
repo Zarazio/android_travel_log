@@ -167,7 +167,6 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
             iv.setImageDrawable(drawable);
             flag2 = true;
         }else if(file_type[position].equals("3")){
-            Log.d("flag2",flag2+"");
             map.setVisibility(View.VISIBLE);
             if(flag2) {
                 fragmentTransaction = ((Activity) context).getFragmentManager().beginTransaction();
@@ -176,6 +175,7 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
                 GoogleMapOptions options = new GoogleMapOptions().liteMode(true);
                 mMapFragment.getMapAsync(this);
                 fragmentTransaction.commit();
+                flag2 = false;
             }
             picView.setVisibility(View.GONE);
             text.setVisibility(View.GONE);
@@ -279,7 +279,6 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
                 Log.d("result",s);
 
                 if(mMap != null) {
-                    Log.d("polyline",mMap+"2");
                     coo = location.get(((location.size()-1)/2)).toString().split(",");
                     LatLng startPoint = new LatLng(Double.parseDouble(coo[1]), Double.parseDouble(coo[0]));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(startPoint));
@@ -295,7 +294,6 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
                     }
                     mMap.addPolyline(option);
                 }
-                flag2 = false;
             }
 
             @Override

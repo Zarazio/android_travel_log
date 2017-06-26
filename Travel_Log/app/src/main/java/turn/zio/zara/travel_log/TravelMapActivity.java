@@ -23,7 +23,7 @@ public class TravelMapActivity extends AppCompatActivity {
     }
 
     public void smart_Cost(View view){ // 여비관리 액티비티로 이동
-        Intent intent = new Intent(this, SmartCostActivity.class);
+        Intent intent = new Intent(this, SmartCostAddActivity.class);
         startActivity(intent);
     }
 
