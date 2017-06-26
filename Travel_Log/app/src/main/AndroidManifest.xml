@@ -25,7 +25,6 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -96,7 +95,6 @@
             android:theme="@style/mainTheme" />
         <activity
             android:name=".AlbumSelectActivity"
-            android:largeHeap="true"
             android:theme="@style/mainTheme" />
         <activity android:name=".ViewImage" />
         <activity
@@ -114,7 +112,6 @@
         <activity android:name=".pushAlramSettingActivity" />
         <activity
             android:name=".LifeLogViewActivity"
-            android:largeHeap="true"
             android:theme="@android:style/Theme.Dialog" />
         <activity
             android:name=".LifeLogViewActivity2"
@@ -125,7 +122,6 @@
             android:theme="@style/mainTheme" />
         <activity
             android:name=".popListView"
-            android:largeHeap="true"
             android:theme="@android:style/Theme.Dialog" />
         <activity
             android:name=".StepLogActivity"
