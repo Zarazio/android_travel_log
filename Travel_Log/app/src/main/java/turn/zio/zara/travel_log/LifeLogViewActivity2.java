@@ -51,7 +51,6 @@ import java.util.Locale;
 import java.util.Map;
 
 
-
 public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapReadyCallback {
 
     private TextView log_title;
@@ -84,6 +83,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
     private GoogleMap mMap;
     private int board_code;
     public static boolean oneView = true;
+    private String file_Type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +109,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
         String board_Content = intent.getExtras().getString("board_Content");
         String user_id = intent.getExtras().getString("user_id");
         String String_Date = intent.getExtras().getString("board_Date");
-        String file_Type = intent.getExtras().getString("file_Type");
+        file_Type = intent.getExtras().getString("file_Type");
         file_Content = intent.getExtras().getString("file_Content");
         String write_type = intent.getExtras().getString("write_type");
         Double log_longtitude= null;
@@ -485,15 +485,16 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
         task.execute();
     }
     @Override
-    public void onDestroy(){
-        Drawable d = image.getDrawable();
-        if(d instanceof BitmapDrawable){
-            Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
-            bitmap.recycle();
-            bitmap = null;
-        }
-        d.setCallback(null);
+    public void onDestroy() {
+        if (file_Type.equals("1")) {
+            Drawable d = image.getDrawable();
+            if (d instanceof BitmapDrawable) {
+                Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
+                bitmap.recycle();
+                bitmap = null;
+            }
 
+        }
         super.onDestroy();
     }
 }

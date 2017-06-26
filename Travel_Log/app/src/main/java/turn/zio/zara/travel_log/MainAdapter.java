@@ -82,6 +82,8 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
     private boolean flag2 = true;
     private FragmentTransaction fragmentTransaction;
     MapFragment mMapFragment;
+    private int mode;
+
     //생성자
     public MainAdapter(Context context, int layout, String[] board_code, String[] title, String[] Content, String[] date,
                        String[] writeuser_id, String[] file_type, String[] adress, String[] file_Content, String[] step_log_code, String[] write_type) {
@@ -120,8 +122,9 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
         return position;
     }
 
-    public void image(Bitmap[] images){
+    public void image(Bitmap[] images, int i){
         this.images = images;
+        this.mode = i;
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -158,6 +161,7 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
             picView.setVisibility(View.VISIBLE);
             map.setVisibility(View.GONE);
             iv.setImageBitmap(images[position]);
+
             iv.setScaleType(ImageView.ScaleType.FIT_XY);
             flag2 = true;
         } else if(file_type[position].equals("2")){

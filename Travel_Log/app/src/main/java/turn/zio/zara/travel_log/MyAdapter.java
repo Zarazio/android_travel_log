@@ -10,11 +10,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-/**
+/*
  * Created by 하루마다 on 2017-06-13.
  */
-
 class MyAdapter extends BaseAdapter {
     Context context;
     int layout;
@@ -41,17 +39,14 @@ class MyAdapter extends BaseAdapter {
     public int getCount() {
         return text.length;
     }
-
     @Override
     public Object getItem(int position) {
         return text[position];
     }
-
     @Override
     public long getItemId(int position) {
         return position;
     }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null)
@@ -64,7 +59,6 @@ class MyAdapter extends BaseAdapter {
             iv.setVisibility(View.GONE);
             /*텍스트 일경우*/
             tv.setText(text[position]);
-
         } else {
             tv.setVisibility(View.GONE);
             iv.setVisibility(View.VISIBLE);
@@ -81,6 +75,4 @@ class MyAdapter extends BaseAdapter {
         }
         return convertView;
     }
-
-
 }

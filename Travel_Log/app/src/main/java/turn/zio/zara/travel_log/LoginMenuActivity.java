@@ -1,6 +1,7 @@
 package turn.zio.zara.travel_log;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -14,6 +15,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Arrays;
 
@@ -23,11 +25,23 @@ public class LoginMenuActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
     private Button CustomloginButton;
 
+    SharedPreferences login;
+    SharedPreferences.Editor editor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext()); // SDK 초기화 (setContentView 보다 먼저 실행되어야합니다. 안그럼 에러납니다.)
         setContentView(R.layout.activity_login_menu);
+        FirebaseMessaging.getInstance().subscribeToTopic("notice");
+
+        //로그인시  유지
+        login = getSharedPreferences("LoginKeep", MODE_PRIVATE);
+        editor = login.edit();
+
+        //SharedPreferences값이 있으면 유저아이디를 없으면 널값을
+        SharedPreferences user = getSharedPreferences("LoginKeep", MODE_PRIVATE);
+        String userkeep = user.getString("user_id", "0");
+
 
          /*페이스북 로그인연동*/
 
@@ -77,4 +91,11 @@ public class LoginMenuActivity extends AppCompatActivity {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }
+
+    public void viewMove(){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+
 }
