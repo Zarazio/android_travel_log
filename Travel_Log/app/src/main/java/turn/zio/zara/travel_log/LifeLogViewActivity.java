@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
@@ -51,6 +52,7 @@ public class LifeLogViewActivity extends Activity {
 
     private ImageView image;
     private Bitmap resizedBitmap;
+    private Bitmap bmImg;
     private Drawable drawable;
     private String file_Type;
     private String file_Content;
@@ -252,7 +254,7 @@ public class LifeLogViewActivity extends Activity {
 
                                     InputStream is = (InputStream) new URL(url).getContent();
 
-                                    Bitmap bmImg = BitmapFactory.decodeStream(is);
+                                    bmImg = BitmapFactory.decodeStream(is);
                                     int width = bmImg.getWidth();
                                     int height = bmImg.getHeight();
                                     //화면에 표시할 데이터
@@ -311,5 +313,16 @@ public class LifeLogViewActivity extends Activity {
         }
         finish();
     }
+    @Override
+    public void onDestroy(){
+        Drawable d = image.getDrawable();
+        if(d instanceof BitmapDrawable){
+            Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
+            bitmap.recycle();
+            bitmap = null;
+        }
+        d.setCallback(null);
 
+        super.onDestroy();
+    }
 }

@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -66,6 +67,9 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
     private ImageView image;
     private ImageView bakcMain_icon;
     private Drawable drawable;
+
+    Bitmap resizedBitmap;
+    Bitmap bmImg;
 
     String step_log_code;
     String file_Content;
@@ -256,7 +260,6 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
     }
     class serpic extends AsyncTask<String, Void, Bitmap> {
         ProgressDialog loading;
-        Bitmap resizedBitmap;
         @Override
         protected Bitmap doInBackground(String... params) {
             try{
@@ -265,7 +268,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
                         Log.d("url",url);
                         InputStream is = (InputStream) new URL(url).getContent();
 
-                        Bitmap bmImg = BitmapFactory.decodeStream(is);
+                         bmImg = BitmapFactory.decodeStream(is);
                         int width = bmImg.getWidth();
                         int height = bmImg.getHeight();
                         //화면에 표시할 데이터
@@ -480,5 +483,17 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
 
         loginData task = new loginData();
         task.execute();
+    }
+    @Override
+    public void onDestroy(){
+        Drawable d = image.getDrawable();
+        if(d instanceof BitmapDrawable){
+            Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
+            bitmap.recycle();
+            bitmap = null;
+        }
+        d.setCallback(null);
+
+        super.onDestroy();
     }
 }
