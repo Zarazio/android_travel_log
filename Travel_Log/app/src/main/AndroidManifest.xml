@@ -96,6 +96,7 @@
             android:theme="@style/mainTheme" />
         <activity
             android:name=".AlbumSelectActivity"
+            android:largeHeap="true"
             android:theme="@style/mainTheme" />
         <activity android:name=".ViewImage" />
         <activity
@@ -113,15 +114,18 @@
         <activity android:name=".pushAlramSettingActivity" />
         <activity
             android:name=".LifeLogViewActivity"
+            android:largeHeap="true"
             android:theme="@android:style/Theme.Dialog" />
         <activity
             android:name=".LifeLogViewActivity2"
+            android:largeHeap="true"
             android:theme="@style/mainTheme" />
         <activity
             android:name=".ARFilterActivity"
             android:theme="@style/mainTheme" />
         <activity
             android:name=".popListView"
+            android:largeHeap="true"
             android:theme="@android:style/Theme.Dialog" />
         <activity
             android:name=".StepLogActivity"
