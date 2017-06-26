@@ -70,13 +70,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="43dp"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/travelTitle"
             android:layout_width="330dp"
             android:layout_height="match_parent"
-            android:text="Title" />
+            android:gravity="center_vertical"
+            android:text="Title"
+            android:textSize="30dp"/>
 
         <ImageView
             android:id="@+id/selectInsert"
@@ -85,18 +87,54 @@
             android:layout_weight="0.07"
             android:onClick="selectInsert"
             app:srcCompat="@android:drawable/ic_menu_add" />
+
     </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/textView2"
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#999999"
-            android:text="차감형 여비관리" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <View
+                android:id="@+id/view3"
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:background="#e6e6e6" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="15dp">
+
+                <TextView
+                    android:id="@+id/user_edit_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="#fafafa"
+                    android:text="지출내역"
+                    android:textSize="18dp" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view5"
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:background="#e6e6e6" />
+
+            <ListView
+                android:id="@+id/expenselistview"
+                android:layout_width="match_parent"
+                android:layout_height="428dp" />
+
+        </LinearLayout>
     </ScrollView>
 
 </LinearLayout>

@@ -39,6 +39,8 @@ public class InsertCoinActivity extends AppCompatActivity {
     private void insertToDatabase(String sc_coin, String sc_content, String groupCode, String userkeep){
         InsertMoney task = new InsertMoney();
         task.execute(sc_coin, sc_content, groupCode, userkeep);
+
+        finish();
     }
     public void bakcMain(View view){
         finish();

@@ -2,17 +2,27 @@ package turn.zio.zara.travel_log;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static turn.zio.zara.travel_log.TravelListActivity.select_group_Code;
 
@@ -24,19 +34,107 @@ public class SmartCostSubActivity extends AppCompatActivity {
     private ListViewDialog mDialog;
     SharedPreferences travelStory;
     String selectGroupCode;
+    ListView listview;
+    ExpenseListViewAdapter exadapter;
 
     @Override
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_smart_cost_sub);
+
         travelStory = getSharedPreferences("title", MODE_PRIVATE);
         selectGroupCode = travelStory.getString("selectgroupCode", "0");
         String selectTitle = travelStory.getString("selectTitle", "0");
-        Log.d("smartcostsub", selectGroupCode);
-        Log.d("smartcostsub",select_group_Code);
-        Log.d("smartcost, 선택한 제목", selectTitle);
+
         TextView travelName = (TextView) findViewById(R.id.travelTitle); // 텍스트뷰 객체 선언
         travelName.setText(selectTitle); // 텍스트뷰에 데이터를 넣음
+
+        insertToDatabase(selectGroupCode);
+    }
+
+    // 아이콘 클릭시 디비시작
+    private void insertToDatabase(String selectGroupCode){
+        SmartCostSubActivity.InsertData task = new SmartCostSubActivity.InsertData();
+        Log.d("디비시작한다이제 준비하셈", "시작한다!!");
+        task.execute(selectGroupCode); // 메소드를 실행한당
+    }
+
+    //AsyncTask 라는 스레드를 시작 시켜 DB연결
+    class InsertData extends AsyncTask<String, Void, String> {
+
+        //doInBackGround가 종료후 실행되는 메서드
+        @Override
+        protected void onPostExecute(String s) { // 웹 -> 앱으로 받는값
+            super.onPostExecute(s);
+            Log.d("onPostExecute: ",s);
+                liston(s);
+        }
+
+        @Override
+        protected String doInBackground(String... params) { // 실행 메서드
+
+            try{
+                String link = "";
+                String data = "";
+                link = "http://172.20.10.2:8080/android"; // 집 : 192.168.1.123, 학교 : 172.20.10.203, 에이타운 : 192.168.0.14
+
+                Map<String, String> insertParam = new HashMap<String,String>(); // key, value
+
+                String group_Code = (String) params[0];
+                insertParam.put("group_Code",selectGroupCode);
+
+                link += "/selectExpense";
+
+                HttpClient.Builder http = new HttpClient.Builder("POST", link);
+
+                http.addAllParameters(insertParam); // 앱 -> 스프링으로 데이터보냄, 매개값을
+
+                // HTTP 요청 전송
+                HttpClient post = http.create();
+                post.request();
+                // 응답 상태코드 가져오기
+                int statusCode = post.getHttpStatusCode();
+                // 응답 본문 가져오기
+                String body = post.getBody();
+                return body;
+            }
+            catch(Exception e){
+                return new String("Exception: " + e.getMessage());
+            }
+        }
+    }
+    public void liston(String title){
+
+        // Adapter 생성
+        exadapter = new ExpenseListViewAdapter();
+
+        // 리스트뷰 참조 및 Adapter달기
+        listview = (ListView) findViewById(R.id.expenselistview);
+        listview.setAdapter(exadapter);
+
+        JsonArray json = (JsonArray) new JsonParser().parse(title);
+
+////        Log.d("TAG", "onCreate: "+title);
+        for(int i = 0; i < json.size(); i++) {
+            Log.d("TAG Object", json.get(i).toString());
+            JsonObject obj = json.get(i).getAsJsonObject(); // 오브젝트
+
+            exadapter.addItem(obj.get("user_id").toString().replaceAll("\"",""), obj.get("expense_Content").toString().replaceAll("\"",""), obj.get("expense_Cost").toString().replaceAll("\"", ""));
+//
+        }
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l){
+                ListViewItem listViewItem = (ListViewItem)adapterView.getItemAtPosition(i);
+            }
+        });
+
+        // 현재날짜와 회원이 참여한 그룹의 날짜들을 비교하여 상태를 지정
+        java.util.Date mDate = new java.util.Date(); // 현재날짜 구하기
+        SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd"); // 형식지정
+        String tempDate = mFormat.format(mDate); // 현재날짜 형식에 맞춰 초기화
+        java.util.Date nowDate = java.sql.Date.valueOf(tempDate); //현재날짜
+
     }
 
     // 액티비티 전환시 애니메이션 제거
@@ -104,7 +202,7 @@ public class SmartCostSubActivity extends AppCompatActivity {
                     }
                 }else{
                     Toast.makeText(getApplicationContext(), "현재 진행 중인 일정이 아닙니다.", Toast.LENGTH_LONG).show();
-            }
+                }
                 mDialog.dismiss();
             }
         });

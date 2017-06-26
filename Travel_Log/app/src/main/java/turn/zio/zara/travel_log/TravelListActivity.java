@@ -31,6 +31,7 @@ public class TravelListActivity extends AppCompatActivity {
 
     SharedPreferences travelStory;
     SharedPreferences smartCost;
+    String sc_Division;
     SharedPreferences.Editor editor;
     ListView listview ;
     ListViewAdapter adapter;
@@ -43,6 +44,9 @@ public class TravelListActivity extends AppCompatActivity {
         //SharedPreferences값이 있으면 유저아이디를 없으면 널값을
         SharedPreferences user = getSharedPreferences("LoginKeep", MODE_PRIVATE);
         login_user_id = user.getString("user_id", "0");
+
+        smartCost = getSharedPreferences("joinCode", MODE_PRIVATE);
+        sc_Division = smartCost.getString("sc_Division", "0");
 
         Log.d("TAG0","아이디 : " +login_user_id);
         insertToDatabase(login_user_id);
@@ -133,10 +137,16 @@ public class TravelListActivity extends AppCompatActivity {
                 editor.putString("selectgroupCode", listViewItem.getGcode()); // 선택한 코드
                 editor.commit();
 
+                Log.d("디비시작전", listViewItem.getGcode());
                 SearhToDatabase(listViewItem.getGcode());
 
-                Intent intent = new Intent(TravelListActivity.this, TravelStoryActivity.class);
-                startActivity(intent);
+                if (sc_Division.equals("차감")) {
+                    Intent intent = new Intent(TravelListActivity.this, SmartCostSubActivity.class);
+                    startActivity(intent);
+                }else{
+                    Intent intent = new Intent(TravelListActivity.this, SmartCostAddActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -179,6 +189,7 @@ public class TravelListActivity extends AppCompatActivity {
 
     private void SearhToDatabase(String group_Code){
         SearhData task = new SearhData();
+        Log.d("최지훈디비전송", group_Code);
         task.execute(group_Code); // 메소드를 실행한당
     }
 
@@ -188,8 +199,16 @@ public class TravelListActivity extends AppCompatActivity {
         //doInBackGround가 종료후 실행되는 메서드
         @Override
         protected void onPostExecute(String s) { // 웹 -> 앱으로 받는값
+
             super.onPostExecute(s);
-            Log.d("onPostExecute: ",s);
+
+            JsonObject obj = (JsonObject) new JsonParser().parse(s);
+
+            smartCost = getSharedPreferences("joinCode", MODE_PRIVATE);
+            editor = smartCost.edit();
+            editor.putString("coin_Limit", obj.get("coin_Limit").toString().replaceAll("\"","")); // 선택한 일정의 한도
+            editor.putString("sc_Division", obj.get("sc_Division").toString().replaceAll("\"","")); // 선택한 일정의 스마트 코스트 구분
+            editor.commit();
         }
 
         @Override
@@ -198,7 +217,7 @@ public class TravelListActivity extends AppCompatActivity {
             try{
                 String link = "";
                 String data = "";
-                link = "http://211.211.213.218:8084/android"; // 집 : 192.168.1.123, 학교 : 172.20.10.203, 에이타운 : 192.168.0.14
+                link = "http://172.20.10.2:8080/android"; // 집 : 192.168.1.123, 학교 : 172.20.10.203, 에이타운 : 192.168.0.14
 
                 Map<String, String> insertParam = new HashMap<String,String>(); // key, value
 

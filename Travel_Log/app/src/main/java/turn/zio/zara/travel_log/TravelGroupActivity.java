@@ -1,6 +1,7 @@
 package turn.zio.zara.travel_log;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -10,10 +11,16 @@ import android.view.View;
  */
 
 public class TravelGroupActivity extends AppCompatActivity {
+    SharedPreferences smartCost;
+    String sc_Division;
+
     @Override
     public void onCreate(Bundle saveInstanceState){
         super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_travel_group);
+
+        smartCost = getSharedPreferences("joinCode", MODE_PRIVATE);
+        sc_Division = smartCost.getString("sc_Division", "0");
     }
 
     // 액티비티 전환시 애니메이션 제거
@@ -22,9 +29,14 @@ public class TravelGroupActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    public void smart_Cost(View view){ // 여비관리 액티비티로 이동
-        Intent intent = new Intent(this, SmartCostAddActivity.class);
-        startActivity(intent);
+    public void smart_Cost(View view) { // 여비관리 액티비티로 이동
+        if (sc_Division.equals("차감")) {
+            Intent intent = new Intent(this, SmartCostSubActivity.class);
+            startActivity(intent);
+        }else{
+            Intent intent = new Intent(this, SmartCostAddActivity.class);
+            startActivity(intent);
+        }
     }
 
     public void travel_Map(View view){ // 지도 액티비티로 이동
