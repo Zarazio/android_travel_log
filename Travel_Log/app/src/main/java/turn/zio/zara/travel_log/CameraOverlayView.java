@@ -488,8 +488,8 @@ public class CameraOverlayView  extends View implements SensorEventListener {
     //핸재위치 갱신
     public void setCurrentPoint(double longitude, double latitude) {
 
-        mlongitude = 128.620267;
-        mlatitude = 35.896654;
+        mlongitude = 128.621884;
+        mlatitude = 35.897060;
     }
 
     public void viewDestory() {

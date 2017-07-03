@@ -42,7 +42,9 @@ public class LoginMenuActivity extends AppCompatActivity {
         SharedPreferences user = getSharedPreferences("LoginKeep", MODE_PRIVATE);
         String userkeep = user.getString("user_id", "0");
 
-
+        if(!userkeep.equals("0")){
+            viewMove();
+        }
          /*페이스북 로그인연동*/
 
         callbackManager = CallbackManager.Factory.create();  //로그인 응답을 처리할 콜백 관리자

@@ -76,7 +76,7 @@ public class SmartCostSubActivity extends AppCompatActivity {
             try{
                 String link = "";
                 String data = "";
-                link = "http://172.20.10.2:8080/android"; // 집 : 192.168.1.123, 학교 : 172.20.10.203, 에이타운 : 192.168.0.14
+                link = "http://211.211.213.218:8084/android"; // 집 : 192.168.1.123, 학교 : 172.20.10.203, 에이타운 : 192.168.0.14
 
                 Map<String, String> insertParam = new HashMap<String,String>(); // key, value
 

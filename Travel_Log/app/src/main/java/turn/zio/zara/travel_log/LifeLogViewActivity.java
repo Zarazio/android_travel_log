@@ -186,11 +186,13 @@ public class LifeLogViewActivity extends Activity {
                 if(!s.equals("failed")) {
                     Log.d("dd","dd");
                     picutre_Linear.setVisibility(View.VISIBLE);
+                    Log.d("image",picutre_Linear.getVisibility()+"");
                     if(file_Type.equals("1")) {
                         image.setImageBitmap(resizedBitmap);
                         image.setScaleType(ImageView.ScaleType.FIT_XY);
+
                     }else if(file_Type.equals("2")){
-                        final String url = "http://211.211.213.218:8084/android/resources/upload/logs/" + file_Content;
+                        final String url = "http://211.211.213.218:8084/turn/resources/upload/logs/" + file_Content;
                         image.setImageDrawable(drawable);
                         image.setOnClickListener(new View.OnClickListener(){
                             public  void onClick(View v){
@@ -251,7 +253,7 @@ public class LifeLogViewActivity extends Activity {
                                 file_Type = parsedata[i][1];
                                 file_Content =  parsedata[i][0];
                             }
-                            String url = "http://211.211.213.218:8084/android/resources/upload/logs/" + file_Content;
+                            String url = "http://211.211.213.218:8084/turn/resources/upload/logs/" + file_Content;
                             if (file_Type.equals("1")) {
                                 try {
 
@@ -318,7 +320,7 @@ public class LifeLogViewActivity extends Activity {
     }
     @Override
     public void onDestroy(){
-        if(file_Type.equals("1")) {
+        if(picutre_Linear.getVisibility()== View.VISIBLE) {
             Drawable d = image.getDrawable();
             if (d instanceof BitmapDrawable) {
                 Bitmap bitmap = ((BitmapDrawable) d).getBitmap();

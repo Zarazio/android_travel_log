@@ -119,11 +119,6 @@ public class MainActivity extends AppCompatActivity{
         login = getSharedPreferences("pushAlram", MODE_PRIVATE);
         editor = login.edit();
 
-        alram = getSharedPreferences("LoginKeep", MODE_PRIVATE);
-        String alrammove = alram.getString("pushAlram", "0");
-        if(!alrammove.equals("0")){
-            AlramviewMove();
-        }
 
         Log.d("갯수", stepsize+"");
         search_Text = (EditText)findViewById(R.id.search_Text);
@@ -791,10 +786,6 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    public void AlramviewMove(){
-        Intent intent = new Intent(this, PushAlramActivity.class);
-        startActivity(intent);
-    }
     private void showListDialog(){
 
             String[] item = getResources().getStringArray(R.array.list_dialog_main_item);
