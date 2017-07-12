@@ -34,9 +34,12 @@ public class AlbumSelectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album_select);
-
-        list = imageReader(Environment.getExternalStorageDirectory()) ;
-
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/travelLog/";
+        File file = new File(path);
+        list = imageReader(file) ;
+        path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM/Camera/";
+        file = new File(path);
+        list = imageReader(file) ;
         previewImage = (ImageView)findViewById(R.id.previewImage);
 
         for(int i=0 ; i<list.size() ; i++){

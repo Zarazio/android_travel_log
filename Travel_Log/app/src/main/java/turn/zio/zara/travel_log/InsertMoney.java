@@ -14,6 +14,7 @@ import java.util.Map;
 public class InsertMoney extends AsyncTask<String, String, String> {
         ProgressDialog loading;
 
+    DataBaseUrl dataurl = new DataBaseUrl();
         //처음 execute시 실행되는 메소드
         @Override
         protected void onPreExecute() {
@@ -33,7 +34,7 @@ public class InsertMoney extends AsyncTask<String, String, String> {
             try {
                 String link = "";
                 String data = "";
-                link = "http://211.211.213.218:8084/android"; // 집 : 192.168.1.123, 학교 : 172.20.10.203
+                link = dataurl.getServerUrl(); // 집 : 192.168.1.123, 학교 : 172.20.10.203
 
                 Map<String, String> insertParam = new HashMap<String, String>();
 
@@ -42,7 +43,7 @@ public class InsertMoney extends AsyncTask<String, String, String> {
                 String groupCode = (String) params[2];
                 String userkeep = (String) params[3];
 
-                link += "/expenseInsert";
+                link += "expenseInsert";
 
                 insertParam.put("expense_Cost", sc_coin);
                 insertParam.put("expense_Content", sc_content);

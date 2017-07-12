@@ -15,7 +15,6 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Arrays;
 
@@ -32,7 +31,6 @@ public class LoginMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext()); // SDK 초기화 (setContentView 보다 먼저 실행되어야합니다. 안그럼 에러납니다.)
         setContentView(R.layout.activity_login_menu);
-        FirebaseMessaging.getInstance().subscribeToTopic("notice");
 
         //로그인시  유지
         login = getSharedPreferences("LoginKeep", MODE_PRIVATE);

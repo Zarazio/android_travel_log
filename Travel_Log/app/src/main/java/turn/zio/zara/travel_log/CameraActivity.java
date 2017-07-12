@@ -3,6 +3,7 @@ package turn.zio.zara.travel_log;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -13,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -103,8 +105,8 @@ public class CameraActivity extends Activity {
             //값은 Location 형태로 리턴되며 좌표 출력 방법은 다음과 같다.
 
             Log.d("test", "onLocationChanged, location:" + location);
-            double longitude = 128.621884; //경도
-            double latitude = 35.897060;   //위도
+            double longitude = location.getLongitude(); //경도
+            double latitude = location.getLatitude();   //위도
             //Gps 위치제공자에 의한 위치변화. 오차범위가 좁다.
             //Network 위치제공자에 의한 위치변화
             //Network 위치는 Gps에 비해 정확도가 많이 떨어진다.
@@ -139,5 +141,25 @@ public class CameraActivity extends Activity {
     public void onBackPressed() {
         this.finish();
         overridePendingTransition(0, android.R.anim.slide_out_right);
+    }
+
+    public void Filter(View view){
+        CameraOverlayView.DBselect = false;
+        Intent intent = new Intent(this, ARFilterActivity.class);
+        startActivity(intent);
+    }
+
+    public void backmain(View view){
+        finish();
+    }
+
+    public void modechange(View view){
+        mOverlayView.drawtext = false;
+        Intent intent = new Intent(this, popListView.class);
+        intent.putExtra("jsonData",mOverlayView.getJsonData());
+        intent.putExtra("mlongitude",mOverlayView.getLong());
+        intent.putExtra("mlatitude",mOverlayView.getLat());
+        mOverlayView.mTouched = false;
+        startActivity(intent);
     }
 }

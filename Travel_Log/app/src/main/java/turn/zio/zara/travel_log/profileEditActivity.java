@@ -31,6 +31,7 @@ public class profileEditActivity extends AppCompatActivity {
     private TextView change_user_id;
     private TextView change_email;
     private TextView change_number;
+    DataBaseUrl dataurl = new DataBaseUrl();
 
     Spinner userGender;
 
@@ -164,7 +165,7 @@ public class profileEditActivity extends AppCompatActivity {
                     changeParame.put("user_gender",c_user_gencer) ;
 
 
-                    String link="http://211.211.213.218:8084/android/change_profile"; //92.168.25.25
+                    String link= dataurl.getServerUrl()+"change_profile"; //92.168.25.25
                     HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
                     http.addAllParameters(changeParame);

@@ -25,10 +25,12 @@ public class LoginActivity extends AppCompatActivity {
     SharedPreferences login;
     SharedPreferences.Editor editor;
 
+    DataBaseUrl dataurl = new DataBaseUrl();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
 
        //로그인시  유지
         login = getSharedPreferences("LoginKeep", MODE_PRIVATE);
@@ -98,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
                     loginParam.put("user_pass",user_pass);
 
 
-                    String link="http://211.211.213.218:8084/android/login"; //92.168.25.25
+                    String link=dataurl.getServerUrl()+"login"; //92.168.25.25
                     HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
                     http.addAllParameters(loginParam);

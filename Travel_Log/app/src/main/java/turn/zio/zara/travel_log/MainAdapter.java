@@ -66,7 +66,6 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
     private String kmlFile;
     private InputStream is;
     String[] step_log_code;
-    String imageURL = "http://211.211.213.218:8084/turn/resources/upload/";
 
     String board_codetext;
     String titletext;
@@ -78,6 +77,8 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
     String step_log_codetext;
     String[] write_type;
     String[] coo;
+
+    DataBaseUrl dataurl = new DataBaseUrl();
     ArrayList<String> location = new ArrayList<String>();
     private boolean flag2 = true;
     private FragmentTransaction fragmentTransaction;
@@ -304,7 +305,7 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
             protected String doInBackground(String... params) {
 
                 try{
-                    String urltext = imageURL + "step_Log/" + kmlFile;
+                    String urltext = dataurl.getStepUrl() + kmlFile;
                     Log.d("url", urltext);
                     URL url = new URL(urltext);
                     HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();

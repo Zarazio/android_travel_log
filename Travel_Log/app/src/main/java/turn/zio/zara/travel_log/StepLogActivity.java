@@ -36,6 +36,7 @@ public class StepLogActivity extends Activity {
     String twoHyphens = "--";
     String boundary = "*****";
 
+    DataBaseUrl dataurl = new DataBaseUrl();
     String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/travelLog/kml/";
     private String pathName;
 
@@ -130,7 +131,7 @@ public class StepLogActivity extends Activity {
 
                     insertParam.put("user_id",user_id) ;
 
-                    String link="http://211.211.213.218:8084/android/stepdelete"; //92.168.25.25
+                    String link=dataurl.getServerUrl()+"stepdelete"; //92.168.25.25
                     HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
                     http.addAllParameters(insertParam);
@@ -193,7 +194,7 @@ public class StepLogActivity extends Activity {
                     File file = new File(path + pathName);
                     FileInputStream mFileInputStream = new FileInputStream(file);
 
-                    URL url = new URL("http://211.211.213.218:8084/android/stepUpdate"); //요청 URL을 입력
+                    URL url = new URL(dataurl.getServerUrl()+"stepUpdate"); //요청 URL을 입력
                     conn = (HttpURLConnection) url.openConnection();
 
                     conn.setDoInput(true); //input을 사용하도록 설정 (default : true)

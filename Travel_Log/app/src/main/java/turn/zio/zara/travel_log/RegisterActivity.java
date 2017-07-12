@@ -34,6 +34,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText editbrith;
     private  RadioGroup rg;
 
+    DataBaseUrl dataurl = new DataBaseUrl();
     private int action; // 0이면 아이디체크 1이면 회원가입
 
     private boolean regicheck = false; // 회원가입버튼 클릭시 공백체크
@@ -219,7 +220,7 @@ public class RegisterActivity extends AppCompatActivity {
             try{
                 String link = "";
                 String data = "";
-                link = "http://211.211.213.218:8084/android"; //192.168.25.25
+                link = dataurl.getServerUrl(); //192.168.25.25
 
 
                 Map<String, String> insertParam = new HashMap<String,String>() ;
@@ -228,7 +229,7 @@ public class RegisterActivity extends AppCompatActivity {
                 if(action == 0 ){ //아이디체크
                     String user_id = (String) params[0];
 
-                    link += "/idCheck";
+                    link += "idCheck";
                     insertParam.put("user_id", user_id) ;
                 }
                 else if(action == 1 ) { //insert
@@ -239,7 +240,7 @@ public class RegisterActivity extends AppCompatActivity {
                     String user_birth = (String) params[4];
                     String user_gender = (String) params[5];
 
-                    link += "/register";
+                    link += "register";
 
                     insertParam.put("user_id", user_id) ;
                     insertParam.put("user_pass", user_pass) ;

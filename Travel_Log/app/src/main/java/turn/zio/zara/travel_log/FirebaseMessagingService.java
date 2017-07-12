@@ -31,7 +31,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
     private void sendPushNotification(String message) {
         System.out.println("received message : " + message);
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, PushAlramActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);

@@ -40,6 +40,7 @@ public class CameraOverlayView  extends View implements SensorEventListener {
     private Sensor mOriSensor;
     private double mlongitude;
     private double mlatitude;
+    DataBaseUrl dataurl = new DataBaseUrl();
     public static double mVisibleDistance = 0.25;
     private int mWidth;
     private int mHeight;
@@ -52,7 +53,7 @@ public class CameraOverlayView  extends View implements SensorEventListener {
     private List<PointF> mPointFList = null;
     private List<int[]> PointHashMap = null;
     private List<int[]> boxsize = null;
-    private boolean mTouched = false;
+    public boolean mTouched = false;
 
 
     String s = null;
@@ -64,6 +65,7 @@ public class CameraOverlayView  extends View implements SensorEventListener {
     public static String hashTag;
     private int themeRectWidth;
     public static boolean drawtext;
+    private RectF backbtn;
 
 
     public CameraOverlayView(Context context) {
@@ -83,14 +85,14 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         canvas.save();
 
         // DB의 레코드를 읽어들이고, 그림
-        if(DBselect==true) {
-            interpretDB(canvas);
-        }
-        initRectFs();
 
-        if(drawtext==true) {
+        interpretDB(canvas);
+        /*
+        initRectFs();
+        if(drawtext) {
             drawButton(canvas);
         }
+        */
         // 회전된 카메라를 원상복귀함
         canvas.restore();
         // 아이템이 터치된 상태일때 팝업을 그림
@@ -120,6 +122,9 @@ public class CameraOverlayView  extends View implements SensorEventListener {
     public void initRectFs() {
         themeRectWidth = (mHeight - (mHeight / 20 * 2)) / 10;
 
+        backbtn = new RectF( ((mWidth - mHeight) / 2) + mHeight
+                / 20 + (float)(themeRectWidth * 1.7),30, ((mWidth - mHeight) / 2) + mHeight / 20
+                + (float)(themeRectWidth * 2.7),180);
         viewMode = new RectF( ((mWidth - mHeight) / 2) + mHeight
                 / 20 + (float)(themeRectWidth * 4.5),30, ((mWidth - mHeight) / 2) + mHeight / 20
                 + (float)(themeRectWidth * 5.5),180);
@@ -143,7 +148,11 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         Paint tPaint = new Paint();
         int yTextMargin = 8;
         tPaint.setColor(Color.BLACK);
-        tPaint.setAlpha(125);
+        tPaint.setAlpha(125);pCanvas.drawRoundRect(backbtn, 20, 20, tPaint);
+        pCanvas.drawText("back",
+                (backbtn.left + backbtn.right) / 2  - mPaint.measureText("back")
+                        / 2,
+                (backbtn.top + backbtn.bottom) / 2 + yTextMargin, mPaint);
         pCanvas.drawRoundRect(viewMode, 20, 20, tPaint);
         pCanvas.drawText("Mode",
                 (viewMode.left + viewMode.right) / 2 - mPaint.measureText("Mode")
@@ -186,7 +195,12 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         Log.d("convertedY", convertedY+"");
 
         mTouched = false;
-
+       /* if (convertedX > backbtn.left - mWidth / 2
+                && convertedX < backbtn.right - mWidth / 2
+                && convertedY > backbtn.top - mHeight / 2
+                && convertedY < backbtn.bottom - mWidth / 2) {
+            mContext.finish();
+        }
 
         if (convertedX > searchRect.left - mWidth / 2
                 && convertedX < searchRect.right - mWidth / 2
@@ -205,10 +219,10 @@ public class CameraOverlayView  extends View implements SensorEventListener {
                 Intent intent = new Intent(mContext, popListView.class);
                 intent.putExtra("jsonData",s);
                 intent.putExtra("mlongitude",mlongitude);
-            intent.putExtra("mlatitude",mlatitude);
+                intent.putExtra("mlatitude",mlatitude);
                 mContext.startActivity(intent);
                 mTouched = false;
-        }
+        }*/
 
         PointF tPoint = new PointF();
 
@@ -286,6 +300,14 @@ public class CameraOverlayView  extends View implements SensorEventListener {
 
     }
 
+    public String getJsonData(){
+        return s;
+    }
+    public Double getLong(){
+        return mlongitude;
+    }public Double getLat(){
+        return mlatitude;
+    }
     private void drawGrid(double tAx, double tAy, double tBx, double tBy,
                           Canvas pCanvas, Paint pPaint, String title, String content, int placeY, int item_code, int i) {
         // TODO Auto-generated method stub
@@ -446,7 +468,7 @@ public class CameraOverlayView  extends View implements SensorEventListener {
                 seldata.put("order_DB",order_DB) ;
                 seldata.put("hashTag",hashTag);
 
-                String link="http://211.211.213.218:8084/android/boardList"; //92.168.25.25
+                String link= dataurl.getServerUrl()+"boardList"; //92.168.25.25
                 HttpClient.Builder http = new HttpClient.Builder("GET", link);
 
                 http.addAllParameters(seldata);
@@ -488,8 +510,8 @@ public class CameraOverlayView  extends View implements SensorEventListener {
     //핸재위치 갱신
     public void setCurrentPoint(double longitude, double latitude) {
 
-        mlongitude = 128.621884;
-        mlatitude = 35.897060;
+        mlongitude = 128.5459997;
+        mlatitude = 35.945672;
     }
 
     public void viewDestory() {

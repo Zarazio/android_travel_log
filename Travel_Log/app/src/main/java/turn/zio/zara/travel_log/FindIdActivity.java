@@ -21,6 +21,7 @@ public class FindIdActivity extends AppCompatActivity {
 
     private boolean textcheck = false;
     private boolean regicheck2 = false;
+    DataBaseUrl dataurl = new DataBaseUrl();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +110,7 @@ public class FindIdActivity extends AppCompatActivity {
                     loginParam.put("user_phone", user_phone);
 
 
-                    String link = "http://211.211.213.218:8084/android/findId"; //92.168.25.25
+                    String link = dataurl.getServerUrl()+"findId"; //92.168.25.25
                     HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
                     http.addAllParameters(loginParam);

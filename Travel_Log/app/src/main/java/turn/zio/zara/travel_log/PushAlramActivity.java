@@ -17,6 +17,7 @@ public class PushAlramActivity extends AppCompatActivity {
     EditText write;
     SharedPreferences login;
     SharedPreferences.Editor editor;
+    DataBaseUrl dataurl = new DataBaseUrl();
     String userkeep;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +70,7 @@ public class PushAlramActivity extends AppCompatActivity {
             try{
                 String link = "";
                 String data = "";
-                link = "http://211.211.213.218:8084/android/insertQA"; //192.168.25.25
+                link = dataurl.getServerUrl() + "insertQA"; //192.168.25.25
 
 
                 Map<String, String> insertParam = new HashMap<String,String>() ;

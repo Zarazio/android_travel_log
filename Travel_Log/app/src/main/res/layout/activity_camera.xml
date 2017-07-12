@@ -6,11 +6,60 @@
     android:layout_height="match_parent"
     tools:context="turn.zio.zara.travel_log.CameraActivity">
 
-
-    <FrameLayout android:id="@+id/previewFrame"
+    <FrameLayout
+        android:id="@+id/previewFrame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
     </FrameLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/view_home_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:onClick="viewPageChange"
+            app:srcCompat="@drawable/home" />
+
+        <ImageView
+            android:id="@+id/view_search_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:onClick="viewPageChange"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/search" />
+
+        <ImageView
+            android:id="@+id/view_logWrite_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:onClick="log_Write"
+            app:srcCompat="@drawable/pen" />
+
+        <ImageView
+            android:id="@+id/view_heart_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:onClick="viewPageChange"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/heart" />
+
+        <ImageView
+            android:id="@+id/view_mypage_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:onClick="viewPageChange"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/person" />
+    </LinearLayout>
 
 </RelativeLayout>

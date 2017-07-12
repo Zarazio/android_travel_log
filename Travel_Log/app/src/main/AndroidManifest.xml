@@ -78,7 +78,7 @@
             android:largeHeap="true"
             android:theme="@style/mainTheme" />
         <activity android:name=".Map_TestActivity" />
-        <activity android:name=".CameraActivity" />
+        <activity android:name=".CameraActivity"/>
         <activity android:name=".FindIdActivity" />
         <activity android:name=".FindPassActivity" />
 

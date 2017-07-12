@@ -80,6 +80,7 @@ public class Life_LogActivity extends AppCompatActivity {
     List<Object> hash = new ArrayList<Object>();
 
     LocationManager lm;
+    DataBaseUrl dataurl = new DataBaseUrl();
 
     SharedPreferences login;
     SharedPreferences.Editor editor;
@@ -204,7 +205,7 @@ public class Life_LogActivity extends AppCompatActivity {
 
                     loginParam.put("user_id",user_id) ;
 
-                    String link = "http://211.211.213.218:8084/android/stepCodeSelect"; //92.168.25.25
+                    String link = dataurl.getServerUrl()+"stepCodeSelect"; //92.168.25.25
                     HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
                     http.addAllParameters(loginParam);
@@ -351,7 +352,7 @@ public class Life_LogActivity extends AppCompatActivity {
                         mFileInputStream = new FileInputStream(Environment.getExternalStorageDirectory().getAbsolutePath()+"/travelLog/log.txt");
                     }
 
-                    URL url = new URL("http://211.211.213.218:8084/android/insertLog"); //요청 URL을 입력
+                    URL url = new URL(dataurl.getServerUrl()+"insertLog"); //요청 URL을 입력
                     conn = (HttpURLConnection) url.openConnection();
 
                     conn.setDoInput(true); //input을 사용하도록 설정 (default : true)

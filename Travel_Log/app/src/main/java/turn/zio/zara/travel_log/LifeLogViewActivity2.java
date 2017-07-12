@@ -75,7 +75,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
     MediaPlayer player;
     ArrayList<String> location = new ArrayList<String>();
 
-    String imageURL = "http://211.211.213.218:8084/turn/resources/upload/";
+    DataBaseUrl dataurl = new DataBaseUrl();
 
     LinearLayout MapContainer;
     MapFragment mMapFragment;
@@ -133,7 +133,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
                 Log.d("뷰",file_Content);
                 picutre_Linear.setVisibility(View.VISIBLE);
                 address = getAddress(log_latitude, log_longtitude);
-                final String url = "http://211.211.213.218:8084/turn/resources/upload/logs/" + file_Content;
+                final String url = dataurl.getDataUrl() + file_Content;
                 drawable = getResources().getDrawable(R.drawable.voice);
                 image.setImageDrawable(drawable);
                 image.setOnClickListener(new View.OnClickListener(){
@@ -264,7 +264,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
         protected Bitmap doInBackground(String... params) {
             try{
 
-                        String url = imageURL+"logs/" + file_Content;
+                        String url = dataurl.getDataUrl() + file_Content;
                         Log.d("url",url);
                         InputStream is = (InputStream) new URL(url).getContent();
 
@@ -289,9 +289,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            loading = new ProgressDialog(LifeLogViewActivity2.this);
-            loading.setProgressStyle(R.style.MyDialog);
-            loading.show();
+            loading = ProgressDialog.show(LifeLogViewActivity2.this, "Please Wait", null, true, true);
         }
 
         @Override
@@ -427,7 +425,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
                     loginParam.put("step_log_code",board_code+"");
 
 
-                    String link="http://211.211.213.218:8084/android/step_log_select"; //92.168.25.25
+                    String link= dataurl.getServerUrl()+"step_log_select"; //92.168.25.25
                     HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
                     http.addAllParameters(loginParam);
@@ -441,7 +439,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
                     String body = post.getBody();
 
 
-                    String urltext = imageURL + "step_Log/" + file_Content;
+                    String urltext = dataurl.getStepUrl() + file_Content;
                     Log.d("url", urltext);
                     URL url = new URL(urltext);
                     HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();

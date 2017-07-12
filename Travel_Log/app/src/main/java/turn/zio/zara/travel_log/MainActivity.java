@@ -56,7 +56,10 @@ public class MainActivity extends AppCompatActivity{
 
     SharedPreferences login;
     SharedPreferences.Editor editor;
+    SharedPreferences.Editor editor2;
+    SharedPreferences.Editor editor3;
     private SharedPreferences alram;
+
     SharedPreferences stepkeep;
 
     LinearLayout mainPage;
@@ -78,8 +81,6 @@ public class MainActivity extends AppCompatActivity{
     private ArrayList<LocationInfo> steparr;
     int placeTime;
 
-    String imageURL = "http://211.211.213.218:8084/turn/resources/upload/logs/";
-
     String steplogkeep;
     int mode;
     private String[][] parsedata;
@@ -87,11 +88,15 @@ public class MainActivity extends AppCompatActivity{
     MainAdapter mainapter;
     String user_id;
 
+    DataBaseUrl dataurl = new DataBaseUrl();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         /*처음 DB 실행*/
+        /*FirebaseMessaging.getInstance().subscribeToTopic("notice");
+        String token = FirebaseInstanceId.getInstance().getToken();
+        pushalram(token);*/
         mode = 1;
         menu = new boolean[4];
         placeTime = 1000;
@@ -113,11 +118,11 @@ public class MainActivity extends AppCompatActivity{
         user_id = login.getString("user_id", "0");
 
         stepkeep = getSharedPreferences("LoginKeep", MODE_PRIVATE);
-        editor = stepkeep.edit();
+        editor2 = stepkeep.edit();
         steplogkeep = stepkeep.getString("steplogkeep", "0");
         int stepsize = stepkeep.getInt("stepdatasize", 0);
-        login = getSharedPreferences("pushAlram", MODE_PRIVATE);
-        editor = login.edit();
+        alram = getSharedPreferences("pushAlram", MODE_PRIVATE);
+        editor3 = alram.edit();
 
 
         Log.d("갯수", stepsize+"");
@@ -238,6 +243,58 @@ public class MainActivity extends AppCompatActivity{
         });
 
     }
+
+    /*StepLog Insert*/
+    private void pushalram(String token) {
+
+        class insertData extends AsyncTask<String, Void, String> {
+            ProgressDialog loading;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                loading = ProgressDialog.show(MainActivity.this, "Please Wait", null, true, true);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                Log.d("result", s);
+                loading.dismiss();
+
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+
+                try {
+                    String token = (String)params[0];
+
+                    Map<String, String> loginParam = new HashMap<String,String>() ;
+
+                    loginParam.put("userDeviceIdKey",token) ;
+
+                    String link = dataurl.getServerUrl()+"push_alram"; //92.168.25.25
+                    HttpClient.Builder http = new HttpClient.Builder("POST", link);
+
+                    http.addAllParameters(loginParam);
+
+                    // HTTP 요청 전송
+                    HttpClient post = http.create();
+                    post.request();
+
+                    // Read Server Response
+                    return "success";
+                } catch (Exception e) {
+                    return new String("Exception: " + e.getMessage());
+                }
+
+            }
+        }
+        insertData task = new insertData();
+        task.execute(token);
+    }
+
     /*스탭로그 키거나 끄기*/
     public void stepon(View view){
         Drawable d;
@@ -305,7 +362,7 @@ public class MainActivity extends AppCompatActivity{
 
                     loginParam.put("user_id",user_id) ;
 
-                    String link = "http://211.211.213.218:8084/android/stepinsert"; //92.168.25.25
+                    String link = dataurl.getServerUrl()+"stepinsert"; //92.168.25.25
                     HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
                     http.addAllParameters(loginParam);
@@ -450,7 +507,7 @@ public class MainActivity extends AppCompatActivity{
                 for(int i=0; i < parsedata.length; i++) {
 
                     if(parsedata[i][7].equals("1")){
-                        String url = imageURL + parsedata[i][8];
+                        String url = dataurl.getTumnailUrl() + parsedata[i][8];
                         Log.d("URL", url);
                         InputStream is = (InputStream) new URL(url).getContent();
                         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -477,9 +534,7 @@ public class MainActivity extends AppCompatActivity{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            loading = new ProgressDialog(MainActivity.this);
-            loading.setProgressStyle(R.style.MyDialog);
-            loading.show();
+            loading = ProgressDialog.show(MainActivity.this, "Please Wait", null, true, true);
         }
 
         @Override
@@ -582,7 +637,7 @@ public class MainActivity extends AppCompatActivity{
                 Map<String, String> seldata = new HashMap<String, String>();
                 seldata.put("user_id", user_id);
 
-                String link = "http://211.211.213.218:8084/android/main_View_DB"; //92.168.25.25
+                String link = dataurl.getServerUrl()+"main_View_DB"; //92.168.25.25
                 HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
                 http.addAllParameters(seldata);
@@ -602,19 +657,17 @@ public class MainActivity extends AppCompatActivity{
                 return new String("Exception: " + e.getMessage());
             }
         }
+
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            loading = new ProgressDialog(MainActivity.this);
-            loading.setProgressStyle(R.style.MyDialog);
-            loading.show();
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             this.cancel(true);
-            loading.dismiss();
         }
     }
 
@@ -625,7 +678,7 @@ public class MainActivity extends AppCompatActivity{
         protected String doInBackground(String... params) {
             try{
 
-                String link="http://211.211.213.218:8084/android/all_list_View"; //92.168.25.25
+                String link= dataurl.getServerUrl()+"all_list_View"; //92.168.25.25
                 HttpClient.Builder http = new HttpClient.Builder("GET", link);
 
                 // HTTP 요청 전송
@@ -647,9 +700,7 @@ public class MainActivity extends AppCompatActivity{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            loading = new ProgressDialog(MainActivity.this);
-            loading.setProgressStyle(R.style.MyDialog);
-            loading.show();
+            loading = ProgressDialog.show(MainActivity.this, "Please Wait", null, true, true);
         }
 
         @Override
@@ -671,7 +722,7 @@ public class MainActivity extends AppCompatActivity{
                 Map<String, String> seldata = new HashMap<String, String>();
                 seldata.put("hash_tag", hashTagText);
 
-                String link = "http://211.211.213.218:8084/android/search_View"; //92.168.25.25
+                String link = dataurl.getServerUrl() + "search_View"; //92.168.25.25
                 HttpClient.Builder http = new HttpClient.Builder("GET", link);
 
                 http.addAllParameters(seldata);
@@ -692,12 +743,12 @@ public class MainActivity extends AppCompatActivity{
             }
         }
 
+
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            loading = new ProgressDialog(MainActivity.this);
-            loading.setProgressStyle(R.style.MyDialog);
-            loading.show();
+            loading = ProgressDialog.show(MainActivity.this, "Please Wait", null, true, true);
         }
 
         @Override

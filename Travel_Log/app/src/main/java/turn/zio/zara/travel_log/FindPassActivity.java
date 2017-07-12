@@ -21,6 +21,7 @@ public class FindPassActivity extends AppCompatActivity {
     private boolean textcheck = false;
     private boolean regicheck2 = false;
 
+    DataBaseUrl dataurl = new DataBaseUrl();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +105,7 @@ public class FindPassActivity extends AppCompatActivity {
                     loginParam.put("user_id", user_id);
 
 
-                    String link = "http://211.211.213.218:8084/android/findPass"; //92.168.25.25
+                    String link = dataurl.getServerUrl()+"findPass"; //92.168.25.25
                     HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
                     http.addAllParameters(loginParam);

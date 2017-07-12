@@ -5,8 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
@@ -35,7 +35,6 @@ import java.util.Locale;
 import java.util.Map;
 
 
-
 public class LifeLogViewActivity extends Activity {
 
     private TextView log_title;
@@ -58,15 +57,21 @@ public class LifeLogViewActivity extends Activity {
     private String file_Content;
 
     MediaPlayer player;
+
+    DataBaseUrl dataurl = new DataBaseUrl();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_life_log_view);
         getWindow().setLayout(android.view.WindowManager.LayoutParams.MATCH_PARENT, android.view.WindowManager.LayoutParams.MATCH_PARENT);
-        getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        getWindow().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
 
+        ImageView bakcMain_icon = (ImageView) findViewById(R.id.bakcMain_icon);
+        ImageView view_mainlogo_icon = (ImageView) findViewById(R.id.view_mainlogo_icon);
 
+        bakcMain_icon.setImageDrawable(getResources().getDrawable(R.drawable.backbutton));
+        view_mainlogo_icon.setImageDrawable(getResources().getDrawable(R.drawable.mainlogo));
 
 
         log_title = (TextView) findViewById(R.id.log_title) ;
@@ -174,9 +179,7 @@ public class LifeLogViewActivity extends Activity {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                loading = new ProgressDialog(LifeLogViewActivity.this);
-                loading.setProgressStyle(R.style.MyDialog);
-                loading.show();
+                loading = ProgressDialog.show(LifeLogViewActivity.this, "Please Wait", null, true, true);
             }
 
             @Override
@@ -192,7 +195,7 @@ public class LifeLogViewActivity extends Activity {
                         image.setScaleType(ImageView.ScaleType.FIT_XY);
 
                     }else if(file_Type.equals("2")){
-                        final String url = "http://211.211.213.218:8084/turn/resources/upload/logs/" + file_Content;
+                        final String url = dataurl.getDataUrl() + file_Content;
                         image.setImageDrawable(drawable);
                         image.setOnClickListener(new View.OnClickListener(){
                             public  void onClick(View v){
@@ -225,7 +228,7 @@ public class LifeLogViewActivity extends Activity {
                     picsel.put("board_code",board_code) ;
 
 
-                    String link="http://211.211.213.218:8084/android/picture"; //92.168.25.25
+                    String link= dataurl.getServerUrl()+"picture"; //92.168.25.25
 
                     HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
@@ -253,7 +256,7 @@ public class LifeLogViewActivity extends Activity {
                                 file_Type = parsedata[i][1];
                                 file_Content =  parsedata[i][0];
                             }
-                            String url = "http://211.211.213.218:8084/turn/resources/upload/logs/" + file_Content;
+                            String url = dataurl.getDataUrl() + file_Content;
                             if (file_Type.equals("1")) {
                                 try {
 
@@ -316,18 +319,7 @@ public class LifeLogViewActivity extends Activity {
             player.release();
             player = null;
         }
+
         finish();
-    }
-    @Override
-    public void onDestroy(){
-        if(picutre_Linear.getVisibility()== View.VISIBLE) {
-            Drawable d = image.getDrawable();
-            if (d instanceof BitmapDrawable) {
-                Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
-                bitmap.recycle();
-                bitmap = null;
-            }
-        }
-        super.onDestroy();
     }
 }

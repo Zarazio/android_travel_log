@@ -37,6 +37,7 @@ public class SmartCostAddActivity extends AppCompatActivity {
     ListView listview;
     ExpenseListViewAdapter exadapter;
 
+    DataBaseUrl dataurl = new DataBaseUrl();
     @Override
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
@@ -78,14 +79,14 @@ public class SmartCostAddActivity extends AppCompatActivity {
             try{
                 String link = "";
                 String data = "";
-                link = "http://211.211.213.218:8084/android"; // 집 : 192.168.1.123, 학교 : 172.20.10.203, 에이타운 : 192.168.0.14
+                link = dataurl.getServerUrl(); // 집 : 192.168.1.123, 학교 : 172.20.10.203, 에이타운 : 192.168.0.14
 
                 Map<String, String> insertParam = new HashMap<String,String>(); // key, value
 
                 String group_Code = (String) params[0];
                 insertParam.put("group_Code",selectGroupCode);
 
-                link += "/selectExpense";
+                link += "selectExpense";
 
                 HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
