@@ -11,6 +11,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +29,8 @@ public class LoginActivity extends AppCompatActivity {
     SharedPreferences.Editor editor;
 
     DataBaseUrl dataurl = new DataBaseUrl();
+    private String[] parsedata;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,8 +83,20 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d("result",s);
 
                 loading.dismiss();
-                if(s.equals("1")){ // 아이디와 비밀번호가 같은 유저 존재시
-                    editor.putString("user_id", user_id);
+                if(!s.equals("null")){ // 아이디와 비밀번호가 같은 유저 존재시
+                    try {
+                        parsedata =  new String[2];
+                        JsonParser jsonParser = new JsonParser();
+                        JsonElement element = jsonParser.parse(s);
+
+                        parsedata[0] = element.getAsJsonObject().get("user_id").getAsString();
+                        parsedata[1]= element.getAsJsonObject().get("user_profile").getAsString();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    editor.putString("user_id", parsedata[0]);
+                    editor.putString("prifile_picture", parsedata[1]);
                     editor.commit();
                     viewMove(); // 뷰페이지를 이동시키는 메서드
                 }else{ // 없으면

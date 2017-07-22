@@ -38,8 +38,8 @@
                         android:id="@+id/Camera_sel_pop"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_weight="1"
                         android:layout_marginRight="8dp"
+                        android:layout_weight="1"
                         android:background="#fafafa"
                         android:onClick="PictureSel"
                         app:srcCompat="@drawable/camera" />
@@ -117,6 +117,7 @@
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:layout_marginLeft="10dp"
+                            android:scaleType="fitXY"
                             app:srcCompat="@drawable/camera" />
                     </LinearLayout>
 

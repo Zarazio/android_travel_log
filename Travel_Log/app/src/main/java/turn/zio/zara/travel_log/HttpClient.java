@@ -54,7 +54,7 @@ public class HttpClient {
     private void setHeader(HttpURLConnection connection) {
         setContentType(connection);
         setRequestMethod(connection);
-        connection.setConnectTimeout(5000);
+        //connection.setConnectTimeout(5000);
         connection.setDoOutput(true);
         connection.setDoInput(true);
     }

@@ -32,6 +32,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -72,6 +75,7 @@ public class MainActivity extends AppCompatActivity{
     EditText search_Text;
 
     private ImageView step_log_pic;
+    private ImageView profile;
 
     private BackPressCloseHandler backPressCloseHandler;
     private String hashTagText;
@@ -89,14 +93,15 @@ public class MainActivity extends AppCompatActivity{
     String user_id;
 
     DataBaseUrl dataurl = new DataBaseUrl();
+    private String prifile_pict;
+
+    Bitmap[] pImage;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         /*처음 DB 실행*/
-        /*FirebaseMessaging.getInstance().subscribeToTopic("notice");
-        String token = FirebaseInstanceId.getInstance().getToken();
-        pushalram(token);*/
+
         mode = 1;
         menu = new boolean[4];
         placeTime = 1000;
@@ -116,6 +121,7 @@ public class MainActivity extends AppCompatActivity{
         login = getSharedPreferences("LoginKeep", MODE_PRIVATE);
         editor = login.edit();
         user_id = login.getString("user_id", "0");
+        prifile_pict = login.getString("prifile_picture", "default.png");
 
         stepkeep = getSharedPreferences("LoginKeep", MODE_PRIVATE);
         editor2 = stepkeep.edit();
@@ -129,7 +135,11 @@ public class MainActivity extends AppCompatActivity{
         search_Text = (EditText)findViewById(R.id.search_Text);
         search_Text_view = (TextView) findViewById(R.id.search_Text_view);
 
+        profile = (ImageView) findViewById(R.id.profile_picture);
 
+        if(!prifile_pict.equals("0")){
+            profile_pic();
+        }
         Drawable d;
 
         if(steplogkeep.equals("1")){
@@ -231,13 +241,16 @@ public class MainActivity extends AppCompatActivity{
                 intent.putExtra("log_longtitude",parsedata[position][3]);
                 intent.putExtra("log_latitude",parsedata[position][4]);
                 intent.putExtra("board_Date",parsedata[position][5]);
-                intent.putExtra("user_id",parsedata[position][6]);
+                intent.putExtra("write_user_id",parsedata[position][6]);
+                intent.putExtra("user_id",user_id);
                 intent.putExtra("file_Type",parsedata[position][7]);
                 intent.putExtra("file_Content", parsedata[position][8]);
                 if(parsedata[position][7].equals("3")){
                     intent.putExtra("step_log_code", parsedata[position][9]);
                 }
                 intent.putExtra("write_type", parsedata[position][10]);
+                Log.d("profile_pic", parsedata[position][11]);
+                intent.putExtra("profile_picture", parsedata[position][11]);
                 startActivity(intent);
             }
         });
@@ -245,22 +258,24 @@ public class MainActivity extends AppCompatActivity{
     }
 
     /*StepLog Insert*/
-    private void pushalram(String token) {
+    private void pushalram(String token, double longitude, double latitude) {
 
+        final double Mylongitude = longitude;
+        final double Mylatitude = latitude;
         class insertData extends AsyncTask<String, Void, String> {
             ProgressDialog loading;
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                loading = ProgressDialog.show(MainActivity.this, "Please Wait", null, true, true);
             }
 
             @Override
             protected void onPostExecute(String s) {
+                FirebaseMessagingService.push_text = s;
                 super.onPostExecute(s);
+
                 Log.d("result", s);
-                loading.dismiss();
 
             }
 
@@ -273,18 +288,27 @@ public class MainActivity extends AppCompatActivity{
                     Map<String, String> loginParam = new HashMap<String,String>() ;
 
                     loginParam.put("userDeviceIdKey",token) ;
+                    loginParam.put("longitude",Mylongitude+"");
+                    loginParam.put("latitude",Mylatitude+"");
+                    loginParam.put("user_id",user_id);
 
                     String link = dataurl.getServerUrl()+"push_alram"; //92.168.25.25
                     HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
                     http.addAllParameters(loginParam);
 
+
                     // HTTP 요청 전송
                     HttpClient post = http.create();
                     post.request();
+                    // 응답 상태코드 가져오기
+                    int statusCode = post.getHttpStatusCode();
+                    // 응답 본문 가져오기
+                    String body = post.getBody();
+                    return body;
 
-                    // Read Server Response
-                    return "success";
+                    // Read Server Res
+
                 } catch (Exception e) {
                     return new String("Exception: " + e.getMessage());
                 }
@@ -375,7 +399,6 @@ public class MainActivity extends AppCompatActivity{
                     // 응답 본문 가져오기
                     String body = post.getBody();
                     return body;
-
                     // Read Server Response
 
                 } catch (Exception e) {
@@ -409,7 +432,7 @@ public class MainActivity extends AppCompatActivity{
         Log.d("json",s);
         try {
             JSONArray json = new JSONArray(s);
-            parsedata = new String[json.length()][11];
+            parsedata = new String[json.length()][12];
             for (int i = 0; i < json.length(); i++) {
                 JSONObject jobject = json.getJSONObject(i);
 
@@ -431,6 +454,7 @@ public class MainActivity extends AppCompatActivity{
                     parsedata[i][9] = jobject.getString("step_log_code");
                 }
                 parsedata[i][10] = jobject.getString("write_type");
+                parsedata[i][11] = jobject.getString("user_profile");
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -468,8 +492,9 @@ public class MainActivity extends AppCompatActivity{
         mainapter = new MainAdapter (
                 MainActivity.this,
                 R.layout.main_log_view,board_code,       // GridView 항목의 레이아웃 row.xml
-                title, Content, date, writeuser_id, file_type,adress, file_Content, step_log_code,write_type);
+                title, Content, date, writeuser_id, file_type,adress, file_Content, step_log_code,write_type, user_id);
         mainapter.image(images, 1);
+        mainapter.pimage(pImage,1);
         GridView gv = (GridView)findViewById(R.id.main_list);
         gv.setAdapter(mainapter);
 
@@ -503,8 +528,17 @@ public class MainActivity extends AppCompatActivity{
         @Override
         protected Bitmap[] doInBackground(String... params) {
             Bitmap[] images = new Bitmap[parsedata.length];
+            pImage = new Bitmap[parsedata.length];
             try{
                 for(int i=0; i < parsedata.length; i++) {
+
+                    String purl = dataurl.getProfile() + parsedata[i][11];
+                    InputStream iss = (InputStream) new URL(purl).getContent();
+                    BitmapFactory.Options optionss = new BitmapFactory.Options();
+                    optionss.inSampleSize = 1;
+                    optionss.inJustDecodeBounds = false;
+                    Bitmap resizedBitmaps = BitmapFactory.decodeStream(iss, null, optionss);
+                    pImage[i] = resizedBitmaps;
 
                     if(parsedata[i][7].equals("1")){
                         String url = dataurl.getTumnailUrl() + parsedata[i][8];
@@ -543,6 +577,7 @@ public class MainActivity extends AppCompatActivity{
             if(mode==1){
                 mainApeter(s);
             }else{
+                Log.d("image","dd");
                 Apeter(s);
             }
             this.cancel(true);
@@ -650,7 +685,6 @@ public class MainActivity extends AppCompatActivity{
                 // 응답 본문 가져오기
                 String body = post.getBody();
                 return body;
-                // Read Server Response
 
             }
             catch(Exception e){
@@ -671,6 +705,47 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+    /*프로필 사진*/
+    private void profile_pic(){
+        final Bitmap[] resizedBitmaps = new Bitmap[1];
+        class write extends AsyncTask<String, Void, String> {
+            ProgressDialog loading;
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                this.cancel(true);
+                profile.setImageBitmap(resizedBitmaps[0]);
+            }
+            @Override
+            protected String doInBackground(String... params) {
+
+                try{
+
+                    String url = dataurl.getProfile() + prifile_pict;
+                    Log.d("profile", url);
+                    InputStream is = (InputStream) new URL(url).getContent();
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inSampleSize = 1;
+                    options.inJustDecodeBounds = false;
+                    resizedBitmaps[0] = BitmapFactory.decodeStream(is, null, options);
+                    return "success";
+                }
+                catch(Exception e){
+                    return new String("Exception: " + e.getMessage());
+                }
+
+            }
+        }
+
+        write task = new write();
+        task.execute();
+    }
+
     /*검색 클릭시 db시*/
     class listAll extends AsyncTask<String, Void, String> {
         ProgressDialog loading;
@@ -689,7 +764,6 @@ public class MainActivity extends AppCompatActivity{
                 // 응답 본문 가져오기
                 String body = post.getBody();
                 return body;
-
                 // Read Server Response
 
             }
@@ -763,10 +837,14 @@ public class MainActivity extends AppCompatActivity{
         public void onLocationChanged(Location location) {
             //여기서 위치값이 갱신되면 이벤트가 발생한다.
             //값은 Location 형태로 리턴되며 좌표 출력 방법은 다음과 같다.
+            FirebaseMessaging.getInstance().subscribeToTopic("notice");
+            String token = FirebaseInstanceId.getInstance().getToken();
 
             Log.d("test", "onLocationChanged, location:" + location);
             double longitude = location.getLongitude(); //경도
             double latitude = location.getLatitude();   //위도
+
+            pushalram(token, longitude, latitude);
             //Gps 위치제공자에 의한 위치변화. 오차범위가 좁다.
             //Network 위치제공자에 의한 위치변화
             //Network 위치는 Gps에 비해 정확도가 많이 떨어진다.

@@ -11,8 +11,6 @@ import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.os.AsyncTask;
@@ -30,6 +28,10 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,8 +46,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
-public class Life_LogActivity extends AppCompatActivity {
+public class Life_LogModifyActivity extends AppCompatActivity {
 
     private String mImgPath = null;
     private String mImgTitle = null;
@@ -86,6 +89,8 @@ public class Life_LogActivity extends AppCompatActivity {
     SharedPreferences.Editor editor;
     private String arr;
     private String stepLogCode;
+    private String board_code;
+    private String[][] parsedata;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,9 +111,57 @@ public class Life_LogActivity extends AppCompatActivity {
         shareMeText = (TextView)findViewById(R.id.share_me);
         background = (LinearLayout)findViewById(R.id.background_logWrite_view);
 
-        Drawable drawable = getResources().getDrawable(R.drawable.addfile);
-        image.setImageDrawable(drawable);
+        shareGroup.setChecked(false);
+        shareAll.setChecked(true);
+        shareMe.setChecked(false);
 
+        Intent intent = getIntent();
+        board_code = intent.getExtras().getString("board_code");
+        String boder_Title = intent.getExtras().getString("board_Title");
+        String board_Content = intent.getExtras().getString("board_Content");
+        String file_Type = intent.getExtras().getString("file_Type");
+        String file_Content = intent.getExtras().getString("file_Content");
+
+        log_Title.setHint(boder_Title);
+        log_Content.setHint(board_Content);
+
+        listAll hashTag = new listAll();
+        String json = null;
+        try {
+             json = hashTag.execute(board_code).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        Log.d("json",json);
+        String hashTagText = "";
+
+        try {
+            JSONArray jsons = new JSONArray(json);
+            parsedata = new String[jsons.length()][2];
+            for (int i = 0; i < jsons.length(); i++) {
+                JSONObject jobject = jsons.getJSONObject(i);
+
+                parsedata[i][0] = jobject.getString("hash_tag_content");
+                hashTagText += parsedata[i][0].replace("#", "") + " ";
+                Log.d("hashTagText", hashTagText);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        hash_text.setText(hashTagText);
+
+        if(file_Type.equals("0")){
+            Drawable drawable = getResources().getDrawable(R.drawable.addfile);
+            image.setImageDrawable(drawable);
+        } else if(file_Type.equals("1")){
+            addFilepic add = new addFilepic();
+            add.execute(file_Content);
+        } else if(file_Type.equals("2")){
+            Drawable drawable = getResources().getDrawable(R.drawable.voice);
+            image.setImageDrawable(drawable);
+        }
 
         login = getSharedPreferences("LoginKeep", MODE_PRIVATE);
         editor = login.edit();
@@ -117,39 +170,19 @@ public class Life_LogActivity extends AppCompatActivity {
         SharedPreferences user = getSharedPreferences("LoginKeep", MODE_PRIVATE);
         user_id = user.getString("user_id", "0");
 
-        Intent intent =getIntent();
-        String step_Log = intent.getStringExtra("stepLog");
-
-        if(step_Log.equals("1")){
-            StepInsert(user_id);
-        }else{
-            stepLogCode = "0";
-        }
-
-        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, // 등록할 위치제공자
-                1000, // 통지사이의 최소 시간간격 (miliSecond)
-                1, // 통지사이의 최소 변경거리 (m)
-                mLocationListener);
-        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, // 등록할 위치제공자
-                1000, // 통지사이의 최소 시간간격 (miliSecond)
-                1, // 통지사이의 최소 변경거리 (m)
-                mLocationListener);
 
         hash_write.setOnFocusChangeListener(new View.OnFocusChangeListener() { // 포커스를 얻으면
             @Override
             public void onFocusChange(View v, boolean hasFocus) { // 포커스가 한뷰에서 다른뷰로 바뀔때
                 if(hasFocus == false)
                 {
-                    String hashhint = hash_write.getHint().toString();
                     String hashtest = hash_write.getText().toString();
                     hash_write.setVisibility(View.GONE);
                     hash_text.setVisibility(View.VISIBLE);
                     if(!hashtest.equals("")) {
                         hash_text.setText(hashtest);
                     }else{
-                        hash_text.setText(hashhint);
+                        hash_text.setText("해시태그 입력");
                     }
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
@@ -172,91 +205,45 @@ public class Life_LogActivity extends AppCompatActivity {
         shareMe.setChecked(true);
         shareAll.setChecked(false);
     }
-    /*스탭로그 켜져있을시 스탭로그의 code*/
-    private void StepInsert(String user_id) {
 
-        class insertData extends AsyncTask<String, Void, String> {
-            ProgressDialog loading;
+    class addFilepic extends AsyncTask<String, Void, Bitmap> {
+        ProgressDialog loading;
+        private Bitmap bmImg2;
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                loading = ProgressDialog.show(Life_LogActivity.this, "Please Wait", null, true, true);
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            try{
+                String file_Content = (String)params[0];
+                String url = dataurl.getTumnailUrl() + file_Content;
+                Log.d("url",url);
+                InputStream is = (InputStream) new URL(url).getContent();
+
+                bmImg2 = BitmapFactory.decodeStream(is);
+
+
+                return bmImg2;
+
+                // Read Server Response
+
             }
-
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                Log.d("result", s+"출력");
-                if(!s.equals("")) {
-                    stepLogCode = s;
-                }
-                loading.dismiss();
-
-            }
-
-            @Override
-            protected String doInBackground(String... params) {
-
-                try {
-                    String user_id = (String)params[0];
-
-                    Map<String, String> loginParam = new HashMap<String,String>() ;
-
-                    loginParam.put("user_id",user_id) ;
-
-                    String link = dataurl.getServerUrl()+"stepCodeSelect"; //92.168.25.25
-                    HttpClient.Builder http = new HttpClient.Builder("POST", link);
-
-                    http.addAllParameters(loginParam);
-
-                    // HTTP 요청 전송
-                    HttpClient post = http.create();
-                    post.request();
-                    // 응답 상태코드 가져오기
-                    int statusCode = post.getHttpStatusCode();
-                    // 응답 본문 가져오기
-                    String body = post.getBody();
-                    return body;
-
-                    // Read Server Response
-
-                } catch (Exception e) {
-                    return new String("Exception: " + e.getMessage());
-                }
-
+            catch(Exception e){
+                bmImg2 = null;
+                return bmImg2;
             }
         }
-        insertData task = new insertData();
-        task.execute(user_id);
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap s) {
+            super.onPostExecute(s);
+            image.setImageBitmap(s);
+            this.cancel(true);
+        }
     }
-
-    private final LocationListener mLocationListener = new LocationListener() {
-        public void onLocationChanged(Location location) {
-            //여기서 위치값이 갱신되면 이벤트가 발생한다.
-            //값은 Location 형태로 리턴되며 좌표 출력 방법은 다음과 같다.
-
-            Log.d("test", "onLocationChanged, location:" + location);
-            longitude = location.getLongitude(); //경도
-            latitude = location.getLatitude();   //위도
-
-            place_info.setText(getAddress(latitude, longitude));
-        }
-        public void onProviderDisabled(String provider) {
-            // Disabled시
-            Log.d("test", "onProviderDisabled, provider:" + provider);
-        }
-
-        public void onProviderEnabled(String provider) {
-            // Enabled시
-            Log.d("test", "onProviderEnabled, provider:" + provider);
-        }
-
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-            // 변경시
-            Log.d("test", "onStatusChanged, provider:" + provider + ", status:" + status + " ,Bundle:" + extras);
-        }
-    };
 
     public void modeWrite(View view){
         String hashtest = (String) hash_text.getText();
@@ -305,7 +292,7 @@ public class Life_LogActivity extends AppCompatActivity {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                loading = ProgressDialog.show(Life_LogActivity.this, "Please Wait", null, true, true);
+                loading = ProgressDialog.show(Life_LogModifyActivity.this, "Please Wait", null, true, true);
             }
 
             @Override
@@ -313,13 +300,13 @@ public class Life_LogActivity extends AppCompatActivity {
                 super.onPostExecute(s);
                 Log.d("result",s);
                 if(s.equals("success")) {
-                    Toast.makeText(getApplicationContext(), "업로드 성공", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "수정 성공", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 }
                 else{
-                    Toast.makeText(getApplicationContext(), "업로드 실패", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "수정 실패", Toast.LENGTH_SHORT).show();
                 }
                 loading.dismiss();
 
@@ -354,7 +341,7 @@ public class Life_LogActivity extends AppCompatActivity {
                         mFileInputStream = new FileInputStream(Environment.getExternalStorageDirectory().getAbsolutePath()+"/travelLog/log.txt");
                     }
 
-                    URL url = new URL(dataurl.getServerUrl()+"insertLog"); //요청 URL을 입력
+                    URL url = new URL(dataurl.getServerUrl()+"updateBoard"); //요청 URL을 입력
                     conn = (HttpURLConnection) url.openConnection();
 
                     conn.setDoInput(true); //input을 사용하도록 설정 (default : true)
@@ -366,8 +353,13 @@ public class Life_LogActivity extends AppCompatActivity {
                     conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
                     DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
 
-                    ;
 
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+                    dos.writeBytes("Content-Disposition: form-data; name=\"board_code\""
+                            + lineEnd);
+                    dos.writeBytes(lineEnd);
+                    dos.write((board_code+"").getBytes("EUC_KR"));
+                    dos.writeBytes( lineEnd);
                     dos.writeBytes(twoHyphens + boundary + lineEnd);
                     dos.writeBytes("Content-Disposition: form-data; name=\"log_Title\""
                             + lineEnd);
@@ -390,22 +382,6 @@ public class Life_LogActivity extends AppCompatActivity {
                     dos.writeBytes( lineEnd);
 
                     dos.writeBytes(twoHyphens + boundary + lineEnd);
-                    dos.writeBytes("Content-Disposition: form-data; name=\"log_longtitude\""
-                            + lineEnd);
-                    dos.writeBytes(lineEnd);
-                    String longti = Double.toString(longitude);
-                    dos.write(longti.getBytes("EUC_KR"));
-                    dos.writeBytes( lineEnd);
-
-                    dos.writeBytes(twoHyphens + boundary + lineEnd);
-                    dos.writeBytes("Content-Disposition: form-data; name=\"log_latitude\""
-                            + lineEnd);
-                    dos.writeBytes(lineEnd);
-                    String lati = Double.toString(latitude);
-                    dos.write(lati.getBytes("EUC_KR"));
-                    dos.writeBytes( lineEnd);
-
-                    dos.writeBytes(twoHyphens + boundary + lineEnd);
                     dos.writeBytes("Content-Disposition: form-data; name=\"share_type\""
                             + lineEnd);
                     dos.writeBytes(lineEnd);
@@ -419,29 +395,6 @@ public class Life_LogActivity extends AppCompatActivity {
                     dos.write(file_Type.getBytes("EUC_KR"));
                     dos.writeBytes( lineEnd);
 
-                    dos.writeBytes(twoHyphens + boundary + lineEnd);
-                    dos.writeBytes("Content-Disposition: form-data; name=\"board_type\""
-                            + lineEnd);
-                    dos.writeBytes(lineEnd);
-                    String board_type = "1";
-                    dos.write(board_type.getBytes("EUC_KR"));
-                    dos.writeBytes( lineEnd);
-
-                    dos.writeBytes(twoHyphens + boundary + lineEnd);
-                    dos.writeBytes("Content-Disposition: form-data; name=\"user_id\""
-                            + lineEnd);
-                    dos.writeBytes(lineEnd);
-                    dos.write(user_id.getBytes("EUC_KR"));
-                    dos.writeBytes( lineEnd);
-
-                    if(!stepLogCode.equals("0")) {
-                    dos.writeBytes(twoHyphens + boundary + lineEnd);
-                    dos.writeBytes("Content-Disposition: form-data; name=\"step_log\""
-                            + lineEnd);
-                    dos.writeBytes(lineEnd);
-                        dos.write(stepLogCode.getBytes("EUC_KR"));
-                        dos.writeBytes(lineEnd);
-                    }
                     if(mImgPath != null) {
                         dos.writeBytes(twoHyphens + boundary + lineEnd);
                         Log.d("dd",mImgPath);
@@ -671,5 +624,50 @@ public class Life_LogActivity extends AppCompatActivity {
                 }
         }
 
+    }
+
+    class listAll extends AsyncTask<String, Void, String> {
+        ProgressDialog loading;
+        @Override
+        protected String doInBackground(String... params) {
+            try{
+                String board_code = (String)params[0];
+
+                Map<String, String> loginParam = new HashMap<String,String>() ;
+
+                loginParam.put("board_code",board_code);
+
+                String link= dataurl.getServerUrl()+"hashTagList"; //92.168.25.25
+                HttpClient.Builder http = new HttpClient.Builder("POST", link);
+
+                http.addAllParameters(loginParam);
+
+                // HTTP 요청 전송
+                HttpClient post = http.create();
+                post.request();
+                // 응답 상태코드 가져오기
+                int statusCode = post.getHttpStatusCode();
+                // 응답 본문 가져오기
+                String body = post.getBody();
+                return body;
+                // Read Server Response
+
+            }
+            catch(Exception e){
+                return new String("Exception: " + e.getMessage());
+            }
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loading = ProgressDialog.show(Life_LogModifyActivity.this, "Please Wait", null, true, true);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            this.cancel(true);
+            loading.dismiss();
+        }
     }
 }

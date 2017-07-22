@@ -22,6 +22,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
     SharedPreferences movebutton;
     SharedPreferences.Editor editor;
+    public static String push_text;
     // [START receive_message]
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -40,7 +41,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.foot)
                 .setContentTitle("Travel_log Push Alram ")
-                .setContentText("그때와 다른점이 있나요?")
+                .setContentText(push_text)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri).setLights(000000255,500,2000)
                 .setContentIntent(pendingIntent);

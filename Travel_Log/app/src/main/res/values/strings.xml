@@ -21,5 +21,12 @@
         <item>취소</item>
     </string-array>
 
+    <string-array name="list_dialog_option_item">
+        <item>수정</item>
+        <item>삭제</item>
+        <item>취소</item>
+    </string-array>
+
+
     <string name="action_settings">Settings</string>
 </resources>

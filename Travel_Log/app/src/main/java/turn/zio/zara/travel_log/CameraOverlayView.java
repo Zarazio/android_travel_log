@@ -67,10 +67,10 @@ public class CameraOverlayView  extends View implements SensorEventListener {
     public static boolean drawtext;
     private RectF backbtn;
 
-
     public CameraOverlayView(Context context) {
         super(context);
         mContext = (CameraActivity) context;
+
 
         hashTag="없음";
         DBselect = true;
@@ -262,7 +262,7 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         JSONArray json = null;
         try {
             json = new JSONArray(s);
-            parsedata = new String[json.length()][9];
+            parsedata = new String[json.length()][10];
             for (int i = 0; i < json.length(); i++) {
                 JSONObject jobject = json.getJSONObject(i);
 
@@ -275,6 +275,7 @@ public class CameraOverlayView  extends View implements SensorEventListener {
                 parsedata[i][6] = jobject.getString("user_id");
                 parsedata[i][7] = jobject.getString("board_date");
                 parsedata[i][8] = jobject.getString("write_type");
+                parsedata[i][9] = jobject.getString("user_profile");
 
                 int sel_board_Code = Integer.parseInt(parsedata[i][0]);
                 if(touch_board_Code == sel_board_Code){
@@ -285,9 +286,10 @@ public class CameraOverlayView  extends View implements SensorEventListener {
                     intent.putExtra("board_Content",parsedata[i][2]);
                     intent.putExtra("log_longtitude",parsedata[i][3]);
                     intent.putExtra("log_latitude",parsedata[i][4]);
-                    intent.putExtra("user_id",parsedata[i][6]);
                     intent.putExtra("board_Date",parsedata[i][7]);
                     intent.putExtra("write_type",parsedata[i][8]);
+                    intent.putExtra("profile_picture",parsedata[i][9]);
+                    Log.d("click", parsedata[i][9]);
 
                     mContext.startActivity(intent);
                     DBselect =false;

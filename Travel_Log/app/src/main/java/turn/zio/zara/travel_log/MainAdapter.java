@@ -38,6 +38,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by 하루마다 on 2017-06-14.
@@ -84,10 +86,13 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
     private FragmentTransaction fragmentTransaction;
     MapFragment mMapFragment;
     private int mode;
+    private int like_ture = -1;
+    String mainuser_id;
+    private Bitmap[] pimages;
 
     //생성자
     public MainAdapter(Context context, int layout, String[] board_code, String[] title, String[] Content, String[] date,
-                       String[] writeuser_id, String[] file_type, String[] adress, String[] file_Content, String[] step_log_code, String[] write_type) {
+                       String[] writeuser_id, String[] file_type, String[] adress, String[] file_Content, String[] step_log_code, String[] write_type, String user_id) {
         //인플레이트 준비를 합니다.
         this.context = context;
         this.layout = layout;
@@ -102,6 +107,7 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
         this.file_Content = file_Content;
         this.step_log_code = step_log_code;
         this.write_type = write_type;
+        this.mainuser_id = user_id;
         inf = (LayoutInflater) context.getSystemService
                 (Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -127,8 +133,12 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
         this.images = images;
         this.mode = i;
     }
+    public void pimage(Bitmap[] pimages, int i){
+        this.pimages = pimages;
+        this.mode = i;
+    }
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         // TODO Auto-generated method stub
         //최초 호출이면 항목 뷰를 생성한다.
         //타입별로 뷰를 다르게 디자인 할 수 있으며 높이가 달라도 상관없다.
@@ -144,14 +154,44 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
         log_place.setText(adress[position]);
         TextView log_date = (TextView)convertView.findViewById(R.id.log_date);
         log_date.setText(date[position]);
-        TextView user_id = (TextView)convertView.findViewById(R.id.user_id);
+        final TextView user_id = (TextView)convertView.findViewById(R.id.user_id);
         user_id.setText(writeuser_id[position]);
 
+
+        final ImageView like = (ImageView)convertView.findViewById(R.id.log_Likes);
+        ImageView Comment = (ImageView)convertView.findViewById(R.id.log_Comments);
         ImageView iv = (ImageView)convertView.findViewById(R.id.log_picture);
+        ImageView profile_pic = (ImageView)convertView.findViewById(R.id.profile_picture);
         LinearLayout picView = (LinearLayout)convertView.findViewById(R.id.log_picture_Linear);
         LinearLayout map = (LinearLayout) convertView.findViewById(R.id.MapContainer);
         LinearLayout text = (LinearLayout) convertView.findViewById(R.id.text);
 
+        like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("click","라이크 클릭");
+                if(like_ture == 1){
+                    like.setImageDrawable(context.getResources().getDrawable(R.drawable.like_off));
+                    like_ture = -1;
+                }else{
+                    like.setImageDrawable(context.getResources().getDrawable(R.drawable.like_on));
+                    like_ture = 1;
+                }
+                LikeonOff(mainuser_id, board_code[position]+"");
+            }
+        });
+
+        Comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, Comment.class);
+                intent.putExtra("board_Code", board_code[position]+"");
+                intent.putExtra("user_id", mainuser_id);
+                context.startActivity(intent);
+            }
+        });
+        profile_pic.setImageBitmap(pimages[position]);
+        profile_pic.setScaleType(ImageView.ScaleType.FIT_XY);
         if(file_type[position].equals("0")) {
             picView.setVisibility(View.GONE);
             text.setVisibility(View.VISIBLE);
@@ -193,6 +233,8 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
             adresstext = adress[position];
             kmlFile = file_Content[position];
             step_log_codetext = step_log_code[position];
+
+
             if(mMap != null) {
                 mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
@@ -214,7 +256,10 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
                 });
             }
         }
-
+        if(like_ture ==-1) {
+            LikeTure(mainuser_id, board_code[position], like);
+        }
+        Log.d("like",like_ture+"ddd" + board_code[position] +"/" + Content[position]);
         /*웹으로쓴 글일때*/
         if(write_type[position].equals("0")){
             ArrayList<Integer> posstart = new ArrayList<Integer>();
@@ -349,5 +394,133 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
         loginData task = new loginData();
         task.execute();
     }
+    /*좋아요 여부*/
+    private void LikeTure(final String user_id, final String board_code, final ImageView like){
 
+        class tureData extends AsyncTask<String, Void, String> {
+            ProgressDialog loading;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                Log.d("like 결과",s);
+                Log.d("like 결과",board_code+"");
+                like_ture = Integer.parseInt(s);
+                if(like_ture == 1){
+                    like.setImageDrawable(context.getResources().getDrawable(R.drawable.like_on));
+                }else{
+                    like.setImageDrawable(context.getResources().getDrawable(R.drawable.like_off));
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+
+                try{
+                    String user_id = (String)params[0];
+                    String board_code = (String)params[1];
+
+                    Map<String, String> loginParam = new HashMap<String,String>() ;
+
+                    loginParam.put("user_id",user_id) ;
+                    loginParam.put("board_code",board_code);
+
+
+                    String link=dataurl.getServerUrl()+"liketure"; //92.168.25.25
+                    HttpClient.Builder http = new HttpClient.Builder("POST", link);
+
+                    http.addAllParameters(loginParam);
+
+                    // HTTP 요청 전송
+                    HttpClient post = http.create();
+                    post.request();
+                    // 응답 상태코드 가져오기
+                    int statusCode = post.getHttpStatusCode();
+                    // 응답 본문 가져오기
+                    String body = post.getBody();
+                    return body;
+
+                    // Read Server Response
+
+                }
+                catch(Exception e){
+                    return new String("Exception: " + e.getMessage());
+                }
+
+            }
+        }
+
+        tureData task = new tureData();
+        task.execute(user_id,board_code);
+    }
+
+    private void LikeonOff(final String user_id, final String board_code){
+
+        class tureData extends AsyncTask<String, Void, String> {
+            ProgressDialog loading;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                Log.d("like 결과",s);
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+
+                try{
+                    String user_id = (String)params[0];
+                    String board_code = (String)params[1];
+
+                    Map<String, String> loginParam = new HashMap<String,String>() ;
+
+                    loginParam.put("user_id",user_id) ;
+                    loginParam.put("board_code",board_code);
+
+                    String dbselect = null;
+
+                    if(like_ture == 1){
+                        dbselect = "like";
+                    }else{
+                        dbselect = "likeDelete";
+                    }
+
+                    Log.d("db", dbselect);
+                    String link=dataurl.getServerUrl()+dbselect; //92.168.25.25
+                    HttpClient.Builder http = new HttpClient.Builder("POST", link);
+
+                    http.addAllParameters(loginParam);
+
+                    // HTTP 요청 전송
+                    HttpClient post = http.create();
+                    post.request();
+                    // 응답 상태코드 가져오기
+                    int statusCode = post.getHttpStatusCode();
+                    // 응답 본문 가져오기
+                    String body = post.getBody();
+                    return body;
+
+                    // Read Server Response
+
+                }
+                catch(Exception e){
+                    return new String("Exception: " + e.getMessage());
+                }
+
+            }
+        }
+
+        tureData task = new tureData();
+        task.execute(user_id,board_code);
+    }
 }

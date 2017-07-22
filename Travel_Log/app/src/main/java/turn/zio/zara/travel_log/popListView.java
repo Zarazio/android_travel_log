@@ -60,7 +60,7 @@ public class popListView extends Activity {
 
         try {
             json = new JSONArray(jsondata);
-            parsedata = new String[json.length()][9];
+            parsedata = new String[json.length()][10];
             for (int i = 0; i < json.length(); i++) {
                 JSONObject jobject = json.getJSONObject(i);
 
@@ -120,6 +120,7 @@ public class popListView extends Activity {
                         parsedata[i][6] = jobject.getString("user_id");
                         parsedata[i][7] = jobject.getString("board_date");
                         parsedata[i][8] = jobject.getString("write_type");
+                        parsedata[i][9] = jobject.getString("user_profile");
 
                         if(sel_boardCode.equals(parsedata[i][0]) && touch==true) {
                             Intent intent = new Intent(getApplicationContext(), LifeLogViewActivity.class);
@@ -132,6 +133,7 @@ public class popListView extends Activity {
                             intent.putExtra("user_id",parsedata[i][6]);
                             intent.putExtra("board_Date",parsedata[i][7]);
                             intent.putExtra("write_type",parsedata[i][8]);
+                            intent.putExtra("profile_picture",parsedata[i][9]);
 
                             startActivity(intent);
                             CameraOverlayView.DBselect = false;

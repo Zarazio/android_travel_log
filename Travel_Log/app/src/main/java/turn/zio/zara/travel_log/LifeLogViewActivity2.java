@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -45,6 +46,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -82,8 +84,23 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
     private LinearLayout mLayout;
     private GoogleMap mMap;
     private int board_code;
+    private String user_id;
     public static boolean oneView = true;
     private String file_Type;
+    int like_ture = 0;
+    private ImageView like;
+    private ImageView user_profile;
+    private String profile_picture;
+    private ImageView option;
+
+    private ListViewDialog mDialog;
+    private double log_latitude;
+    private double log_longtitude;
+    private String write_type;
+    private String boder_Title;
+    private String board_Content;
+    private String String_Date;
+    private String write_user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,18 +119,24 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
         picutre_Linear= (LinearLayout) findViewById(R.id.log_picture_Linear);
         text = (LinearLayout) findViewById(R.id.text);
         goomap = (LinearLayout) findViewById(R.id.MapContainer);
+        like = (ImageView)findViewById(R.id.log_Likes);
+        user_profile = (ImageView)findViewById(R.id.profile_picture);
+        option = (ImageView) findViewById(R.id.option);
+
 
         Intent intent = getIntent();
         board_code = Integer.parseInt(intent.getExtras().getString("board_Code"));
-        String boder_Title = intent.getExtras().getString("board_Title");
-        String board_Content = intent.getExtras().getString("board_Content");
-        String user_id = intent.getExtras().getString("user_id");
-        String String_Date = intent.getExtras().getString("board_Date");
+        boder_Title = intent.getExtras().getString("board_Title");
+        board_Content = intent.getExtras().getString("board_Content");
+        user_id = intent.getExtras().getString("user_id");
+        write_user_id = intent.getExtras().getString("write_user_id");
+        String_Date = intent.getExtras().getString("board_Date");
         file_Type = intent.getExtras().getString("file_Type");
         file_Content = intent.getExtras().getString("file_Content");
-        String write_type = intent.getExtras().getString("write_type");
-        Double log_longtitude= null;
-        Double log_latitude = null;
+        write_type = intent.getExtras().getString("write_type");
+        profile_picture = intent.getExtras().getString("profile_picture");
+        profle pro = new profle();
+        pro.execute();
         if(!file_Type.equals("3")) {
             log_longtitude = Double.parseDouble(intent.getExtras().getString("log_longtitude"));
             log_latitude = Double.parseDouble(intent.getExtras().getString("log_latitude"));
@@ -122,6 +145,12 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
             step_log_code = intent.getExtras().getString("step_log_code");
             Log.d("dd",step_log_code);
         }
+        //좋아요 눌렀는지 여부
+
+        if(user_id.equals(write_user_id)){
+            option.setVisibility(View.VISIBLE);
+        }
+        LikeTure(user_id, board_code+ "");
         String address = "0";
         if(file_Type.equals("1")) {
             Log.d("이미지","이미지");
@@ -166,7 +195,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
                 ArrayList<Integer> posend = new ArrayList<Integer>();
                 board_Content = board_Content.replaceAll("<br>","");
                 int poss = board_Content.indexOf("<img");
-                int pose = board_Content.indexOf(";\">");
+                int pose = board_Content.indexOf("\">");
                 Log.d("pos",board_Content.indexOf("<img")+"");
                 int j = 0;
                 while(poss > -1){
@@ -178,14 +207,14 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
                 j = 0;
                 while(pose > -1){
                     posend.add(pose);
-                    pose =  board_Content.indexOf(";\">", pose+1);
+                    pose =  board_Content.indexOf("\">", pose+1);
                     Log.d("endindex", posend.get(j).toString());
                     j++;
                 }
                 String testData = null;
                 for(int i=posstart.size()-1; i>=0; i--){
                     Log.d("result", board_Content);
-                    testData = replaceLast(board_Content,board_Content.substring(Integer.parseInt(posstart.get(i).toString()), (Integer.parseInt(posend.get(i).toString()))+3),"");
+                    testData = replaceLast(board_Content,board_Content.substring(Integer.parseInt(posstart.get(i).toString()), (Integer.parseInt(posend.get(i).toString()))+2),"");
                     Log.d("result", testData);
                     board_Content =testData;
 
@@ -199,7 +228,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
             goomap.setVisibility(View.VISIBLE);
             text.setVisibility(View.GONE);
         }
-        profile_user_id.setText(user_id);
+        profile_user_id.setText(write_user_id);
         log_date.setText(String_Date);
     }
     public static String replaceLast(String str, String regex, String replacement) {
@@ -210,6 +239,45 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
             return str.substring(0, regexIndexOf) + replacement + str.substring(regexIndexOf + regex.length());
         }
     }
+
+    class profle extends AsyncTask<String, Void, Bitmap> {
+        ProgressDialog loading;
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            try{
+
+                String url = dataurl.getProfile() + profile_picture;
+                Log.d("url",url);
+                InputStream is = (InputStream) new URL(url).getContent();
+
+                Bitmap bmImg2 = BitmapFactory.decodeStream(is);
+
+
+                return bmImg2;
+
+                // Read Server Response
+
+            }
+            catch(Exception e){
+                resizedBitmap = null;
+                return resizedBitmap;
+            }
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap s) {
+            super.onPostExecute(s);
+            this.cancel(true);
+            user_profile.setScaleType(ImageView.ScaleType.FIT_XY);
+            user_profile.setImageBitmap(s);
+        }
+    }
+
     /** 위도와 경도 기반으로 주소를 리턴하는 메서드*/
     public String getAddress(double lat, double lng){
         String address = null;
@@ -260,20 +328,21 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
     }
     class serpic extends AsyncTask<String, Void, Bitmap> {
         ProgressDialog loading;
+
         @Override
         protected Bitmap doInBackground(String... params) {
             try{
 
-                        String url = dataurl.getDataUrl() + file_Content;
-                        Log.d("url",url);
-                        InputStream is = (InputStream) new URL(url).getContent();
+                String url = dataurl.getTumnailUrl() + file_Content;
+                Log.d("url",url);
+                InputStream is = (InputStream) new URL(url).getContent();
 
-                         bmImg = BitmapFactory.decodeStream(is);
-                        int width = bmImg.getWidth();
-                        int height = bmImg.getHeight();
-                        //화면에 표시할 데이터
-                        Matrix matrix = new Matrix();
-                        resizedBitmap = Bitmap.createBitmap(bmImg, 0, 0, width, height, matrix, true);
+                bmImg = BitmapFactory.decodeStream(is);
+                int width = bmImg.getWidth();
+                int height = bmImg.getHeight();
+                //화면에 표시할 데이터
+                Matrix matrix = new Matrix();
+                resizedBitmap = Bitmap.createBitmap(bmImg, 0, 0, width, height, matrix, true);
 
 
                 return resizedBitmap;
@@ -296,8 +365,8 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
         protected void onPostExecute(Bitmap s) {
             super.onPostExecute(s);
             this.cancel(true);
-            image.setImageBitmap(resizedBitmap);
             image.setScaleType(ImageView.ScaleType.FIT_XY);
+            image.setImageBitmap(resizedBitmap);
             loading.dismiss();
         }
     }
@@ -494,5 +563,260 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
 
         }
         super.onDestroy();
+    }
+
+    /*좋아요 여부*/
+    private void LikeTure(final String user_id, final String board_code){
+
+        class tureData extends AsyncTask<String, Void, String> {
+            ProgressDialog loading;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                Log.d("like 결과",s);
+                like_ture = Integer.parseInt(s);
+                if(like_ture == 1){
+                    like.setImageDrawable(getResources().getDrawable(R.drawable.like_on));
+                }else{
+                    like.setImageDrawable(getResources().getDrawable(R.drawable.like_off));
+                }
+
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+
+                try{
+                    String user_id = (String)params[0];
+                    String board_code = (String)params[1];
+
+                    Map<String, String> loginParam = new HashMap<String,String>() ;
+
+                    loginParam.put("user_id",user_id) ;
+                    loginParam.put("board_code",board_code);
+
+
+                    String link=dataurl.getServerUrl()+"liketure"; //92.168.25.25
+                    HttpClient.Builder http = new HttpClient.Builder("POST", link);
+
+                    http.addAllParameters(loginParam);
+
+                    // HTTP 요청 전송
+                    HttpClient post = http.create();
+                    post.request();
+                    // 응답 상태코드 가져오기
+                    int statusCode = post.getHttpStatusCode();
+                    // 응답 본문 가져오기
+                    String body = post.getBody();
+                    return body;
+
+                    // Read Server Response
+
+                }
+                catch(Exception e){
+                    return new String("Exception: " + e.getMessage());
+                }
+
+            }
+        }
+
+        tureData task = new tureData();
+        task.execute(user_id,board_code);
+    }
+
+    public void likeclick(View v){
+        Log.d("like", like_ture+"");
+        if(like_ture == 1){
+            like.setImageDrawable(getResources().getDrawable(R.drawable.like_off));
+            like_ture = -1;
+        }else{
+            like.setImageDrawable(getResources().getDrawable(R.drawable.like_on));
+            like_ture = 1;
+        }
+        LikeonOff(user_id, board_code+"");
+    }
+    private void LikeonOff(final String user_id, final String board_code){
+
+        class tureData extends AsyncTask<String, Void, String> {
+            ProgressDialog loading;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                Log.d("like 결과",s);
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+
+                try{
+                    String user_id = (String)params[0];
+                    String board_code = (String)params[1];
+
+                    Map<String, String> loginParam = new HashMap<String,String>() ;
+
+                    loginParam.put("user_id",user_id) ;
+                    loginParam.put("board_code",board_code);
+
+                    String dbselect = null;
+
+                    if(like_ture == 1){
+                        dbselect = "like";
+                    }else{
+                        dbselect = "likeDelete";
+                    }
+
+                    Log.d("db", dbselect);
+                    String link=dataurl.getServerUrl()+dbselect; //92.168.25.25
+                    HttpClient.Builder http = new HttpClient.Builder("POST", link);
+
+                    http.addAllParameters(loginParam);
+
+                    // HTTP 요청 전송
+                    HttpClient post = http.create();
+                    post.request();
+                    // 응답 상태코드 가져오기
+                    int statusCode = post.getHttpStatusCode();
+                    // 응답 본문 가져오기
+                    String body = post.getBody();
+                    return body;
+
+                    // Read Server Response
+
+                }
+                catch(Exception e){
+                    return new String("Exception: " + e.getMessage());
+                }
+
+            }
+        }
+
+        tureData task = new tureData();
+        task.execute(user_id,board_code);
+    }
+
+    public void log_option(View v){
+        switch(v.getId()){
+            case R.id.option:
+                Log.d("TAG", "click button list dialog.......");
+                showListDialog();
+                break;
+        }
+    }
+
+    private void showListDialog(){
+
+        String[] item = getResources().getStringArray(R.array.list_dialog_option_item);
+
+        List<String> listItem = Arrays.asList(item);
+        ArrayList<String> itemArrayList = new ArrayList<String>(listItem);
+        mDialog = new ListViewDialog(this, getString(R.string.list_dialog_title), itemArrayList);
+        mDialog.getWindow().setGravity(Gravity.BOTTOM);
+        mDialog.onOnSetItemClickListener(new ListViewDialog.ListViewDialogSelectListener() {
+
+
+            @Override
+
+            public void onSetOnItemClickListener(int position) {
+                // TODO Auto-generated method stub
+                profle pro = new profle();
+                pro.execute();
+                if (position == 0) {
+                    Intent intent = new Intent(getApplicationContext(), Life_LogModifyActivity.class);
+                    Log.d("board_code", board_code+"/board_code");
+                    intent.putExtra("board_code",board_code+"");
+                    intent.putExtra("board_Title",boder_Title);
+                    intent.putExtra("board_Content",board_Content);
+                    intent.putExtra("file_Type",file_Type);
+                    intent.putExtra("file_Content",file_Content);
+                    startActivity(intent);
+                } else if (position == 1) {
+                    deleteBoard(user_id, board_code+"");
+                } else if (position == 2) {
+                    mDialog.dismiss();
+                }
+                mDialog.dismiss();
+            }
+        });
+        mDialog.show();
+
+    }
+
+    private void deleteBoard(final String user_id, final String board_code){
+
+        class delete extends AsyncTask<String, Void, String> {
+            ProgressDialog loading;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                Log.d(" 결과",s);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+
+                try{
+                    String user_id = (String)params[0];
+                    String board_code = (String)params[1];
+
+                    Map<String, String> loginParam = new HashMap<String,String>() ;
+
+                    loginParam.put("user_id",user_id) ;
+                    loginParam.put("board_code",board_code);
+
+
+                    String link=dataurl.getServerUrl()+"deleteBoard"; //92.168.25.25
+                    HttpClient.Builder http = new HttpClient.Builder("POST", link);
+
+                    http.addAllParameters(loginParam);
+
+                    // HTTP 요청 전송
+                    HttpClient post = http.create();
+                    post.request();
+                    // 응답 상태코드 가져오기
+                    int statusCode = post.getHttpStatusCode();
+                    // 응답 본문 가져오기
+                    String body = post.getBody();
+                    return body;
+
+                    // Read Server Response
+
+                }
+                catch(Exception e){
+                    return new String("Exception: " + e.getMessage());
+                }
+
+            }
+        }
+
+        delete task = new delete();
+        task.execute(user_id,board_code);
+    }
+    public void  commentView(View v){
+        Intent intent = new Intent(getApplicationContext(), Comment.class);
+        intent.putExtra("board_Code",board_code+"");
+        intent.putExtra("user_id", user_id);
+        startActivity(intent);
     }
 }

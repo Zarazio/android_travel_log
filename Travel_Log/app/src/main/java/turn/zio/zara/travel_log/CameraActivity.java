@@ -1,7 +1,6 @@
 package turn.zio.zara.travel_log;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -12,14 +11,16 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-public class CameraActivity extends Activity {
+public class CameraActivity extends AppCompatActivity {
 
     FrameLayout previewFrame;
     private CameraOverlayView mOverlayView = null;
@@ -30,10 +31,18 @@ public class CameraActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_camera);
 
+        ImageView home_icon = (ImageView)findViewById(R.id.home_icon);
+        ImageView mode_change = (ImageView)findViewById(R.id.mode_change);
+        ImageView filrer_icon = (ImageView)findViewById(R.id.filrer_icon);
+
+        home_icon.setImageDrawable(getResources().getDrawable(R.drawable.ar_homepage));
+        mode_change.setImageDrawable(getResources().getDrawable(R.drawable.search_on));
+        filrer_icon.setImageDrawable(getResources().getDrawable(R.drawable.ar_fillter));
+
         //카메라 화면 보여주기
         final CameraSurfaceView cameraView = new CameraSurfaceView(getApplicationContext());
 
-       //AR 데이터 보여주기
+        //AR 데이터 보여주기
         mOverlayView = new CameraOverlayView(this);
         FrameLayout previewFrame = (FrameLayout) findViewById(R.id.previewFrame);
         previewFrame.addView(cameraView);
@@ -44,9 +53,8 @@ public class CameraActivity extends Activity {
         mOverlayView.setOverlaySize(dm.widthPixels, dm.heightPixels);
         addContentView(mOverlayView, new LayoutParams(dm.widthPixels, dm.heightPixels));
 
-
         //위치정보 획득
-       lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, // 등록할 위치제공자
                 100, // 통지사이의 최소 시간간격 (miliSecond)

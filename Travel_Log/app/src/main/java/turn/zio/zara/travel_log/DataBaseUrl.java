@@ -7,12 +7,15 @@ package turn.zio.zara.travel_log;
 public class DataBaseUrl {
     /*
     * 서버 http://211.202.32.52:8084
-    * 노트북 http://172.20.1.219:8087 192.168.43.109
+    * 노트북 http://127.19.1.81:8088 192.168.43.109:8087
+    *
     */
-    private String tumnailUrl = "http://192.168.43.109:8087/turn/resources/upload/logs/s_";
-    private String serverUrl = "http://192.168.43.109:8087/android/";
-    private String dataUrl = "http://192.168.43.109:8087/turn/resources/upload/logs/";
-    private String stepUrl = "http://192.168.43.109:8087/turn/resources/upload/step_Log/";
+    private String url = "http://114.201.41.248:8084";
+    private String tumnailUrl = url+"/turn/resources/upload/logs/s_";
+    private String serverUrl = url+"/android/";
+    private String dataUrl = url+"/turn/resources/upload/logs/";
+    private String profile = url+"/turn/resources/upload/profile/";
+    private String stepUrl = url+"/turn/resources/upload/step_Log/";
 
     public String getTumnailUrl() {
         return tumnailUrl;
@@ -26,8 +29,9 @@ public class DataBaseUrl {
         return dataUrl;
     }
 
-    public String getStepUrl() {
+    public String getStepUrl() { return stepUrl; }
 
-        return stepUrl;
+    public String getProfile() {
+        return profile;
     }
 }
