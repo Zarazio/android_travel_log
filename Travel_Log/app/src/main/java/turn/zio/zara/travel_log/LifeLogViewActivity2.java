@@ -9,6 +9,8 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.location.Address;
 import android.location.Geocoder;
 import android.media.MediaPlayer;
@@ -53,7 +55,7 @@ import java.util.Locale;
 import java.util.Map;
 
 
-public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapReadyCallback {
+public class LifeLogViewActivity2 extends AppCompatActivity implements OnMapReadyCallback {
 
     private TextView log_title;
     private TextView log_Content;
@@ -108,21 +110,23 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_life_log_view);
 
-        log_title = (TextView) findViewById(R.id.log_title) ;
-        log_Content = (TextView) findViewById(R.id.log_cotennt) ;
-        log_Place = (TextView) findViewById(R.id.log_place) ;
-        log_date = (TextView) findViewById(R.id.log_date) ;
-        profile_user_id = (TextView) findViewById(R.id.user_id) ;
+        log_title = (TextView) findViewById(R.id.log_title);
+        log_Content = (TextView) findViewById(R.id.log_cotennt);
+        log_Place = (TextView) findViewById(R.id.log_place);
+        log_date = (TextView) findViewById(R.id.log_date);
+        profile_user_id = (TextView) findViewById(R.id.user_id);
 
         image = (ImageView) findViewById(R.id.log_picture);
         bakcMain_icon = (ImageView) findViewById(R.id.bakcMain_icon);
-        picutre_Linear= (LinearLayout) findViewById(R.id.log_picture_Linear);
+        picutre_Linear = (LinearLayout) findViewById(R.id.log_picture_Linear);
         text = (LinearLayout) findViewById(R.id.text);
         goomap = (LinearLayout) findViewById(R.id.MapContainer);
-        like = (ImageView)findViewById(R.id.log_Likes);
-        user_profile = (ImageView)findViewById(R.id.profile_picture);
+        like = (ImageView) findViewById(R.id.log_Likes);
+        user_profile = (ImageView) findViewById(R.id.profile_picture);
         option = (ImageView) findViewById(R.id.option);
 
+        user_profile.setBackground(new ShapeDrawable(new OvalShape()));
+        user_profile.setClipToOutline(true);
 
         Intent intent = getIntent();
         board_code = Integer.parseInt(intent.getExtras().getString("board_Code"));
@@ -137,105 +141,105 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
         profile_picture = intent.getExtras().getString("profile_picture");
         profle pro = new profle();
         pro.execute();
-        if(!file_Type.equals("3")) {
+        if (!file_Type.equals("3")) {
             log_longtitude = Double.parseDouble(intent.getExtras().getString("log_longtitude"));
             log_latitude = Double.parseDouble(intent.getExtras().getString("log_latitude"));
         }
-        if(file_Type.equals("3")){
+        if (file_Type.equals("3")) {
             step_log_code = intent.getExtras().getString("step_log_code");
-            Log.d("dd",step_log_code);
+            Log.d("dd", step_log_code);
         }
         //좋아요 눌렀는지 여부
 
-        if(user_id.equals(write_user_id)){
+        if (user_id.equals(write_user_id)) {
             option.setVisibility(View.VISIBLE);
         }
-        LikeTure(user_id, board_code+ "");
+        LikeTure(user_id, board_code + "");
         String address = "0";
-        if(file_Type.equals("1")) {
-            Log.d("이미지","이미지");
+        if (file_Type.equals("1")) {
+            Log.d("이미지", "이미지");
             picutre_Linear.setVisibility(View.VISIBLE);
             address = getAddress(log_latitude, log_longtitude);
             serpic webserver = new serpic();
             webserver.execute();
-        }else if(file_Type.equals("2")){
-                Log.d("뷰",file_Content);
-                picutre_Linear.setVisibility(View.VISIBLE);
-                address = getAddress(log_latitude, log_longtitude);
-                final String url = dataurl.getDataUrl() + file_Content;
-                drawable = getResources().getDrawable(R.drawable.voice);
-                image.setImageDrawable(drawable);
-                image.setOnClickListener(new View.OnClickListener(){
-                    public  void onClick(View v){
-                        if(v.getId() == R.id.log_picture){
-                            try {
-                                player = new MediaPlayer();
-                                player.setDataSource(url);
-                                player.prepare();
-                                player.start();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+        } else if (file_Type.equals("2")) {
+            Log.d("뷰", file_Content);
+            picutre_Linear.setVisibility(View.VISIBLE);
+            address = getAddress(log_latitude, log_longtitude);
+            final String url = dataurl.getDataUrl() + file_Content;
+            drawable = getResources().getDrawable(R.drawable.voice);
+            image.setImageDrawable(drawable);
+            image.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    if (v.getId() == R.id.log_picture) {
+                        try {
+                            player = new MediaPlayer();
+                            player.setDataSource(url);
+                            player.prepare();
+                            player.start();
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
-                });
-        }else if(file_Type.equals("3")){
+                }
+            });
+        } else if (file_Type.equals("3")) {
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-           mMapFragment = MapFragment.newInstance();
+            mMapFragment = MapFragment.newInstance();
             fragmentTransaction.add(R.id.MapContainer, mMapFragment);
             fragmentTransaction.commit();
             mMapFragment.getMapAsync(this);
         }
         log_title.setText(boder_Title);
-        if(!file_Type.equals("3")) {
+        if (!file_Type.equals("3")) {
             log_Place.setText(address);
             /*웹으로쓴 글일때*/
-            if(write_type.equals("0")){
+            if (write_type.equals("0")) {
                 ArrayList<Integer> posstart = new ArrayList<Integer>();
                 ArrayList<Integer> posend = new ArrayList<Integer>();
-                board_Content = board_Content.replaceAll("<br>","");
+                board_Content = board_Content.replaceAll("<br>", "");
                 int poss = board_Content.indexOf("<img");
                 int pose = board_Content.indexOf("\">");
-                Log.d("pos",board_Content.indexOf("<img")+"");
+                Log.d("pos", board_Content.indexOf("<img") + "");
                 int j = 0;
-                while(poss > -1){
+                while (poss > -1) {
                     posstart.add(poss);
-                    poss =  board_Content.indexOf("<img", poss + 1);
+                    poss = board_Content.indexOf("<img", poss + 1);
                     Log.d("startindex", posstart.get(j).toString());
                     j++;
                 }
                 j = 0;
-                while(pose > -1){
+                while (pose > -1) {
                     posend.add(pose);
-                    pose =  board_Content.indexOf("\">", pose+1);
+                    pose = board_Content.indexOf("\">", pose + 1);
                     Log.d("endindex", posend.get(j).toString());
                     j++;
                 }
                 String testData = null;
-                for(int i=posstart.size()-1; i>=0; i--){
+                for (int i = posstart.size() - 1; i >= 0; i--) {
                     Log.d("result", board_Content);
-                    testData = replaceLast(board_Content,board_Content.substring(Integer.parseInt(posstart.get(i).toString()), (Integer.parseInt(posend.get(i).toString()))+2),"");
+                    testData = replaceLast(board_Content, board_Content.substring(Integer.parseInt(posstart.get(i).toString()), (Integer.parseInt(posend.get(i).toString())) + 2), "");
                     Log.d("result", testData);
-                    board_Content =testData;
+                    board_Content = testData;
 
                 }
                 log_Content.setText(Html.fromHtml(board_Content));
-            }/*앱이면*/
-            else{
+            }/*앱이면*/ else {
                 log_Content.setText(board_Content);
             }
-        }else{
+        } else {
             goomap.setVisibility(View.VISIBLE);
             text.setVisibility(View.GONE);
         }
         profile_user_id.setText(write_user_id);
         log_date.setText(String_Date);
     }
+
     public static String replaceLast(String str, String regex, String replacement) {
         int regexIndexOf = str.lastIndexOf(regex);
-        if(regexIndexOf == -1){
+        if (regexIndexOf == -1) {
             return str;
-        }else{
+        } else {
             return str.substring(0, regexIndexOf) + replacement + str.substring(regexIndexOf + regex.length());
         }
     }
@@ -245,10 +249,10 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
 
         @Override
         protected Bitmap doInBackground(String... params) {
-            try{
+            try {
 
                 String url = dataurl.getProfile() + profile_picture;
-                Log.d("url",url);
+                Log.d("url", url);
                 InputStream is = (InputStream) new URL(url).getContent();
 
                 Bitmap bmImg2 = BitmapFactory.decodeStream(is);
@@ -258,12 +262,12 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
 
                 // Read Server Response
 
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 resizedBitmap = null;
                 return resizedBitmap;
             }
         }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -278,8 +282,10 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
         }
     }
 
-    /** 위도와 경도 기반으로 주소를 리턴하는 메서드*/
-    public String getAddress(double lat, double lng){
+    /**
+     * 위도와 경도 기반으로 주소를 리턴하는 메서드
+     */
+    public String getAddress(double lat, double lng) {
         String address = null;
 
         //위치정보를 활용하기 위한 구글 API 객체
@@ -287,16 +293,16 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
 
         //주소 목록을 담기 위한 HashMap
         List<Address> list = null;
-        try{
+        try {
             list = geocoder.getFromLocation(lat, lng, 1);
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        if(list == null){
+        if (list == null) {
             Log.e("getAddress", "주소 데이터 얻기 실패");
             return null;
         }
-        if(list.size() > 0){
+        if (list.size() > 0) {
             Address addr = list.get(0);
             address = addr.getAdminArea() + " "
                     + addr.getLocality() + " "
@@ -305,36 +311,34 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
         return address;
     }
 
-    public void backAR(View view){
-        CameraOverlayView.DBselect = true;
-        popListView.touch= true;
-        if(player != null){
+    public void bakcMain(View view) {
+        if (player != null) {
             player.stop();
             player.release();
             player = null;
         }
         finish();
     }
+
     @Override
-    public void onBackPressed(){
-        CameraOverlayView.DBselect = true;
-        popListView.touch= true;
-        if(player != null){
+    public void onBackPressed() {
+        if (player != null) {
             player.stop();
             player.release();
             player = null;
         }
         finish();
     }
+
     class serpic extends AsyncTask<String, Void, Bitmap> {
         ProgressDialog loading;
 
         @Override
         protected Bitmap doInBackground(String... params) {
-            try{
+            try {
 
                 String url = dataurl.getTumnailUrl() + file_Content;
-                Log.d("url",url);
+                Log.d("url", url);
                 InputStream is = (InputStream) new URL(url).getContent();
 
                 bmImg = BitmapFactory.decodeStream(is);
@@ -349,12 +353,12 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
 
                 // Read Server Response
 
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 resizedBitmap = null;
                 return resizedBitmap;
             }
         }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -377,12 +381,12 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
         selFile();
     }
 
-    private void selFile(){
+    private void selFile() {
 
         class loginData extends AsyncTask<String, Void, String> {
             ProgressDialog loading;
-            private InputStream is =null;
-            KmlLayer layer  = null;
+            private InputStream is = null;
+            KmlLayer layer = null;
             private String[][] parsedata;
 
             @Override
@@ -392,7 +396,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
 
             @Override
             protected void onPostExecute(String s) {
-                Log.d("result",s);
+                Log.d("result", s);
                 JSONArray json = null;
                 try {
                     json = new JSONArray(s);
@@ -407,10 +411,10 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
                         parsedata[i][4] = jobject.getString("log_latitude");
                         parsedata[i][5] = jobject.getString("board_date");
                         parsedata[i][6] = jobject.getString("user_id");
-                        if(json.getJSONObject(i).isNull("file_content") == false){
+                        if (json.getJSONObject(i).isNull("file_content") == false) {
                             parsedata[i][7] = jobject.getString("file_type");
                             parsedata[i][8] = jobject.getString("file_content");
-                        }else{
+                        } else {
                             parsedata[i][7] = "0";
                             parsedata[i][8] = "1";
                         }
@@ -422,34 +426,34 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
                 }
 
 
-                if(mMap != null) {
+                if (mMap != null) {
 
 
-                    String[] coo = location.get(((location.size()-1)/2)).toString().split(",");
-                    Log.d("size", location.get(((location.size()-1)/2)).toString().trim());
+                    String[] coo = location.get(((location.size() - 1) / 2)).toString().split(",");
+                    Log.d("size", location.get(((location.size() - 1) / 2)).toString().trim());
                     LatLng startPoint = new LatLng(Double.parseDouble(coo[1]), Double.parseDouble(coo[0]));
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startPoint, 15));
 
                     PolylineOptions option = new PolylineOptions();
                     option.width(4);
                     option.color(Color.BLACK);
-                    for(int i=0; i< location.size(); i++) {
+                    for (int i = 0; i < location.size(); i++) {
                         String[] coos = location.get(i).toString().split(",");
-                        Log.d("draw",location.get(i).toString());
+                        Log.d("draw", location.get(i).toString());
                         LatLng point = new LatLng(Double.parseDouble(coos[1]), Double.parseDouble(coos[0]));
                         option.add(point);
                     }
                     mMap.addPolyline(option);
 
                     MarkerOptions markerOption = new MarkerOptions();
-                    for(int i =0; i< parsedata.length; i++){
-                        markerOption.position(new LatLng(Double.parseDouble(parsedata[i][4]),Double.parseDouble(parsedata[i][3])));
+                    for (int i = 0; i < parsedata.length; i++) {
+                        markerOption.position(new LatLng(Double.parseDouble(parsedata[i][4]), Double.parseDouble(parsedata[i][3])));
                         markerOption.title(parsedata[i][1]);
-                        if(parsedata[i][7].equals("1")){
+                        if (parsedata[i][7].equals("1")) {
                             markerOption.snippet("사진");
-                        }else if(parsedata.equals("2")){
+                        } else if (parsedata.equals("2")) {
                             markerOption.snippet("음성");
-                        }else {
+                        } else {
                             markerOption.snippet("글");
                         }
                         mMap.addMarker(markerOption);
@@ -457,21 +461,21 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
                         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                             @Override
                             public boolean onMarkerClick(Marker marker) {
-                                for(int i = 0; i< parsedata.length; i++){
+                                for (int i = 0; i < parsedata.length; i++) {
 
-                                    if(marker.getPosition().latitude == Double.parseDouble(parsedata[i][4])
+                                    if (marker.getPosition().latitude == Double.parseDouble(parsedata[i][4])
                                             && marker.getPosition().longitude == Double.parseDouble(parsedata[i][3])
-                                            && oneView){
+                                            && oneView) {
                                         oneView = false;
                                         Intent intent = new Intent(getApplicationContext(), LifeLogViewActivity.class);
-                                        intent.putExtra("board_Code",parsedata[i][0]);
-                                        intent.putExtra("board_Title",parsedata[i][1]);
-                                        intent.putExtra("board_Content",parsedata[i][2]);
-                                        intent.putExtra("log_longtitude",parsedata[i][3]);
-                                        intent.putExtra("log_latitude",parsedata[i][4]);
-                                        intent.putExtra("user_id",parsedata[i][6]);
-                                        intent.putExtra("board_Date",parsedata[i][5]);
-                                        intent.putExtra("write_type",parsedata[i][9]);
+                                        intent.putExtra("board_Code", parsedata[i][0]);
+                                        intent.putExtra("board_Title", parsedata[i][1]);
+                                        intent.putExtra("board_Content", parsedata[i][2]);
+                                        intent.putExtra("log_longtitude", parsedata[i][3]);
+                                        intent.putExtra("log_latitude", parsedata[i][4]);
+                                        intent.putExtra("user_id", parsedata[i][6]);
+                                        intent.putExtra("board_Date", parsedata[i][5]);
+                                        intent.putExtra("write_type", parsedata[i][9]);
                                         startActivity(intent);
                                     }
                                 }
@@ -487,14 +491,14 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
             @Override
             protected String doInBackground(String... params) {
 
-                try{
+                try {
 
-                    Map<String, String> loginParam = new HashMap<String,String>() ;
+                    Map<String, String> loginParam = new HashMap<String, String>();
 
-                    loginParam.put("step_log_code",board_code+"");
+                    loginParam.put("step_log_code", board_code + "");
 
 
-                    String link= dataurl.getServerUrl()+"step_log_select"; //92.168.25.25
+                    String link = dataurl.getServerUrl() + "step_log_select"; //92.168.25.25
                     HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
                     http.addAllParameters(loginParam);
@@ -520,26 +524,26 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
                     String column = null;
                     BufferedReader br = new BufferedReader(inputReader);
                     boolean flag = false;
-                        while ((column = br.readLine()) != null) {
-                            int coordin = column.indexOf("<coordinates>");
+                    while ((column = br.readLine()) != null) {
+                        int coordin = column.indexOf("<coordinates>");
 
-                            if (coordin != -1 || flag) {
-                                int i= 0;
-                                flag = true;
-                                String tmpCoordin = column;
-                                tmpCoordin = tmpCoordin.replaceAll("<coordinates>", "");
-                                tmpCoordin = tmpCoordin.replaceAll("</coordinates>", "");
-                                Log.d("tomCoordib",tmpCoordin.trim());
-                                if(tmpCoordin.trim().equals("</LineString>")){
-                                    break;
-                                }
-                                location.add(tmpCoordin);
+                        if (coordin != -1 || flag) {
+                            int i = 0;
+                            flag = true;
+                            String tmpCoordin = column;
+                            tmpCoordin = tmpCoordin.replaceAll("<coordinates>", "");
+                            tmpCoordin = tmpCoordin.replaceAll("</coordinates>", "");
+                            Log.d("tomCoordib", tmpCoordin.trim());
+                            if (tmpCoordin.trim().equals("</LineString>")) {
+                                break;
                             }
-
+                            location.add(tmpCoordin);
                         }
 
+                    }
+
                     return body;
-                }  catch (MalformedURLException e) {
+                } catch (MalformedURLException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -551,6 +555,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
         loginData task = new loginData();
         task.execute();
     }
+
     @Override
     public void onDestroy() {
         if (picutre_Linear.getVisibility() == View.VISIBLE) {
@@ -566,7 +571,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
     }
 
     /*좋아요 여부*/
-    private void LikeTure(final String user_id, final String board_code){
+    private void LikeTure(final String user_id, final String board_code) {
 
         class tureData extends AsyncTask<String, Void, String> {
             ProgressDialog loading;
@@ -579,11 +584,11 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                Log.d("like 결과",s);
+                Log.d("like 결과", s);
                 like_ture = Integer.parseInt(s);
-                if(like_ture == 1){
+                if (like_ture == 1) {
                     like.setImageDrawable(getResources().getDrawable(R.drawable.like_on));
-                }else{
+                } else {
                     like.setImageDrawable(getResources().getDrawable(R.drawable.like_off));
                 }
 
@@ -592,17 +597,17 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
             @Override
             protected String doInBackground(String... params) {
 
-                try{
-                    String user_id = (String)params[0];
-                    String board_code = (String)params[1];
+                try {
+                    String user_id = (String) params[0];
+                    String board_code = (String) params[1];
 
-                    Map<String, String> loginParam = new HashMap<String,String>() ;
+                    Map<String, String> loginParam = new HashMap<String, String>();
 
-                    loginParam.put("user_id",user_id) ;
-                    loginParam.put("board_code",board_code);
+                    loginParam.put("user_id", user_id);
+                    loginParam.put("board_code", board_code);
 
 
-                    String link=dataurl.getServerUrl()+"liketure"; //92.168.25.25
+                    String link = dataurl.getServerUrl() + "liketure"; //92.168.25.25
                     HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
                     http.addAllParameters(loginParam);
@@ -618,8 +623,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
 
                     // Read Server Response
 
-                }
-                catch(Exception e){
+                } catch (Exception e) {
                     return new String("Exception: " + e.getMessage());
                 }
 
@@ -627,21 +631,22 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
         }
 
         tureData task = new tureData();
-        task.execute(user_id,board_code);
+        task.execute(user_id, board_code);
     }
 
-    public void likeclick(View v){
-        Log.d("like", like_ture+"");
-        if(like_ture == 1){
+    public void likeclick(View v) {
+        Log.d("like", like_ture + "");
+        if (like_ture == 1) {
             like.setImageDrawable(getResources().getDrawable(R.drawable.like_off));
             like_ture = -1;
-        }else{
+        } else {
             like.setImageDrawable(getResources().getDrawable(R.drawable.like_on));
             like_ture = 1;
         }
-        LikeonOff(user_id, board_code+"");
+        LikeonOff(user_id, board_code + "");
     }
-    private void LikeonOff(final String user_id, final String board_code){
+
+    private void LikeonOff(final String user_id, final String board_code) {
 
         class tureData extends AsyncTask<String, Void, String> {
             ProgressDialog loading;
@@ -654,31 +659,31 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                Log.d("like 결과",s);
+                Log.d("like 결과", s);
             }
 
             @Override
             protected String doInBackground(String... params) {
 
-                try{
-                    String user_id = (String)params[0];
-                    String board_code = (String)params[1];
+                try {
+                    String user_id = (String) params[0];
+                    String board_code = (String) params[1];
 
-                    Map<String, String> loginParam = new HashMap<String,String>() ;
+                    Map<String, String> loginParam = new HashMap<String, String>();
 
-                    loginParam.put("user_id",user_id) ;
-                    loginParam.put("board_code",board_code);
+                    loginParam.put("user_id", user_id);
+                    loginParam.put("board_code", board_code);
 
                     String dbselect = null;
 
-                    if(like_ture == 1){
+                    if (like_ture == 1) {
                         dbselect = "like";
-                    }else{
+                    } else {
                         dbselect = "likeDelete";
                     }
 
                     Log.d("db", dbselect);
-                    String link=dataurl.getServerUrl()+dbselect; //92.168.25.25
+                    String link = dataurl.getServerUrl() + dbselect; //92.168.25.25
                     HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
                     http.addAllParameters(loginParam);
@@ -694,8 +699,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
 
                     // Read Server Response
 
-                }
-                catch(Exception e){
+                } catch (Exception e) {
                     return new String("Exception: " + e.getMessage());
                 }
 
@@ -703,11 +707,11 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
         }
 
         tureData task = new tureData();
-        task.execute(user_id,board_code);
+        task.execute(user_id, board_code);
     }
 
-    public void log_option(View v){
-        switch(v.getId()){
+    public void log_option(View v) {
+        switch (v.getId()) {
             case R.id.option:
                 Log.d("TAG", "click button list dialog.......");
                 showListDialog();
@@ -715,7 +719,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
         }
     }
 
-    private void showListDialog(){
+    private void showListDialog() {
 
         String[] item = getResources().getStringArray(R.array.list_dialog_option_item);
 
@@ -734,15 +738,15 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
                 pro.execute();
                 if (position == 0) {
                     Intent intent = new Intent(getApplicationContext(), Life_LogModifyActivity.class);
-                    Log.d("board_code", board_code+"/board_code");
-                    intent.putExtra("board_code",board_code+"");
-                    intent.putExtra("board_Title",boder_Title);
-                    intent.putExtra("board_Content",board_Content);
-                    intent.putExtra("file_Type",file_Type);
-                    intent.putExtra("file_Content",file_Content);
+                    Log.d("board_code", board_code + "/board_code");
+                    intent.putExtra("board_code", board_code + "");
+                    intent.putExtra("board_Title", boder_Title);
+                    intent.putExtra("board_Content", board_Content);
+                    intent.putExtra("file_Type", file_Type);
+                    intent.putExtra("file_Content", file_Content);
                     startActivity(intent);
                 } else if (position == 1) {
-                    deleteBoard(user_id, board_code+"");
+                    deleteBoard(user_id, board_code + "");
                 } else if (position == 2) {
                     mDialog.dismiss();
                 }
@@ -753,7 +757,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
 
     }
 
-    private void deleteBoard(final String user_id, final String board_code){
+    private void deleteBoard(final String user_id, final String board_code) {
 
         class delete extends AsyncTask<String, Void, String> {
             ProgressDialog loading;
@@ -766,7 +770,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                Log.d(" 결과",s);
+                Log.d(" 결과", s);
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
@@ -776,17 +780,17 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
             @Override
             protected String doInBackground(String... params) {
 
-                try{
-                    String user_id = (String)params[0];
-                    String board_code = (String)params[1];
+                try {
+                    String user_id = (String) params[0];
+                    String board_code = (String) params[1];
 
-                    Map<String, String> loginParam = new HashMap<String,String>() ;
+                    Map<String, String> loginParam = new HashMap<String, String>();
 
-                    loginParam.put("user_id",user_id) ;
-                    loginParam.put("board_code",board_code);
+                    loginParam.put("user_id", user_id);
+                    loginParam.put("board_code", board_code);
 
 
-                    String link=dataurl.getServerUrl()+"deleteBoard"; //92.168.25.25
+                    String link = dataurl.getServerUrl() + "deleteBoard"; //92.168.25.25
                     HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
                     http.addAllParameters(loginParam);
@@ -802,8 +806,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
 
                     // Read Server Response
 
-                }
-                catch(Exception e){
+                } catch (Exception e) {
                     return new String("Exception: " + e.getMessage());
                 }
 
@@ -811,11 +814,12 @@ public class LifeLogViewActivity2 extends AppCompatActivity  implements OnMapRea
         }
 
         delete task = new delete();
-        task.execute(user_id,board_code);
+        task.execute(user_id, board_code);
     }
-    public void  commentView(View v){
+
+    public void commentView(View v) {
         Intent intent = new Intent(getApplicationContext(), Comment.class);
-        intent.putExtra("board_Code",board_code+"");
+        intent.putExtra("board_Code", board_code + "");
         intent.putExtra("user_id", user_id);
         startActivity(intent);
     }

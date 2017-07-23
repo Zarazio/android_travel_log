@@ -33,9 +33,10 @@ public class TravelListActivity extends AppCompatActivity {
     SharedPreferences smartCost;
     String sc_Division;
     SharedPreferences.Editor editor;
-    ListView listview ;
+    ListView listview;
     ListViewAdapter adapter;
 
+    DataBaseUrl dataUrl = new DataBaseUrl();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,12 +49,12 @@ public class TravelListActivity extends AppCompatActivity {
         smartCost = getSharedPreferences("joinCode", MODE_PRIVATE);
         sc_Division = smartCost.getString("sc_Division", "0");
 
-        Log.d("TAG0","아이디 : " +login_user_id);
+        Log.d("TAG0", "아이디 : " + login_user_id);
         insertToDatabase(login_user_id);
     }
-    
+
     // 아이콘 클릭시 디비시작
-    private void insertToDatabase(String user_id){
+    private void insertToDatabase(String user_id) {
         InsertData task = new InsertData();
         Log.d("스프링으로 데이터 보내기 전", user_id);
         task.execute(user_id); // 메소드를 실행한당
@@ -66,7 +67,7 @@ public class TravelListActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) { // 웹 -> 앱으로 받는값
             super.onPostExecute(s);
-            Log.d("onPostExecute: ",s);
+            Log.d("onPostExecute: ", s);
 
             liston(s);
         }
@@ -74,17 +75,17 @@ public class TravelListActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) { // 실행 메서드
 
-            try{
+            try {
                 String link = "";
                 String data = "";
-                link = "http://211.211.213.218:8084/android"; // 집 : 192.168.1.123, 학교 : 172.20.10.203, 에이타운 : 192.168.0.14
+                link = dataUrl.getServerUrl(); // 집 : 192.168.1.123, 학교 : 172.20.10.203, 에이타운 : 192.168.0.14
 
-                Map<String, String> insertParam = new HashMap<String,String>(); // key, value
+                Map<String, String> insertParam = new HashMap<String, String>(); // key, value
 
                 String user_id = (String) params[0];
-                insertParam.put("user_id",user_id);
+                insertParam.put("user_id", user_id);
 
-                Log.d("스프링으로 보내는 값" , insertParam.get("user_id").toString());
+                Log.d("스프링으로 보내는 값", insertParam.get("user_id").toString());
 
                 link += "/titleSearch";
 
@@ -100,15 +101,15 @@ public class TravelListActivity extends AppCompatActivity {
                 // 응답 본문 가져오기
                 String body = post.getBody();
                 return body;
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 return new String("Exception: " + e.getMessage());
             }
         }
     }
-    public void liston(String title){
+
+    public void liston(String title) {
         // Adapter 생성
-        adapter = new ListViewAdapter() ;
+        adapter = new ListViewAdapter();
 
         // 리스트뷰 참조 및 Adapter달기
         listview = (ListView) findViewById(R.id.listview1);
@@ -117,20 +118,20 @@ public class TravelListActivity extends AppCompatActivity {
         JsonArray json = (JsonArray) new JsonParser().parse(title);
 
 ////        Log.d("TAG", "onCreate: "+title);
-        for(int i = 0; i < json.size(); i++) {
+        for (int i = 0; i < json.size(); i++) {
             Log.d("TAG Object", json.get(i).toString());
             JsonObject obj = json.get(i).getAsJsonObject(); // 오브젝트
 //
-            Log.d("TAG", ""+obj.get("travel_title"));
-            adapter.addItem(ContextCompat.getDrawable(this, R.drawable.story), obj.get("travel_title").toString().replaceAll("\"",""),
-                    obj.get("start_date").toString().replaceAll("\"",""), obj.get("end_date").toString().replaceAll("\"",""),
-                    obj.get("group_Code").toString().replaceAll("\"",""));
+            Log.d("TAG", "" + obj.get("travel_title"));
+            adapter.addItem(ContextCompat.getDrawable(this, R.drawable.story), obj.get("travel_title").toString().replaceAll("\"", ""),
+                    obj.get("start_date").toString().replaceAll("\"", ""), obj.get("end_date").toString().replaceAll("\"", ""),
+                    obj.get("group_Code").toString().replaceAll("\"", ""));
 //
         }
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l){
-                ListViewItem listViewItem = (ListViewItem)adapterView.getItemAtPosition(i);
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ListViewItem listViewItem = (ListViewItem) adapterView.getItemAtPosition(i);
                 travelStory = getSharedPreferences("title", MODE_PRIVATE);
                 editor = travelStory.edit();
                 editor.putString("selectTitle", listViewItem.getTitle()); // 선택한 제목
@@ -143,7 +144,7 @@ public class TravelListActivity extends AppCompatActivity {
                 if (sc_Division.equals("차감")) {
                     Intent intent = new Intent(TravelListActivity.this, SmartCostSubActivity.class);
                     startActivity(intent);
-                }else{
+                } else {
                     Intent intent = new Intent(TravelListActivity.this, SmartCostAddActivity.class);
                     startActivity(intent);
                 }
@@ -157,22 +158,21 @@ public class TravelListActivity extends AppCompatActivity {
         java.util.Date nowDate = java.sql.Date.valueOf(tempDate); //현재날짜
 
 
-
-        for(int i = 0; i < json.size(); i++) { // 현재날짜와 그룹의 날짜를 비교
+        for (int i = 0; i < json.size(); i++) { // 현재날짜와 그룹의 날짜를 비교
             JsonObject obj = json.get(i).getAsJsonObject(); // json 오브젝트
-            String startDate = obj.get("start_date").toString().replaceAll("\"","");
-            String endDate = obj.get("end_date").toString().replaceAll("\"","");
+            String startDate = obj.get("start_date").toString().replaceAll("\"", "");
+            String endDate = obj.get("end_date").toString().replaceAll("\"", "");
 
             java.util.Date st_Date = java.sql.Date.valueOf(startDate);
             java.util.Date en_Date = java.sql.Date.valueOf(endDate);
 
-            Log.d("날짜 ","제목:"+obj.get("travel_title")+ ", 현재:"+String.valueOf(nowDate)+", 시작:"+String.valueOf(st_Date)+", 종료:"+String.valueOf(en_Date));
-            if(nowDate.compareTo(st_Date) != -1 && nowDate.compareTo(en_Date) != 1){ // 현재날짜가 여행중인 날짜이면 joinCode를 1로 세팅
+            Log.d("날짜 ", "제목:" + obj.get("travel_title") + ", 현재:" + String.valueOf(nowDate) + ", 시작:" + String.valueOf(st_Date) + ", 종료:" + String.valueOf(en_Date));
+            if (nowDate.compareTo(st_Date) != -1 && nowDate.compareTo(en_Date) != 1) { // 현재날짜가 여행중인 날짜이면 joinCode를 1로 세팅
                 joinCode = 1;
-                select_group_Code = obj.get("group_Code").toString().replaceAll("\"","");
+                select_group_Code = obj.get("group_Code").toString().replaceAll("\"", "");
 //                Log.d("여행 중", String.valueOf(joinCode));
-            }else {
-                if(joinCode == 1) {
+            } else {
+                if (joinCode == 1) {
 //                    Log.d("여행 중 아닌데 이미 여행중인 날짜가 존재", String.valueOf(joinCode));
                     break;
                 }
@@ -187,7 +187,7 @@ public class TravelListActivity extends AppCompatActivity {
         editor.commit();
     }
 
-    private void SearhToDatabase(String group_Code){
+    private void SearhToDatabase(String group_Code) {
         SearhData task = new SearhData();
         Log.d("최지훈디비전송", group_Code);
         task.execute(group_Code); // 메소드를 실행한당
@@ -206,23 +206,23 @@ public class TravelListActivity extends AppCompatActivity {
 
             smartCost = getSharedPreferences("joinCode", MODE_PRIVATE);
             editor = smartCost.edit();
-            editor.putString("coin_Limit", obj.get("coin_Limit").toString().replaceAll("\"","")); // 선택한 일정의 한도
-            editor.putString("sc_Division", obj.get("sc_Division").toString().replaceAll("\"","")); // 선택한 일정의 스마트 코스트 구분
+            editor.putString("coin_Limit", obj.get("coin_Limit").toString().replaceAll("\"", "")); // 선택한 일정의 한도
+            editor.putString("sc_Division", obj.get("sc_Division").toString().replaceAll("\"", "")); // 선택한 일정의 스마트 코스트 구분
             editor.commit();
         }
 
         @Override
         protected String doInBackground(String... params) { // 실행 메서드
 
-            try{
+            try {
                 String link = "";
                 String data = "";
-                link = "http://211.202.32.52:8084/android"; // 집 : 192.168.1.123, 학교 : 172.20.10.203, 에이타운 : 192.168.0.14
+                link = dataUrl.getServerUrl();; // 집 : 192.168.1.123, 학교 : 172.20.10.203, 에이타운 : 192.168.0.14
 
-                Map<String, String> insertParam = new HashMap<String,String>(); // key, value
+                Map<String, String> insertParam = new HashMap<String, String>(); // key, value
 
                 String group_Code = (String) params[0];
-                insertParam.put("group_Code",group_Code);
+                insertParam.put("group_Code", group_Code);
 
                 link += "/scDivisionSearch";
 
@@ -238,13 +238,13 @@ public class TravelListActivity extends AppCompatActivity {
                 // 응답 본문 가져오기
                 String body = post.getBody();
                 return body;
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 return new String("Exception: " + e.getMessage());
             }
         }
     }
-    public void bakcMain(View view){
+
+    public void bakcMain(View view) {
         finish();
     }
 }

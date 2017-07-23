@@ -7,16 +7,18 @@ import android.view.View;
 
 public class emailSubmitActivity extends AppCompatActivity {
     String user_id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emailsubmit);
     }
-    public void bakcMain(View view){
+
+    public void bakcMain(View view) {
         finish();
     }
 
-    public void movelogin(View view){
+    public void movelogin(View view) {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }

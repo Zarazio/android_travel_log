@@ -31,7 +31,7 @@ public class SMSReceiver extends BroadcastReceiver {
         // SMS 문자 수신에 대한 이벤트는 문자열 Action으로 전달되며 intent에서 확인가능
         if ("android.provider.Telephony.SMS_RECEIVED".equals(intent.getAction()) && ReJoinCode == 1 && ReSwitch_Stat.equals("true")) {
             Bundle bundle = intent.getExtras();
-            Object[] messages = (Object[])bundle.get("pdus");
+            Object[] messages = (Object[]) bundle.get("pdus");
 
             SmsMessage[] smsMessage = new SmsMessage[messages.length];
             String[] token_arr = new String[6]; // 토큰의 값을 담을 배열 숫자 바꿔줘야함중요**************************************************************************/.ㅣㅔㅔ'/
@@ -40,25 +40,25 @@ public class SMSReceiver extends BroadcastReceiver {
             String receive_money = ""; // 문자 내용(사용금액)
             String receive_content = ""; // 문자 내용(사용처)
 
-            for(int i = 0; i < messages.length; i++) {
-                smsMessage[i] = SmsMessage.createFromPdu((byte[])messages[i]);
+            for (int i = 0; i < messages.length; i++) {
+                smsMessage[i] = SmsMessage.createFromPdu((byte[]) messages[i]);
             }
 
             String message = smsMessage[0].getMessageBody().toString();
             String sender = smsMessage[0].getOriginatingAddress(); // 문자 발신처
             Log.d("onReceive: ", sender);
-            if(sender.equals("01063340247")){ // 1588-1688 국민은행
-                StringTokenizer s = new StringTokenizer(message,"\n");
-                tokencount =  s.countTokens(); // 토큰사이즈 변수에 적용
+            if (sender.equals("01063340247")) { // 1588-1688 국민은행
+                StringTokenizer s = new StringTokenizer(message, "\n");
+                tokencount = s.countTokens(); // 토큰사이즈 변수에 적용
 
-                for(int i = 0; i < tokencount; i++){
+                for (int i = 0; i < tokencount; i++) {
                     token_arr[i] = s.nextToken();
                     // Log.d(TAG, token_arr[i]);
                 }
 
                 // token_arr의 값을 각 변수에 저장
 //                receive_data = token_arr[3].replace("/","").replace(" ","").replace(":",""); // 시간
-                receive_money = token_arr[4].replace(",","").replace("원",""); // 금액
+                receive_money = token_arr[4].replace(",", "").replace("원", ""); // 금액
                 receive_content = token_arr[5]; // 내용
 
 //                Log.d(TAG, receive_data);
@@ -72,7 +72,7 @@ public class SMSReceiver extends BroadcastReceiver {
     }
 
     // 디비입력
-    private void insertToDatabase(String sc_coin, String sc_content, String groupCode, String userkeep){
+    private void insertToDatabase(String sc_coin, String sc_content, String groupCode, String userkeep) {
         InsertMoney task = new InsertMoney();
         task.execute(sc_coin, sc_content, groupCode, userkeep);
     }

@@ -10,6 +10,8 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.location.Address;
 import android.location.Geocoder;
 import android.media.MediaPlayer;
@@ -49,7 +51,7 @@ public class LifeLogViewActivity extends Activity {
     private String mImgPath = null;
     private String mImgTitle = null;
     private String mImgOri = null;
-    private int liketure =0;
+    private int liketure = 0;
 
     private LinearLayout picutre_Linear;
 
@@ -76,7 +78,7 @@ public class LifeLogViewActivity extends Activity {
     private double log_latitude;
     private double log_longtitude;
     private String board_Content;
-    private String  boder_Title;
+    private String boder_Title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,32 +90,34 @@ public class LifeLogViewActivity extends Activity {
 
         ImageView bakcMain_icon = (ImageView) findViewById(R.id.bakcMain_icon);
         ImageView view_mainlogo_icon = (ImageView) findViewById(R.id.view_mainlogo_icon);
-        like = (ImageView)findViewById(R.id.log_Likes);
-        user_profile = (ImageView)findViewById(R.id.profile_picture);
-        ImageView log_Comments = (ImageView)findViewById(R.id.log_Comments);
-        ImageView bakcMain = (ImageView)findViewById(R.id.bakcMain);
-
+        like = (ImageView) findViewById(R.id.log_Likes);
+        user_profile = (ImageView) findViewById(R.id.profile_picture);
+        ImageView log_Comments = (ImageView) findViewById(R.id.log_Comments);
+        ImageView bakcMain = (ImageView) findViewById(R.id.bakcMain);
+        user_profile.setBackground(new ShapeDrawable(new OvalShape()));
+        user_profile.setClipToOutline(true);
         view_mainlogo_icon.setImageDrawable(getResources().getDrawable(R.drawable.mainlogo));
 
         log_Comments.setImageDrawable(getResources().getDrawable(R.drawable.comment));
 
-        log_title = (TextView) findViewById(R.id.log_title) ;
-        log_Content = (TextView) findViewById(R.id.log_cotennt) ;
-        log_Place = (TextView) findViewById(R.id.log_place) ;
-        log_date = (TextView) findViewById(R.id.log_date) ;
-        profile_user_id = (TextView) findViewById(R.id.user_id) ;
+        log_title = (TextView) findViewById(R.id.log_title);
+        log_Content = (TextView) findViewById(R.id.log_cotennt);
+        log_Place = (TextView) findViewById(R.id.log_place);
+        log_date = (TextView) findViewById(R.id.log_date);
+        profile_user_id = (TextView) findViewById(R.id.user_id);
 
         image = (ImageView) findViewById(R.id.log_picture);
         option = (ImageView) findViewById(R.id.option);
 
-        picutre_Linear= (LinearLayout) findViewById(R.id.log_picture_Linear);
+        picutre_Linear = (LinearLayout) findViewById(R.id.log_picture_Linear);
 
         Intent intent = getIntent();
         board_code = Integer.parseInt(intent.getExtras().getString("board_Code"));
         boder_Title = intent.getExtras().getString("board_Title");
         board_Content = intent.getExtras().getString("board_Content");
         log_longtitude = Double.parseDouble(intent.getExtras().getString("log_longtitude"));
-        log_latitude = Double.parseDouble(intent.getExtras().getString("log_latitude"));login = getSharedPreferences("LoginKeep", MODE_PRIVATE);
+        log_latitude = Double.parseDouble(intent.getExtras().getString("log_latitude"));
+        login = getSharedPreferences("LoginKeep", MODE_PRIVATE);
         editor = login.edit();
         user_id = login.getString("user_id", "0");
         String write_user_id = intent.getExtras().getString("write_user_id");
@@ -130,44 +134,43 @@ public class LifeLogViewActivity extends Activity {
         log_date.setText(String_Date);
 
         //좋아요 눌렀는지 여부
-        LikeTure(user_id, board_code+ "");
+        LikeTure(user_id, board_code + "");
 
-        if(user_id.equals(write_user_id)){
+        if (user_id.equals(write_user_id)) {
             option.setVisibility(View.VISIBLE);
         }
         /*웹으로쓴 글일때*/
-        if(write_type.equals("0")){
+        if (write_type.equals("0")) {
             ArrayList<Integer> posstart = new ArrayList<Integer>();
             ArrayList<Integer> posend = new ArrayList<Integer>();
-            board_Content = board_Content.replaceAll("<br>","");
+            board_Content = board_Content.replaceAll("<br>", "");
             int poss = board_Content.indexOf("<img");
             int pose = board_Content.indexOf("\">");
-            Log.d("pos",board_Content.indexOf("<img")+"");
+            Log.d("pos", board_Content.indexOf("<img") + "");
             int j = 0;
-            while(poss > -1){
+            while (poss > -1) {
                 posstart.add(poss);
-                poss =  board_Content.indexOf("<img", poss + 1);
+                poss = board_Content.indexOf("<img", poss + 1);
                 Log.d("startindex", posstart.get(j).toString());
                 j++;
             }
             j = 0;
-            while(pose > -1){
+            while (pose > -1) {
                 posend.add(pose);
-                pose =  board_Content.indexOf("\">", pose+1);
+                pose = board_Content.indexOf("\">", pose + 1);
                 Log.d("endindex", posend.get(j).toString());
                 j++;
             }
             String testData = null;
-            for(int i=posstart.size()-1; i>=0; i--){
+            for (int i = posstart.size() - 1; i >= 0; i--) {
                 Log.d("result", board_Content);
-                testData = replaceLast(board_Content,board_Content.substring(Integer.parseInt(posstart.get(i).toString()), (Integer.parseInt(posend.get(i).toString()))+2),"");
+                testData = replaceLast(board_Content, board_Content.substring(Integer.parseInt(posstart.get(i).toString()), (Integer.parseInt(posend.get(i).toString())) + 2), "");
                 Log.d("result", testData);
-                board_Content =testData;
+                board_Content = testData;
 
             }
             log_Content.setText(Html.fromHtml(board_Content));
-        }/*앱이면*/
-        else{
+        }/*앱이면*/ else {
             log_Content.setText(board_Content);
         }
         select_DB(intent.getExtras().getString("board_Code"));
@@ -178,10 +181,10 @@ public class LifeLogViewActivity extends Activity {
 
         @Override
         protected Bitmap doInBackground(String... params) {
-            try{
+            try {
 
                 String url = dataurl.getProfile() + profile_picture;
-                Log.d("url",url);
+                Log.d("url", url);
                 InputStream is = (InputStream) new URL(url).getContent();
 
                 Bitmap bmImg2 = BitmapFactory.decodeStream(is);
@@ -191,12 +194,12 @@ public class LifeLogViewActivity extends Activity {
 
                 // Read Server Response
 
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 resizedBitmap = null;
                 return resizedBitmap;
             }
         }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -214,14 +217,17 @@ public class LifeLogViewActivity extends Activity {
 
     public static String replaceLast(String str, String regex, String replacement) {
         int regexIndexOf = str.lastIndexOf(regex);
-        if(regexIndexOf == -1){
+        if (regexIndexOf == -1) {
             return str;
-        }else{
+        } else {
             return str.substring(0, regexIndexOf) + replacement + str.substring(regexIndexOf + regex.length());
         }
     }
-    /** 위도와 경도 기반으로 주소를 리턴하는 메서드*/
-    public String getAddress(double lat, double lng){
+
+    /**
+     * 위도와 경도 기반으로 주소를 리턴하는 메서드
+     */
+    public String getAddress(double lat, double lng) {
         String address = null;
 
         //위치정보를 활용하기 위한 구글 API 객체
@@ -229,16 +235,16 @@ public class LifeLogViewActivity extends Activity {
 
         //주소 목록을 담기 위한 HashMap
         List<Address> list = null;
-        try{
+        try {
             list = geocoder.getFromLocation(lat, lng, 1);
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        if(list == null){
+        if (list == null) {
             Log.e("getAddress", "주소 데이터 얻기 실패");
             return null;
         }
-        if(list.size() > 0){
+        if (list.size() > 0) {
             Address addr = list.get(0);
             address = addr.getAdminArea() + " "
                     + addr.getLocality() + " "
@@ -246,7 +252,8 @@ public class LifeLogViewActivity extends Activity {
         }
         return address;
     }
-    private void select_DB(String board_code){
+
+    private void select_DB(String board_code) {
         picutre_Linear.setVisibility(View.GONE);
         class selectpic extends AsyncTask<String, Void, String> {
             ProgressDialog loading;
@@ -260,21 +267,21 @@ public class LifeLogViewActivity extends Activity {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                Log.d("result",s);
-                if(!s.equals("failed")) {
-                    Log.d("dd","dd");
+                Log.d("result", s);
+                if (!s.equals("failed")) {
+                    Log.d("dd", "dd");
                     picutre_Linear.setVisibility(View.VISIBLE);
-                    Log.d("image",picutre_Linear.getVisibility()+"");
-                    if(file_Type.equals("1")) {
+                    Log.d("image", picutre_Linear.getVisibility() + "");
+                    if (file_Type.equals("1")) {
                         image.setImageBitmap(resizedBitmap);
                         image.setScaleType(ImageView.ScaleType.FIT_XY);
 
-                    }else if(file_Type.equals("2")){
+                    } else if (file_Type.equals("2")) {
                         final String url = dataurl.getDataUrl() + file_Content;
                         image.setImageDrawable(drawable);
-                        image.setOnClickListener(new View.OnClickListener(){
-                            public  void onClick(View v){
-                                if(v.getId() == R.id.log_picture){
+                        image.setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View v) {
+                                if (v.getId() == R.id.log_picture) {
                                     try {
                                         player = new MediaPlayer();
                                         player.setDataSource(url);
@@ -295,15 +302,15 @@ public class LifeLogViewActivity extends Activity {
             @Override
             protected String doInBackground(String... params) {
 
-                try{
-                    String board_code = (String)params[0];
+                try {
+                    String board_code = (String) params[0];
 
-                    Map<String, String> picsel = new HashMap<String,String>() ;
+                    Map<String, String> picsel = new HashMap<String, String>();
 
-                    picsel.put("board_code",board_code) ;
+                    picsel.put("board_code", board_code);
 
 
-                    String link= dataurl.getServerUrl()+"picture"; //92.168.25.25
+                    String link = dataurl.getServerUrl() + "picture"; //92.168.25.25
 
                     HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
@@ -316,8 +323,8 @@ public class LifeLogViewActivity extends Activity {
                     int statusCode = post.getHttpStatusCode();
                     // 응답 본문 가져오기
                     String body = post.getBody();
-                    if(!body.equals("failed")) {
-                        Log.d("dd","dd");
+                    if (!body.equals("failed")) {
+                        Log.d("dd", "dd");
                         JSONArray json = null;
                         String[][] parsedata = new String[0][2];
                         try {
@@ -329,7 +336,7 @@ public class LifeLogViewActivity extends Activity {
                                 parsedata[i][0] = jobject.getString("file_content");
                                 parsedata[i][1] = jobject.getString("file_type");
                                 file_Type = parsedata[i][1];
-                                file_Content =  parsedata[i][0];
+                                file_Content = parsedata[i][0];
                             }
                             String url = dataurl.getTumnailUrl() + file_Content;
                             if (file_Type.equals("1")) {
@@ -348,7 +355,7 @@ public class LifeLogViewActivity extends Activity {
                                     e.printStackTrace();
                                 }
 
-                            }else if(file_Type.equals("2")){
+                            } else if (file_Type.equals("2")) {
                                 drawable = getResources().getDrawable(R.drawable.voice);
 
                             }
@@ -360,8 +367,7 @@ public class LifeLogViewActivity extends Activity {
 
                     // Read Server Response
 
-                }
-                catch(Exception e){
+                } catch (Exception e) {
                     return new String("Exception: " + e.getMessage());
                 }
 
@@ -372,23 +378,25 @@ public class LifeLogViewActivity extends Activity {
         task.execute(board_code);
 
     }
-    public void backAR(View view){
+
+    public void bakcMain(View view) {
         CameraOverlayView.DBselect = true;
-        LifeLogViewActivity2.oneView =true;
-        popListView.touch= true;
-        if(player != null){
+        LifeLogViewActivity2.oneView = true;
+        popListView.touch = true;
+        if (player != null) {
             player.stop();
             player.release();
             player = null;
         }
         finish();
     }
+
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         CameraOverlayView.DBselect = true;
-        LifeLogViewActivity2.oneView =true;
-        popListView.touch= true;
-        if(player != null){
+        LifeLogViewActivity2.oneView = true;
+        popListView.touch = true;
+        if (player != null) {
             player.stop();
             player.release();
             player = null;
@@ -398,7 +406,7 @@ public class LifeLogViewActivity extends Activity {
     }
 
     /*좋아요 여부*/
-    private void LikeTure(final String user_id, final String board_code){
+    private void LikeTure(final String user_id, final String board_code) {
 
         class tureData extends AsyncTask<String, Void, String> {
             ProgressDialog loading;
@@ -411,11 +419,11 @@ public class LifeLogViewActivity extends Activity {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                Log.d("like 결과",s);
+                Log.d("like 결과", s);
                 like_ture = Integer.parseInt(s);
-                if(like_ture == 1){
+                if (like_ture == 1) {
                     like.setImageDrawable(getResources().getDrawable(R.drawable.like_on));
-                }else{
+                } else {
                     like.setImageDrawable(getResources().getDrawable(R.drawable.like_off));
                 }
 
@@ -424,17 +432,17 @@ public class LifeLogViewActivity extends Activity {
             @Override
             protected String doInBackground(String... params) {
 
-                try{
-                    String user_id = (String)params[0];
-                    String board_code = (String)params[1];
+                try {
+                    String user_id = (String) params[0];
+                    String board_code = (String) params[1];
 
-                    Map<String, String> loginParam = new HashMap<String,String>() ;
+                    Map<String, String> loginParam = new HashMap<String, String>();
 
-                    loginParam.put("user_id",user_id) ;
-                    loginParam.put("board_code",board_code);
+                    loginParam.put("user_id", user_id);
+                    loginParam.put("board_code", board_code);
 
 
-                    String link=dataurl.getServerUrl()+"liketure"; //92.168.25.25
+                    String link = dataurl.getServerUrl() + "liketure"; //92.168.25.25
                     HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
                     http.addAllParameters(loginParam);
@@ -450,8 +458,7 @@ public class LifeLogViewActivity extends Activity {
 
                     // Read Server Response
 
-                }
-                catch(Exception e){
+                } catch (Exception e) {
                     return new String("Exception: " + e.getMessage());
                 }
 
@@ -459,21 +466,22 @@ public class LifeLogViewActivity extends Activity {
         }
 
         tureData task = new tureData();
-        task.execute(user_id,board_code);
+        task.execute(user_id, board_code);
     }
 
-    public void likeclick(View v){
-        Log.d("like", like_ture+"");
-        if(like_ture == 1){
+    public void likeclick(View v) {
+        Log.d("like", like_ture + "");
+        if (like_ture == 1) {
             like.setImageDrawable(getResources().getDrawable(R.drawable.like_off));
             like_ture = -1;
-        }else{
+        } else {
             like.setImageDrawable(getResources().getDrawable(R.drawable.like_on));
             like_ture = 1;
         }
-        LikeonOff(user_id, board_code+"");
+        LikeonOff(user_id, board_code + "");
     }
-    private void LikeonOff(final String user_id, final String board_code){
+
+    private void LikeonOff(final String user_id, final String board_code) {
 
         class tureData extends AsyncTask<String, Void, String> {
             ProgressDialog loading;
@@ -486,31 +494,31 @@ public class LifeLogViewActivity extends Activity {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                Log.d("like 결과",s);
+                Log.d("like 결과", s);
             }
 
             @Override
             protected String doInBackground(String... params) {
 
-                try{
-                    String user_id = (String)params[0];
-                    String board_code = (String)params[1];
+                try {
+                    String user_id = (String) params[0];
+                    String board_code = (String) params[1];
 
-                    Map<String, String> loginParam = new HashMap<String,String>() ;
+                    Map<String, String> loginParam = new HashMap<String, String>();
 
-                    loginParam.put("user_id",user_id) ;
-                    loginParam.put("board_code",board_code);
+                    loginParam.put("user_id", user_id);
+                    loginParam.put("board_code", board_code);
 
                     String dbselect = null;
 
-                    if(like_ture == 1){
+                    if (like_ture == 1) {
                         dbselect = "like";
-                    }else{
+                    } else {
                         dbselect = "likeDelete";
                     }
 
                     Log.d("db", dbselect);
-                    String link=dataurl.getServerUrl()+dbselect; //92.168.25.25
+                    String link = dataurl.getServerUrl() + dbselect; //92.168.25.25
                     HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
                     http.addAllParameters(loginParam);
@@ -526,8 +534,7 @@ public class LifeLogViewActivity extends Activity {
 
                     // Read Server Response
 
-                }
-                catch(Exception e){
+                } catch (Exception e) {
                     return new String("Exception: " + e.getMessage());
                 }
 
@@ -535,10 +542,11 @@ public class LifeLogViewActivity extends Activity {
         }
 
         tureData task = new tureData();
-        task.execute(user_id,board_code);
+        task.execute(user_id, board_code);
     }
-    public void log_option(View v){
-        switch(v.getId()){
+
+    public void log_option(View v) {
+        switch (v.getId()) {
             case R.id.option:
                 Log.d("TAG", "click button list dialog.......");
                 showListDialog();
@@ -546,7 +554,7 @@ public class LifeLogViewActivity extends Activity {
         }
     }
 
-    private void showListDialog(){
+    private void showListDialog() {
 
         String[] item = getResources().getStringArray(R.array.list_dialog_option_item);
 
@@ -565,14 +573,14 @@ public class LifeLogViewActivity extends Activity {
                 pro.execute();
                 if (position == 0) {
                     Intent intent = new Intent(getApplicationContext(), Life_LogModifyActivity.class);
-                    intent.putExtra("board_code",board_code);
-                    intent.putExtra("board_Title",boder_Title);
-                    intent.putExtra("board_Content",board_Content);
-                    intent.putExtra("file_Type",file_Type);
-                    intent.putExtra("file_Content",file_Content);
+                    intent.putExtra("board_code", board_code);
+                    intent.putExtra("board_Title", boder_Title);
+                    intent.putExtra("board_Content", board_Content);
+                    intent.putExtra("file_Type", file_Type);
+                    intent.putExtra("file_Content", file_Content);
                     startActivity(intent);
                 } else if (position == 1) {
-                    deleteBoard(user_id, board_code+"");
+                    deleteBoard(user_id, board_code + "");
                 } else if (position == 2) {
                     mDialog.dismiss();
                 }
@@ -583,7 +591,7 @@ public class LifeLogViewActivity extends Activity {
 
     }
 
-    private void deleteBoard(final String user_id, final String board_code){
+    private void deleteBoard(final String user_id, final String board_code) {
 
         class delete extends AsyncTask<String, Void, String> {
             ProgressDialog loading;
@@ -596,11 +604,11 @@ public class LifeLogViewActivity extends Activity {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                Log.d("like 결과",s);
+                Log.d("like 결과", s);
                 like_ture = Integer.parseInt(s);
-                if(like_ture == 1){
+                if (like_ture == 1) {
                     like.setImageDrawable(getResources().getDrawable(R.drawable.like_on));
-                }else{
+                } else {
                     like.setImageDrawable(getResources().getDrawable(R.drawable.like_off));
                 }
 
@@ -609,17 +617,17 @@ public class LifeLogViewActivity extends Activity {
             @Override
             protected String doInBackground(String... params) {
 
-                try{
-                    String user_id = (String)params[0];
-                    String board_code = (String)params[1];
+                try {
+                    String user_id = (String) params[0];
+                    String board_code = (String) params[1];
 
-                    Map<String, String> loginParam = new HashMap<String,String>() ;
+                    Map<String, String> loginParam = new HashMap<String, String>();
 
-                    loginParam.put("user_id",user_id) ;
-                    loginParam.put("board_code",board_code);
+                    loginParam.put("user_id", user_id);
+                    loginParam.put("board_code", board_code);
 
 
-                    String link=dataurl.getServerUrl()+"deleteBoard"; //92.168.25.25
+                    String link = dataurl.getServerUrl() + "deleteBoard"; //92.168.25.25
                     HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
                     http.addAllParameters(loginParam);
@@ -635,8 +643,7 @@ public class LifeLogViewActivity extends Activity {
 
                     // Read Server Response
 
-                }
-                catch(Exception e){
+                } catch (Exception e) {
                     return new String("Exception: " + e.getMessage());
                 }
 
@@ -644,12 +651,12 @@ public class LifeLogViewActivity extends Activity {
         }
 
         delete task = new delete();
-        task.execute(user_id,board_code);
+        task.execute(user_id, board_code);
     }
 
-    public void  commentView(View v){
+    public void commentView(View v) {
         Intent intent = new Intent(getApplicationContext(), Comment.class);
-        intent.putExtra("board_Code",board_code+"");
+        intent.putExtra("board_Code", board_code + "");
         intent.putExtra("user_id", user_id);
         startActivity(intent);
     }

@@ -25,15 +25,16 @@ public class CameraActivity extends AppCompatActivity {
     FrameLayout previewFrame;
     private CameraOverlayView mOverlayView = null;
     LocationManager lm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_camera);
 
-        ImageView home_icon = (ImageView)findViewById(R.id.home_icon);
-        ImageView mode_change = (ImageView)findViewById(R.id.mode_change);
-        ImageView filrer_icon = (ImageView)findViewById(R.id.filrer_icon);
+        ImageView home_icon = (ImageView) findViewById(R.id.home_icon);
+        ImageView mode_change = (ImageView) findViewById(R.id.mode_change);
+        ImageView filrer_icon = (ImageView) findViewById(R.id.filrer_icon);
 
         home_icon.setImageDrawable(getResources().getDrawable(R.drawable.ar_homepage));
         mode_change.setImageDrawable(getResources().getDrawable(R.drawable.search_on));
@@ -57,16 +58,17 @@ public class CameraActivity extends AppCompatActivity {
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, // 등록할 위치제공자
-                100, // 통지사이의 최소 시간간격 (miliSecond)
+                1000, // 통지사이의 최소 시간간격 (miliSecond)
                 1, // 통지사이의 최소 변경거리 (m)
                 mLocationListener);
         lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, // 등록할 위치제공자
-                100, // 통지사이의 최소 시간간격 (miliSecond)
+                1000, // 통지사이의 최소 시간간격 (miliSecond)
                 1, // 통지사이의 최소 변경거리 (m)
                 mLocationListener);
 
         //checkDangerousPermissions();
     }
+
     //권한 체크
     private void checkDangerousPermissions() {
         String[] permissions = {
@@ -119,8 +121,9 @@ public class CameraActivity extends AppCompatActivity {
             //Network 위치제공자에 의한 위치변화
             //Network 위치는 Gps에 비해 정확도가 많이 떨어진다.
             //AR에 내 위도 경도 셋팅
-            mOverlayView.setCurrentPoint(longitude, latitude );
+            mOverlayView.setCurrentPoint(longitude, latitude);
         }
+
         public void onProviderDisabled(String provider) {
             // Disabled시
             Log.d("test", "onProviderDisabled, provider:" + provider);
@@ -151,22 +154,22 @@ public class CameraActivity extends AppCompatActivity {
         overridePendingTransition(0, android.R.anim.slide_out_right);
     }
 
-    public void Filter(View view){
+    public void Filter(View view) {
         CameraOverlayView.DBselect = false;
         Intent intent = new Intent(this, ARFilterActivity.class);
         startActivity(intent);
     }
 
-    public void backmain(View view){
+    public void backmain(View view) {
         finish();
     }
 
-    public void modechange(View view){
+    public void modechange(View view) {
         mOverlayView.drawtext = false;
         Intent intent = new Intent(this, popListView.class);
-        intent.putExtra("jsonData",mOverlayView.getJsonData());
-        intent.putExtra("mlongitude",mOverlayView.getLong());
-        intent.putExtra("mlatitude",mOverlayView.getLat());
+        intent.putExtra("jsonData", mOverlayView.getJsonData());
+        intent.putExtra("mlongitude", mOverlayView.getLong());
+        intent.putExtra("mlatitude", mOverlayView.getLat());
         mOverlayView.mTouched = false;
         startActivity(intent);
     }

@@ -1,6 +1,5 @@
 package turn.zio.zara.travel_log;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,25 +19,25 @@ import java.util.List;
 
 public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    Context context ;
-    List<ImageModel> data = new ArrayList<>() ;
+    Context context;
+    List<ImageModel> data = new ArrayList<>();
 
-    public GalleryAdapter(Context context , List<ImageModel> data) {
-        this.context = context ;
-        this.data = data ;
+    public GalleryAdapter(Context context, List<ImageModel> data) {
+        this.context = context;
+        this.data = data;
     }
 
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        RecyclerView.ViewHolder viewHolder ;
-        View v ;
+        RecyclerView.ViewHolder viewHolder;
+        View v;
 
         v = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.singl_grid, parent, false);
 
-        viewHolder = new MyItemHolder(v) ;
+        viewHolder = new MyItemHolder(v);
 
         return viewHolder;
     }
@@ -48,10 +47,10 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         Glide.with(context).load(data.get(position).getUrl())
                 .thumbnail(0.5f)
-                .override(200,200)
+                .override(200, 200)
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(((MyItemHolder) holder ).mImg ) ;
+                .into(((MyItemHolder) holder).mImg);
 
     }
 
@@ -61,11 +60,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public static class MyItemHolder extends RecyclerView.ViewHolder {
-        ImageView mImg ;
+        ImageView mImg;
 
         public MyItemHolder(View itemView) {
-            super(itemView) ;
-            mImg = (ImageView) itemView.findViewById(R.id.item_img) ;
+            super(itemView);
+            mImg = (ImageView) itemView.findViewById(R.id.item_img);
         }
     }
 };

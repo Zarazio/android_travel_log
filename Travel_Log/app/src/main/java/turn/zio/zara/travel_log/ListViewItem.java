@@ -7,41 +7,49 @@ import android.graphics.drawable.Drawable;
  */
 
 public class ListViewItem {
-    private Drawable iconDrawable ;
-    private String titleStr ;
-    private String StartStr ;
+    private Drawable iconDrawable;
+    private String titleStr;
+    private String StartStr;
     private String EndStr;
     private String GcodeStr;
 
     public void setIcon(Drawable icon) {
-        iconDrawable = icon ;
+        iconDrawable = icon;
     }
+
     public void setTitle(String title) {
-        titleStr = title ;
+        titleStr = title;
     }
+
     public void setStart(String start) {
-        StartStr = start ;
+        StartStr = start;
     }
+
     public void setEnd(String end) {
-        EndStr = end ;
+        EndStr = end;
     }
+
     public void setGcode(String Gcode) {
-        GcodeStr = Gcode ;
+        GcodeStr = Gcode;
     }
 
     public Drawable getIcon() {
-        return this.iconDrawable ;
+        return this.iconDrawable;
     }
+
     public String getTitle() {
-        return this.titleStr ;
+        return this.titleStr;
     }
+
     public String getStart() {
-        return this.StartStr ;
+        return this.StartStr;
     }
+
     public String getEnd() {
-        return this.EndStr ;
+        return this.EndStr;
     }
+
     public String getGcode() {
-        return this.GcodeStr ;
+        return this.GcodeStr;
     }
 }

@@ -23,6 +23,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     SharedPreferences movebutton;
     SharedPreferences.Editor editor;
     public static String push_text;
+
     // [START receive_message]
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -37,13 +38,13 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.foot)
                 .setContentTitle("Travel_log Push Alram ")
                 .setContentText(push_text)
                 .setAutoCancel(true)
-                .setSound(defaultSoundUri).setLights(000000255,500,2000)
+                .setSound(defaultSoundUri).setLights(000000255, 500, 2000)
                 .setContentIntent(pendingIntent);
 
         movebutton = getSharedPreferences("LoginKeep", MODE_PRIVATE);

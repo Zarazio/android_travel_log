@@ -30,16 +30,17 @@ public class passWordChangeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pass_word_change);
 
-        this_password = (TextView)findViewById(R.id.this_password);
-        change_password = (TextView)findViewById(R.id.change_password);
-        change_confirm_password = (TextView)findViewById(R.id.change_confirm_password);
+        this_password = (TextView) findViewById(R.id.this_password);
+        change_password = (TextView) findViewById(R.id.change_password);
+        change_confirm_password = (TextView) findViewById(R.id.change_confirm_password);
 
     }
-    public void bakcMain(View view){
+
+    public void bakcMain(View view) {
         finish();
     }
 
-    public void passChangesubmit(View view){
+    public void passChangesubmit(View view) {
         String this_pass = this_password.getText().toString();
         String new_pass = change_password.getText().toString();
         String new_confirm_pass = change_confirm_password.getText().toString();
@@ -54,37 +55,38 @@ public class passWordChangeActivity extends AppCompatActivity {
 
 
         spacecheck(this_pass, new_pass, new_confirm_pass);
-        if(insertcheck == true) {
+        if (insertcheck == true) {
             if (this_pass.equals(new_pass)) {
                 Toast.makeText(getApplicationContext(), "현재 비밀번호와 같습니다.", Toast.LENGTH_SHORT).show();
-                passwordcheck= false;
-            }
-            else if(!new_pass.equals(new_confirm_pass)){
                 passwordcheck = false;
-            }else{
+            } else if (!new_pass.equals(new_confirm_pass)) {
+                passwordcheck = false;
+            } else {
                 passwordcheck = true;
             }
         }
-        if(passwordcheck == true){
+        if (passwordcheck == true) {
             Change_user_profile(user_id, new_pass);
         }
     }
-    public void spacecheck(String this_pass, String new_pass, String new_confirm_pass){
+
+    public void spacecheck(String this_pass, String new_pass, String new_confirm_pass) {
         insertcheck = false;
-        if(this_pass.isEmpty()){
-            Toast.makeText(getApplicationContext(),"패스워드를 입력해주세요.",Toast.LENGTH_SHORT).show();
+        if (this_pass.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "패스워드를 입력해주세요.", Toast.LENGTH_SHORT).show();
             this_password.requestFocus();
-        }else if(new_pass.isEmpty()){
-            Toast.makeText(getApplicationContext(),"새 패스워드를 입력해주세요.",Toast.LENGTH_SHORT).show();
+        } else if (new_pass.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "새 패스워드를 입력해주세요.", Toast.LENGTH_SHORT).show();
             change_password.requestFocus();
-        }else if(new_confirm_pass.isEmpty()){
-            Toast.makeText(getApplicationContext(),"새 패스워드 확인을 입력해주세요.",Toast.LENGTH_SHORT).show();
+        } else if (new_confirm_pass.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "새 패스워드 확인을 입력해주세요.", Toast.LENGTH_SHORT).show();
             change_confirm_password.requestFocus();
-        }else{
+        } else {
             insertcheck = true;
         }
     }
-    private void Change_user_profile(String user_id, String user_pass){
+
+    private void Change_user_profile(String user_id, String user_pass) {
 
         class Change_user extends AsyncTask<String, Void, String> {
             ProgressDialog loading;
@@ -98,14 +100,14 @@ public class passWordChangeActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                Log.d("result",s);
-                if(s.equals("success")){
-                    Toast.makeText(getApplicationContext(),"비밀번호 변경 완료 다시 로그인 해주세요.",Toast.LENGTH_SHORT).show();
+                Log.d("result", s);
+                if (s.equals("success")) {
+                    Toast.makeText(getApplicationContext(), "비밀번호 변경 완료 다시 로그인 해주세요.", Toast.LENGTH_SHORT).show();
                     Intent intent = getIntent();
-                    setResult(RESULT_OK,intent);
+                    setResult(RESULT_OK, intent);
                     finish();
-                }else{
-                    Toast.makeText(getApplicationContext(),"오류 발생.",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "오류 발생.", Toast.LENGTH_SHORT).show();
                 }
                 loading.dismiss();
 
@@ -114,18 +116,18 @@ public class passWordChangeActivity extends AppCompatActivity {
             @Override
             protected String doInBackground(String... params) {
 
-                try{
-                    String user_id = (String)params[0];
-                    String new_pass = (String)params[1];
+                try {
+                    String user_id = (String) params[0];
+                    String new_pass = (String) params[1];
 
 
-                    Map<String, String> changeParame = new HashMap<String,String>() ;
+                    Map<String, String> changeParame = new HashMap<String, String>();
 
-                    changeParame.put("user_id",user_id) ;
-                    changeParame.put("user_pass",new_pass) ;
+                    changeParame.put("user_id", user_id);
+                    changeParame.put("user_pass", new_pass);
 
 
-                    String link="http://211.211.213.218:8084/android/change_pass"; //92.168.25.25
+                    String link = "http://211.211.213.218:8084/android/change_pass"; //92.168.25.25
                     HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
                     http.addAllParameters(changeParame);
@@ -141,8 +143,7 @@ public class passWordChangeActivity extends AppCompatActivity {
 
                     // Read Server Response
 
-                }
-                catch(Exception e){
+                } catch (Exception e) {
                     return new String("Exception: " + e.getMessage());
                 }
 
@@ -150,6 +151,6 @@ public class passWordChangeActivity extends AppCompatActivity {
         }
 
         Change_user task = new Change_user();
-        task.execute(user_id,user_pass);
+        task.execute(user_id, user_pass);
     }
 }

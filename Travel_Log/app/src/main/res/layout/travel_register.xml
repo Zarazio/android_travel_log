@@ -10,43 +10,52 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
         android:layout_marginTop="8dp"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/bakcMain_icon"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:background="@android:color/transparent"
-                android:onClick="bakcMain"
-                android:src="@drawable/backbutton" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical">
 
+                <ImageView
+                    android:id="@+id/bakcMain"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:onClick="bakcMain"
+                    android:src="@drawable/backbutton2" />
+
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="-40dp"
-            android:adjustViewBounds="false">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal">
 
             <ImageView
-                android:id="@+id/view_regilogo_icon"
+                android:id="@+id/back_main_icon"
                 android:layout_width="200dp"
                 android:layout_height="45dp"
                 android:layout_alignBottom="@+id/backmain"
                 android:layout_alignParentTop="true"
-                android:src="@drawable/loginlogo" />
+                android:src="@drawable/mainlogoblack" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="40dp"
+                android:layout_height="match_parent"></LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -62,8 +71,8 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="아이디"
-            android:textColorHint="#999999"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:textColorHint="#999999" />
 
         <EditText
             android:id="@+id/user_regi_pass"
@@ -71,8 +80,8 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="패스워드"
-            android:textColorHint="#999999"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:textColorHint="#999999" />
 
         <EditText
             android:id="@+id/pass_check"
@@ -80,8 +89,8 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="패스워드확인"
-            android:textColorHint="#999999"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:textColorHint="#999999" />
 
         <RadioGroup
             android:id="@+id/gender"
@@ -96,15 +105,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:textColor="#999999"
-                android:text="남자" />
+                android:text="남자"
+                android:textColor="#999999" />
 
             <RadioButton
                 android:id="@+id/woman"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#999999"
-                android:text="여자" />
+                android:text="여자"
+                android:textColor="#999999" />
         </RadioGroup>
 
         <EditText
@@ -113,8 +122,8 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="생년월일"
-            android:textColorHint="#999999"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:textColorHint="#999999" />
 
         <EditText
             android:id="@+id/user_regi_phone"
@@ -122,9 +131,9 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="전화번호"
-            android:textColorHint="#999999"
             android:inputType="phone"
-            android:maxLength="11" />
+            android:maxLength="11"
+            android:textColorHint="#999999" />
 
         <EditText
             android:id="@+id/user_regi_email"
@@ -132,8 +141,8 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="이메일"
-            android:textColorHint="#999999"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:textColorHint="#999999" />
 
     </LinearLayout>
 
@@ -148,8 +157,8 @@
             android:id="@+id/view_regi_pro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#999999"
-            android:text="약관" />
+            android:text="약관"
+            android:textColor="#999999" />
 
         <Button
             android:id="@+id/register"

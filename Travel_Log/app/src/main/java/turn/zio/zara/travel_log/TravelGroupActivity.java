@@ -15,7 +15,7 @@ public class TravelGroupActivity extends AppCompatActivity {
     String sc_Division;
 
     @Override
-    public void onCreate(Bundle saveInstanceState){
+    public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_travel_group);
 
@@ -24,8 +24,8 @@ public class TravelGroupActivity extends AppCompatActivity {
     }
 
     // 액티비티 전환시 애니메이션 제거
-    public void onResume(){
-        this.overridePendingTransition(0,0);
+    public void onResume() {
+        this.overridePendingTransition(0, 0);
         super.onResume();
     }
 
@@ -33,23 +33,23 @@ public class TravelGroupActivity extends AppCompatActivity {
         if (sc_Division.equals("차감")) {
             Intent intent = new Intent(this, SmartCostSubActivity.class);
             startActivity(intent);
-        }else{
+        } else {
             Intent intent = new Intent(this, SmartCostAddActivity.class);
             startActivity(intent);
         }
     }
 
-    public void travel_Map(View view){ // 지도 액티비티로 이동
+    public void travel_Map(View view) { // 지도 액티비티로 이동
         Intent intent = new Intent(this, TravelMapActivity.class);
         startActivity(intent);
     }
 
-    public void travel_Supply(View view){ // 준비물 액티비티로 이동
+    public void travel_Supply(View view) { // 준비물 액티비티로 이동
         Intent intent = new Intent(this, TravelSupplyActivity.class);
         startActivity(intent);
     }
 
-    public void travel_Story(View view){ // 스토리 액티비티로 이동
+    public void travel_Story(View view) { // 스토리 액티비티로 이동
         Intent intent = new Intent(this, TravelStoryActivity.class);
         startActivity(intent);
     }

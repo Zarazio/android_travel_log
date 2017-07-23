@@ -19,6 +19,7 @@ public class PushAlramActivity extends AppCompatActivity {
     SharedPreferences.Editor editor;
     DataBaseUrl dataurl = new DataBaseUrl();
     String userkeep;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,17 +34,18 @@ public class PushAlramActivity extends AppCompatActivity {
         userkeep = user.getString("user_id", "0");
     }
 
-    public void bakcMain(View v){
+    public void bakcMain(View v) {
         finish();
         editor.remove("pushAlram");
         editor.commit();
     }
 
-    public void profile_submit(View v){
+    public void profile_submit(View v) {
         String write_gi = write.getText().toString();
         InsertData in = new InsertData();
         in.execute(write_gi);
     }
+
     class InsertData extends AsyncTask<String, Void, String> {
         ProgressDialog loading;
 
@@ -58,7 +60,7 @@ public class PushAlramActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            Log.d("result LOGINCHECK : ",s);
+            Log.d("result LOGINCHECK : ", s);
             editor.remove("pushAlram");
             editor.commit();
             loading.dismiss();
@@ -67,17 +69,17 @@ public class PushAlramActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            try{
+            try {
                 String link = "";
                 String data = "";
                 link = dataurl.getServerUrl() + "insertQA"; //192.168.25.25
 
 
-                Map<String, String> insertParam = new HashMap<String,String>() ;
+                Map<String, String> insertParam = new HashMap<String, String>();
 
                 String write_gi = (String) params[0];
-                insertParam.put("write_gi", write_gi) ;
-                insertParam.put("user_id", userkeep) ;
+                insertParam.put("write_gi", write_gi);
+                insertParam.put("user_id", userkeep);
 
                 HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
@@ -91,8 +93,7 @@ public class PushAlramActivity extends AppCompatActivity {
                 // 응답 본문 가져오기
                 String body = post.getBody();
                 return body;
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 return new String("Exception: " + e.getMessage());
             }
         }

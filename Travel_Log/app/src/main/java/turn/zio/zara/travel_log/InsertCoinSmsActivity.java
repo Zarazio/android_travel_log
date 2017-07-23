@@ -19,17 +19,17 @@ public class InsertCoinSmsActivity extends AppCompatActivity {
     Switch optionSwitch;
 
     @Override
-    public void onCreate(Bundle saveInstanceState){
+    public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_insert_coin_sms);
-        optionSwitch = (Switch)findViewById(R.id.SmsOptionSwitch);
+        optionSwitch = (Switch) findViewById(R.id.SmsOptionSwitch);
 
         smartCost = getSharedPreferences("switchOP", MODE_PRIVATE);
-        Switch_Stat =  smartCost.getString("switchOP", "0");
+        Switch_Stat = smartCost.getString("switchOP", "0");
 
-        if(Switch_Stat.equals("true")){
+        if (Switch_Stat.equals("true")) {
             optionSwitch.setChecked(true);
-        }else {
+        } else {
             optionSwitch.setChecked(false);
         }
 
@@ -37,15 +37,16 @@ public class InsertCoinSmsActivity extends AppCompatActivity {
         optionSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked == true){
+                if (isChecked == true) {
                     Switch_Stat = "true";
-                }else{
+                } else {
                     Switch_Stat = "false";
                 }
             }
         });
     }
-    public void sms_option_submit(View view){
+
+    public void sms_option_submit(View view) {
         smartCost = getSharedPreferences("switchOP", MODE_PRIVATE);
         editor = smartCost.edit();
         editor.putString("switchOP", Switch_Stat);
@@ -54,7 +55,8 @@ public class InsertCoinSmsActivity extends AppCompatActivity {
         Intent intent = new Intent(this, TravelStoryActivity.class);
         startActivity(intent);
     }
-    public void bakcMain(View view){
+
+    public void bakcMain(View view) {
         finish();
     }
 }

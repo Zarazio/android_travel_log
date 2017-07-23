@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 public class FindSuccessActivity extends AppCompatActivity {
     String user_id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,13 +18,14 @@ public class FindSuccessActivity extends AppCompatActivity {
 
         TextView tv = (TextView) findViewById(R.id.successview);
 
-        tv.setText("아이디는 " + user_id +" 입니다.");
+        tv.setText("아이디는 " + user_id + " 입니다.");
     }
-    public void bakcMain(View view){
+
+    public void bakcMain(View view) {
         finish();
     }
 
-    public void movelogin(View view){
+    public void movelogin(View view) {
         Intent intent = new Intent(this, LoginActivity.class);
         intent.putExtra("user_id", user_id);
         startActivity(intent);

@@ -1,46 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="#ffffff"
+    android:orientation="vertical"
     tools:context="turn.zio.zara.travel_log.FindPassActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
         android:layout_marginTop="8dp"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/bakcMain_icon"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="9dp"
-                android:layout_marginLeft="10dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:background="@android:color/transparent"
-                android:onClick="bakcMain"
-                android:src="@drawable/backbutton2" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical">
 
+                <ImageView
+                    android:id="@+id/bakcMain"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:onClick="bakcMain"
+                    android:src="@drawable/backbutton2" />
+
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="-40dp"
-            android:adjustViewBounds="false">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal">
 
             <ImageView
-                android:id="@+id/view_loginlogo_icon"
+                android:id="@+id/back_main_icon"
                 android:layout_width="200dp"
                 android:layout_height="45dp"
                 android:layout_alignBottom="@+id/backmain"
@@ -48,7 +49,16 @@
                 android:src="@drawable/mainlogoblack" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="40dp"
+                android:layout_height="match_parent"></LinearLayout>
+        </LinearLayout>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -77,17 +87,18 @@
             android:hint=" 이메일"
             android:inputType="textEmailAddress"
             android:textColorHint="#999999" />
+
         <TextView
             android:id="@+id/view_move_idfine"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="findid"
             android:layout_alignStart="@+id/user_login_pass"
             android:layout_below="@+id/user_login_pass"
             android:layout_marginLeft="15dp"
+            android:onClick="findid"
             android:text="아이디가 기억나지 않으세요?"
             android:textColor="#999999" />
-        </LinearLayout>
+    </LinearLayout>
 
     <Button
         android:id="@+id/checkclick"

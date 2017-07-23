@@ -22,8 +22,8 @@ import java.util.ArrayList;
 public class CreateKMLFile {
 
     private static final String TAG = "CreateKMLFile";
-    public static String createKML(ArrayList<LocationInfo> locationHistory, String userId)
-    {
+
+    public static String createKML(ArrayList<LocationInfo> locationHistory, String userId) {
         Document doc = null;
 
         try {
@@ -52,33 +52,41 @@ public class CreateKMLFile {
             kml.addContent(document);
             {
 
-                document.addContent(name); name.setText("" + userId + " 발자취");
-                document.addContent(open); open.setText("1");
+                document.addContent(name);
+                name.setText("" + userId + " 발자취");
+                document.addContent(open);
+                open.setText("1");
 
                 style.setAttribute("id", "lineStyle");
                 document.addContent(style);
                 {
                     style.addContent(lineStyle);
                     {
-                        lineStyle.addContent(color); color.setText("7f0000ff");
-                        lineStyle.addContent(width); width.setText("4");
+                        lineStyle.addContent(color);
+                        color.setText("7f0000ff");
+                        lineStyle.addContent(width);
+                        width.setText("4");
 //                        lineStyle.addContent(gx); gx.setText("1");
                     }
                 }
                 document.addContent(placeMark);
                 {
-                    placeMark.addContent(markName); markName.setText("LineStyle");
-                    placeMark.addContent(styleUrl); styleUrl.setText("#lineStyle");
+                    placeMark.addContent(markName);
+                    markName.setText("LineStyle");
+                    placeMark.addContent(styleUrl);
+                    styleUrl.setText("#lineStyle");
                     placeMark.addContent(lineString);
                     {
-                        lineString.addContent(extrude); extrude.setText("1");
-                        lineString.addContent(tessellate); tessellate.setText("1");
+                        lineString.addContent(extrude);
+                        extrude.setText("1");
+                        lineString.addContent(tessellate);
+                        tessellate.setText("1");
 
                         /* 실제 좌표값 입력 */
                         lineString.addContent(coordinates);
 
                         String location = "";
-                        for(LocationInfo info : locationHistory)
+                        for (LocationInfo info : locationHistory)
                             location += info.getLongitude() + "," + info.getLatitude() + ",0 \n";
 
                         coordinates.setText(location);
@@ -94,15 +102,14 @@ public class CreateKMLFile {
         }
 
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/travelLog/kml/";
-        String name = System.currentTimeMillis()+"step_log.kml";
-        if(doc == null) return "";
-        File file = new File(path) ;
-        if(!file.exists())
-            file.mkdirs() ;
+        String name = System.currentTimeMillis() + "step_log.kml";
+        if (doc == null) return "";
+        File file = new File(path);
+        if (!file.exists())
+            file.mkdirs();
         FileOutputStream out = null;
-        try
-        {
-            out = new FileOutputStream(path+ name);
+        try {
+            out = new FileOutputStream(path + name);
             //xml 파일을 떨구기 위한 경로와 파일 이름 지정해 주기
             XMLOutputter serializer = new XMLOutputter();
 
@@ -127,7 +134,7 @@ public class CreateKMLFile {
         } finally {
 
             try {
-                if(out != null) out.close();
+                if (out != null) out.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

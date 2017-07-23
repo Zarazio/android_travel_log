@@ -9,15 +9,15 @@ import android.os.Parcelable;
 
 public class ImageModel implements Parcelable {
 
-    String name, url ;
+    String name, url;
 
-    public ImageModel(){
+    public ImageModel() {
 
     }
 
-    protected ImageModel(Parcel in){
-        name = in.readString() ;
-        url = in.readString() ;
+    protected ImageModel(Parcel in) {
+        name = in.readString();
+        url = in.readString();
     }
 
     public static final Creator<ImageModel> CREATOR = new Creator<ImageModel>() {

@@ -13,32 +13,61 @@
         android:layout_marginBottom="3dp"
         android:layout_marginTop="8dp"
         android:background="#fafafa"
-        android:orientation="vertical">
+        android:orientation="horizontal">
+
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:adjustViewBounds="false">
+            android:layout_height="match_parent"
+            android:background="#fafafa">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="#fafafa"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:background="#fafafa"></LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#fafafa"
+            android:gravity="center_vertical|center_horizontal">
 
             <TextView
-                android:id="@+id/log_Write_Title"
+                android:id="@+id/Step_log_Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="#fafafa"
                 android:layout_weight="1"
+                android:background="#fafafa"
+                android:gravity="center_vertical|center_horizontal"
                 android:text="Step Log"
-                android:textColor="@color/colorBlack"
                 android:textSize="30sp" />
-
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#fafafa">
 
+            <LinearLayout
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:background="#fafafa"></LinearLayout>
         </LinearLayout>
+    </LinearLayout>
+
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dip"
-        android:background="#e6e6e6"
-        />
+        android:background="#e6e6e6" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -179,22 +208,25 @@
         </LinearLayout>
 
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <Button
             android:id="@+id/cancel"
-            android:onClick="step_finish"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:onClick="step_finish"
             android:text="취소" />
+
         <Button
             android:id="@+id/submit"
-            android:onClick="step_submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:onClick="step_submit"
             android:text="등록" />
 
 

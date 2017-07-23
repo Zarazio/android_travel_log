@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 /*
  * Created by 하루마다 on 2017-06-13.
  */
@@ -32,21 +33,26 @@ class MyAdapter extends BaseAdapter {
         inf = (LayoutInflater) context.getSystemService
                 (Context.LAYOUT_INFLATER_SERVICE);
     }
-    public void image(Bitmap[] images){
+
+    public void image(Bitmap[] images) {
         this.images = images;
     }
+
     @Override
     public int getCount() {
         return text.length;
     }
+
     @Override
     public Object getItem(int position) {
         return text[position];
     }
+
     @Override
     public long getItemId(int position) {
         return position;
     }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null)
@@ -65,10 +71,10 @@ class MyAdapter extends BaseAdapter {
             if (file_type[position].equals("1")) {
                 iv.setImageBitmap(images[position]);
                 iv.setScaleType(ImageView.ScaleType.FIT_XY);
-            } else if(file_type[position].equals("2")){
+            } else if (file_type[position].equals("2")) {
                 drawable = context.getResources().getDrawable(R.drawable.voice);
                 iv.setImageDrawable(drawable);
-            }else if(file_type[position].equals("3")){
+            } else if (file_type[position].equals("3")) {
                 drawable = context.getResources().getDrawable(R.drawable.foot);
                 iv.setImageDrawable(drawable);
             }

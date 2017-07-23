@@ -12,13 +12,15 @@ import android.os.Handler;
 
 public class SplashActivity extends Activity {
     Intent intent;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
 
         splashload();
     }
-    private void splashload(){
+
+    private void splashload() {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -27,6 +29,6 @@ public class SplashActivity extends Activity {
                 startActivity(intent);
                 finish();
             }
-        },3000);
+        }, 3000);
     }
 }

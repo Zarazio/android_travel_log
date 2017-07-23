@@ -28,11 +28,11 @@ public class ARFilterActivity extends AppCompatActivity {
         like_order_check = (RadioButton) findViewById(R.id.like_order_check);
         hash_Text = (EditText) findViewById(R.id.hash_Text);
 
-        view_moode = (LinearLayout)findViewById(R.id.view_moode) ;
+        view_moode = (LinearLayout) findViewById(R.id.view_moode);
 
         latest_order_check.setChecked(true);
 
-        AR_view_filter = (Spinner)findViewById(R.id.place_view_mode);
+        AR_view_filter = (Spinner) findViewById(R.id.place_view_mode);
         ArrayAdapter filterAdapter = ArrayAdapter.createFromResource(this,
                 R.array.view_mode, android.R.layout.simple_spinner_item);
         filterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -40,54 +40,55 @@ public class ARFilterActivity extends AppCompatActivity {
 
     }
 
-    public void like_order_check(View v){
+    public void like_order_check(View v) {
         like_order_check.setChecked(true);
         latest_order_check.setChecked(false);
     }
 
-    public void latest_order_check(View v){
+    public void latest_order_check(View v) {
         like_order_check.setChecked(false);
         latest_order_check.setChecked(true);
     }
 
-    public void bakcMain(View v){
+    public void bakcMain(View v) {
         CameraOverlayView.DBselect = true;
         finish();
     }
 
 
-    public void filter_submit(View v){
+    public void filter_submit(View v) {
         String visible = AR_view_filter.getSelectedItem().toString();
         String hashtext = hash_Text.getText().toString();
 
-        if(hashtext.equals("")){
+        if (hashtext.equals("")) {
             CameraOverlayView.hashTag = "없음";
-        }else{
+        } else {
             CameraOverlayView.hashTag = hashtext;
         }
 
-        if(visible.equals("250m")){
+        if (visible.equals("250m")) {
             CameraOverlayView.mVisibleDistance = 0.25;
-        }else if(visible.equals("500m")){
+        } else if (visible.equals("500m")) {
             CameraOverlayView.mVisibleDistance = 0.5;
-        }else if(visible.equals("1km")){
+        } else if (visible.equals("1km")) {
             CameraOverlayView.mVisibleDistance = 1;
-        }else if(visible.equals("3km")){
+        } else if (visible.equals("3km")) {
             CameraOverlayView.mVisibleDistance = 3;
-        }else if(visible.equals("5km")){
+        } else if (visible.equals("5km")) {
             CameraOverlayView.mVisibleDistance = 5;
         }
 
-        if(like_order_check.isChecked()){
+        if (like_order_check.isChecked()) {
             CameraOverlayView.order_DB = "2";
-        }else if(latest_order_check.isChecked()){
+        } else if (latest_order_check.isChecked()) {
             CameraOverlayView.order_DB = "1";
         }
         CameraOverlayView.DBselect = true;
         finish();
     }
+
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         CameraOverlayView.DBselect = true;
         finish();
     }

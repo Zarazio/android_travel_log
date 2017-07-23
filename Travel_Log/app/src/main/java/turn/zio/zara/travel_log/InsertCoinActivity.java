@@ -18,14 +18,13 @@ public class InsertCoinActivity extends AppCompatActivity {
     private EditText editcontent;
 
     @Override
-    public void onCreate(Bundle saveInstanceState){
+    public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_insert_coin);
 
         editcoin = (EditText) findViewById(R.id.sc_coin);
         editcontent = (EditText) findViewById(R.id.sc_content);
     }
-
 
 
     public void scinsertcoin(View view) {
@@ -36,13 +35,14 @@ public class InsertCoinActivity extends AppCompatActivity {
     }
 
     // 디비입력
-    private void insertToDatabase(String sc_coin, String sc_content, String groupCode, String userkeep){
+    private void insertToDatabase(String sc_coin, String sc_content, String groupCode, String userkeep) {
         InsertMoney task = new InsertMoney();
         task.execute(sc_coin, sc_content, groupCode, userkeep);
 
         finish();
     }
-    public void bakcMain(View view){
+
+    public void bakcMain(View view) {
         finish();
     }
 }

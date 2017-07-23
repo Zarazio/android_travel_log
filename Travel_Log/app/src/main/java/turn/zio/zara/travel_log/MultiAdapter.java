@@ -22,7 +22,7 @@ class MultiAdapter extends BaseAdapter {
     //생성자
     public MultiAdapter(Context context, ArrayList<ListItem> arItem) {
         //인플레이트 준비를 합니다.
-        mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         arSrc = arItem;
     }
 
@@ -49,14 +49,14 @@ class MultiAdapter extends BaseAdapter {
         // TODO Auto-generated method stub
         //최초 호출이면 항목 뷰를 생성한다.
         //타입별로 뷰를 다르게 디자인 할 수 있으며 높이가 달라도 상관없다.
-        if(convertView == null)
+        if (convertView == null)
             //인플레이트합니다. 즉 화면에 뿌립니다.
             convertView = mInflater.inflate(R.layout.pop_log_list, parent, false);
 
         //화면에 뿌린뒤 여기서 각항목에 해당하는 값을 바꿔주는 부분입니다.
-        TextView title = (TextView)convertView.findViewById(R.id.log_title);
+        TextView title = (TextView) convertView.findViewById(R.id.log_title);
         title.setText(arSrc.get(position).title);
-        TextView user_id = (TextView)convertView.findViewById(R.id.user_id);
+        TextView user_id = (TextView) convertView.findViewById(R.id.user_id);
         user_id.setText(arSrc.get(position).user_id);
 
 

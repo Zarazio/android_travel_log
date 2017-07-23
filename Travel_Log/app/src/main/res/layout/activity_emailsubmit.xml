@@ -10,43 +10,60 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
         android:layout_marginTop="8dp"
-        android:orientation="vertical">
+        android:background="#fafafa"
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:background="#fafafa">
 
-            <ImageView
-                android:id="@+id/bakcMain"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:background="@android:color/transparent"
-                android:onClick="bakcMain"
-                android:src="@drawable/backbutton" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="#fafafa"
+                android:gravity="center_vertical">
 
+                <ImageView
+                    android:id="@+id/bakcMain"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="#fafafa"
+                    android:onClick="bakcMain"
+                    android:src="@drawable/backbutton2" />
+
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="-40dp"
-            android:adjustViewBounds="false">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#fafafa"
+            android:gravity="center_vertical|center_horizontal">
 
             <ImageView
-                android:id="@+id/back_main_icon"
+                android:id="@+id/logo_image"
                 android:layout_width="200dp"
                 android:layout_height="45dp"
                 android:layout_alignBottom="@+id/backmain"
                 android:layout_alignParentTop="true"
+                android:background="#fafafa"
                 android:src="@drawable/loginlogo" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#fafafa">
+
+            <LinearLayout
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:background="#fafafa"></LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout

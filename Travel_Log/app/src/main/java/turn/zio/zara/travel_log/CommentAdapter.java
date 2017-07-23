@@ -3,6 +3,8 @@ package turn.zio.zara.travel_log;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +27,7 @@ class CommentAdapter extends BaseAdapter {
 
     private Bitmap[] images;
 
-    public CommentAdapter(Context context, int layout, int[] board_code, String[] board_content,String[] date ,String[] user_id) {
+    public CommentAdapter(Context context, int layout, int[] board_code, String[] board_content, String[] date, String[] user_id) {
         this.context = context;
         this.layout = layout;
         this.board_code = board_code;
@@ -37,22 +39,25 @@ class CommentAdapter extends BaseAdapter {
     }
 
 
-
-    public void pimage(Bitmap[] images){
+    public void pimage(Bitmap[] images) {
         this.images = images;
     }
+
     @Override
     public int getCount() {
         return board_code.length;
     }
+
     @Override
     public Object getItem(int position) {
         return board_code[position];
     }
+
     @Override
     public long getItemId(int position) {
         return position;
     }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null)
@@ -63,6 +68,8 @@ class CommentAdapter extends BaseAdapter {
         TextView contentView = (TextView) convertView.findViewById(R.id.contenttext);
         TextView dateView = (TextView) convertView.findViewById(R.id.datetext);
 
+        iv.setBackground(new ShapeDrawable(new OvalShape()));
+        iv.setClipToOutline(true);
         user_idView.setText(user_id[position]);
         contentView.setText(board_content[position]);
         dateView.setText(date[position]);

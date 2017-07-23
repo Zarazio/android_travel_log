@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#fafafa"
+    android:orientation="vertical"
     tools:context="turn.zio.zara.travel_log.MainActivity">
 
     <FrameLayout
@@ -100,70 +100,75 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="443dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:layout_height="match_parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp">
+                    android:layout_height="443dp"
+                    android:orientation="vertical">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <ImageView
-                            android:id="@+id/profile_picture"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_marginLeft="10dp"
-                            android:scaleType="fitXY"
-                            app:srcCompat="@drawable/camera" />
-                    </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="5dp"
-                        android:orientation="vertical">
+                            <ImageView
+                                android:id="@+id/profile_picture"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_margin="10dp"
+                                android:scaleType="fitXY"
+                                app:srcCompat="@drawable/camera" />
+                        </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/main_user_id"
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="유저아이디" />
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="5dp"
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/user_place_info"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="나의 위치" />
+                            <TextView
+                                android:id="@+id/main_user_id"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="유저아이디" />
+
+                            <TextView
+                                android:id="@+id/user_place_info"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="나의 위치" />
+                        </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
 
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="1dip"
-                    android:background="#e6e6e6" />
-
-                <ScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:fillViewport="true">
-
-                    <GridView
-                        android:id="@+id/main_list"
+                    <View
                         android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:isScrollContainer="false"
-                        android:numColumns="1"
-                        android:stretchMode="columnWidth"
-                        android:verticalSpacing="5dp" />
+                        android:layout_height="1dip"
+                        android:background="#e6e6e6" />
 
-                </ScrollView>
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:fillViewport="true">
+
+                        <GridView
+                            android:id="@+id/main_list"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:isScrollContainer="false"
+                            android:numColumns="1"
+                            android:stretchMode="columnWidth"
+                            android:verticalSpacing="5dp" />
+
+                    </ScrollView>
+                </LinearLayout>
             </LinearLayout>
+
         </LinearLayout>
         <!--검색 페이지-->
         <LinearLayout
@@ -248,217 +253,225 @@
             android:id="@+id/my_page"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#fafafa"
             android:orientation="vertical"
             android:visibility="invisible">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginBottom="3dp"
                 android:layout_marginTop="8dp"
                 android:background="#fafafa"
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#fafafa">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="#fafafa">
+
+                        <LinearLayout
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="#fafafa">
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="#fafafa"
+                        android:gravity="center_vertical|center_horizontal">
+
+                        <TextView
+                            android:id="@+id/my_page_user_id"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="#fafafa"
+                            android:text="유저 아이디"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="#fafafa">
+
+                        <ImageView
+                            android:id="@+id/mypage_option"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="#fafafa"
+                            android:onClick="option"
+                            app:srcCompat="@drawable/mypage_option" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/my_page_profile_picture"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="10dp"
+                        app:srcCompat="@drawable/camera" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/logCount"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="게시물 수" />
+
+                                <TextView
+                                    android:id="@+id/log"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="게시물"
+                                    android:textSize="10sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/friendsCount"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="친구수" />
+
+                                <TextView
+                                    android:id="@+id/friends"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="친구"
+                                    android:textSize="10sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:id="@+id/profile_edit"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:background="@drawable/border"
+                                android:gravity="center"
+                                android:onClick="profile_edit"
+                                android:textSize="20sp"
+                                android:text="프로필 수정" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dip"
+                    android:background="#e6e6e6" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#fafafa">
 
                     <ImageView
-                        android:id="@+id/bakcMain"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="5dp"
+                        android:id="@+id/my_logs"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
                         android:background="#fafafa"
-                        android:onClick="bakcMain"
-                        android:src="@drawable/backbutton2" />
+                        android:onClick="myLogList"
+                        app:srcCompat="@drawable/mypage_icon" />
 
+                    <ImageView
+                        android:id="@+id/travel"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:background="#fafafa"
+                        android:onClick="myTravel"
+                        app:srcCompat="@drawable/timeline_off" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dip"
+                    android:background="#e6e6e6" />
+
+                <LinearLayout
+                    android:id="@+id/mylogvisible"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="visible">
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fillViewport="true">
+
+                        <GridView
+                            android:id="@+id/mypage_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:horizontalSpacing="5dp"
+                            android:numColumns="3"
+                            android:verticalSpacing="5dp" />
+                    </ScrollView>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="-32dp"
-                    android:adjustViewBounds="false">
+                    android:id="@+id/travelvisible"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone">
 
-                    <TextView
-                        android:id="@+id/log_Write_Title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="#fafafa"
-                        android:text="옵션"
-                        android:textSize="20sp" />
-
+                    <ListView
+                        android:id="@+id/listview1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
                 </LinearLayout>
+
+
             </LinearLayout>
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dip"
-                android:background="#e6e6e6" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#fafafa"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="15dp">
-
-                    <TextView
-                        android:id="@+id/user_edit_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="#fafafa"
-                        android:text="설정"
-                        android:textSize="18dp" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="1dip"
-                    android:background="#e6e6e6" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/profile_change"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="7dp"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginTop="7dp"
-                        android:layout_weight="1"
-                        android:onClick="profile_change"
-                        android:text="프로필 편집"
-                        android:textSize="22dp" />
-
-                    <View
-                        android:layout_width="fill_parent"
-                        android:layout_height="1dip"
-                        android:layout_marginLeft="30dp"
-                        android:background="#e6e6e6" />
-
-                    <TextView
-                        android:id="@+id/pass_change"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="7dp"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginTop="7dp"
-                        android:layout_weight="1"
-                        android:onClick="passChangeView"
-                        android:text="비밀번호 변경"
-                        android:textSize="22dp" />
-
-                    <View
-                        android:layout_width="fill_parent"
-                        android:layout_height="1dip"
-                        android:layout_marginLeft="30dp"
-                        android:background="#e6e6e6" />
-
-                    <TextView
-                        android:id="@+id/user_like"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="7dp"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginTop="7dp"
-                        android:layout_weight="1"
-                        android:text="회원님이 좋아한 게시물"
-                        android:textSize="22dp" />
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="1dip"
-                    android:background="#e6e6e6" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="15dp">
-
-                    <TextView
-                        android:id="@+id/user_edit_text2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="#fafafa"
-                        android:text="계정"
-                        android:textSize="18dp" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="1dip"
-                    android:background="#e6e6e6" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/push_alram_setting"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="7dp"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginTop="7dp"
-                        android:layout_weight="1"
-                        android:onClick="push_alram_setting"
-                        android:text="푸시 알림 설정 "
-                        android:textSize="22dp" />
-
-                    <View
-                        android:layout_width="fill_parent"
-                        android:layout_height="1dip"
-                        android:layout_marginLeft="30dp"
-                        android:background="#e6e6e6" />
-
-                    <TextView
-                        android:id="@+id/logout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="7dp"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginTop="7dp"
-                        android:layout_weight="1"
-                        android:onClick="user_logout"
-                        android:text="로그아웃"
-                        android:textSize="22dp" />
-
-                    <View
-                        android:layout_width="fill_parent"
-                        android:layout_height="1dip"
-                        android:layout_weight="1"
-                        android:background="#e6e6e6" />
-
-                </LinearLayout>
-            </LinearLayout>
-
         </LinearLayout>
-
     </FrameLayout>
 
     <View
@@ -486,8 +499,8 @@
             android:id="@+id/view_search_icon"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:onClick="viewPageChange"
             android:layout_weight="1"
+            android:onClick="viewPageChange"
             app:srcCompat="@drawable/search" />
 
         <ImageView
@@ -502,16 +515,16 @@
             android:id="@+id/view_heart_icon"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:onClick="viewPageChange"
             android:layout_weight="1"
+            android:onClick="viewPageChange"
             app:srcCompat="@drawable/heart" />
 
         <ImageView
             android:id="@+id/view_mypage_icon"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:onClick="viewPageChange"
             android:layout_weight="1"
+            android:onClick="viewPageChange"
             app:srcCompat="@drawable/person" />
     </LinearLayout>
 

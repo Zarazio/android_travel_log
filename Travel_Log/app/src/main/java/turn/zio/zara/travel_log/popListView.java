@@ -28,7 +28,7 @@ public class popListView extends Activity {
     private String[][] parsedata;
 
 
-    public static boolean touch= true;
+    public static boolean touch = true;
     JSONArray json = null;
 
     @Override
@@ -39,13 +39,13 @@ public class popListView extends Activity {
         getWindow().setLayout(android.view.WindowManager.LayoutParams.MATCH_PARENT, android.view.WindowManager.LayoutParams.MATCH_PARENT);
         getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
-        touch= true;
+        touch = true;
 
         Intent intent = getIntent();
         jsondata = intent.getExtras().getString("jsonData");
         double mlongitude = intent.getExtras().getDouble("mlongitude");
         double mlatitude = intent.getExtras().getDouble("mlatitude");
-        Log.d("Dd",jsondata);
+        Log.d("Dd", jsondata);
 
         Location locationA = new Location("Point A");
         Location locationB = new Location("Point B");
@@ -54,7 +54,7 @@ public class popListView extends Activity {
         locationA.setLatitude(mlatitude);
 
 
-       parsedata = new String[0][9];
+        parsedata = new String[0][9];
 
         arItem = new ArrayList<ListItem>();
 
@@ -86,8 +86,8 @@ public class popListView extends Activity {
                         String board_Code = parsedata[i][0];
                         String title = parsedata[i][1];
                         String user_id = parsedata[i][6];
-                        arItem.add(new ListItem(board_Code,title, user_id));
-                        Log.d("Dd",arItem.size()+"");
+                        arItem.add(new ListItem(board_Code, title, user_id));
+                        Log.d("Dd", arItem.size() + "");
                     }
                 }
             }
@@ -99,7 +99,7 @@ public class popListView extends Activity {
 
         //리스트뷰를 만들고
         GridView MyList;
-        MyList = (GridView)findViewById(R.id.list);
+        MyList = (GridView) findViewById(R.id.list);
         MyList.setAdapter(MyAdapter);//이어줍니다.
 
         MyList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -122,18 +122,18 @@ public class popListView extends Activity {
                         parsedata[i][8] = jobject.getString("write_type");
                         parsedata[i][9] = jobject.getString("user_profile");
 
-                        if(sel_boardCode.equals(parsedata[i][0]) && touch==true) {
+                        if (sel_boardCode.equals(parsedata[i][0]) && touch == true) {
                             Intent intent = new Intent(getApplicationContext(), LifeLogViewActivity.class);
-                            touch= false;
-                            intent.putExtra("board_Code",parsedata[i][0]);
-                            intent.putExtra("board_Title",parsedata[i][1]);
-                            intent.putExtra("board_Content",parsedata[i][2]);
-                            intent.putExtra("log_longtitude",parsedata[i][3]);
-                            intent.putExtra("log_latitude",parsedata[i][4]);
-                            intent.putExtra("user_id",parsedata[i][6]);
-                            intent.putExtra("board_Date",parsedata[i][7]);
-                            intent.putExtra("write_type",parsedata[i][8]);
-                            intent.putExtra("profile_picture",parsedata[i][9]);
+                            touch = false;
+                            intent.putExtra("board_Code", parsedata[i][0]);
+                            intent.putExtra("board_Title", parsedata[i][1]);
+                            intent.putExtra("board_Content", parsedata[i][2]);
+                            intent.putExtra("log_longtitude", parsedata[i][3]);
+                            intent.putExtra("log_latitude", parsedata[i][4]);
+                            intent.putExtra("user_id", parsedata[i][6]);
+                            intent.putExtra("board_Date", parsedata[i][7]);
+                            intent.putExtra("write_type", parsedata[i][8]);
+                            intent.putExtra("profile_picture", parsedata[i][9]);
 
                             startActivity(intent);
                             CameraOverlayView.DBselect = false;
@@ -147,13 +147,13 @@ public class popListView extends Activity {
     }
 
 
-
-    public void backAR(View view){
+    public void backAR(View view) {
         CameraOverlayView.drawtext = true;
         finish();
     }
+
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         CameraOverlayView.drawtext = true;
         finish();
     }

@@ -14,73 +14,75 @@
         android:layout_marginBottom="3dp"
         android:layout_marginTop="8dp"
         android:background="#fafafa"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="#fafafa">
 
-            <ImageView
-                android:id="@+id/bakcMain"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:background="#fafafa"
-                android:onClick="bakcMain"
-                android:src="@drawable/backbutton2" />
+                android:gravity="center_vertical">
 
+                <ImageView
+                    android:id="@+id/bakcMain"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="#fafafa"
+                    android:onClick="bakcMain"
+                    android:src="@drawable/backbutton2" />
+
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="-32dp"
-            android:adjustViewBounds="false">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#fafafa"
+            android:gravity="center_vertical|center_horizontal">
 
             <TextView
-                android:id="@+id/log_Write_Title"
+                android:id="@+id/pass_change_Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="#fafafa"
-                android:text="비밀번호"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="비밀번호 변경"
                 android:textSize="20sp" />
-
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="-20dp"
+            android:layout_height="match_parent"
             android:background="#fafafa">
 
-            <TextView
+            <Button
                 android:id="@+id/passChangesubmit"
-                android:layout_width="wrap_content"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:background="#fafafa"
+                android:background="@null"
                 android:onClick="passChangesubmit"
                 android:text="완료"
-                android:textSize="20sp" />
+                android:textSize="20dp" />
         </LinearLayout>
     </LinearLayout>
+
     <View
-    android:layout_width="fill_parent"
-    android:layout_height="1dip"
-    android:background="#e6e6e6" />
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="#e6e6e6" />
+
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="40dp">
-    </LinearLayout>
+        android:layout_height="40dp"></LinearLayout>
+
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dip"
@@ -117,19 +119,22 @@
                 android:textColorHint="#999999"
                 android:textSize="25dp" />
         </LinearLayout>
-        
+
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dip"
             android:background="#e6e6e6" />
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:background="#fafafa"
-            android:layout_height="50dp"></LinearLayout>
+            android:layout_height="50dp"
+            android:background="#fafafa"></LinearLayout>
+
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dip"
             android:background="#e6e6e6" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

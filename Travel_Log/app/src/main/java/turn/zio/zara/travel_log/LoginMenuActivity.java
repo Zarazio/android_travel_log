@@ -26,6 +26,7 @@ public class LoginMenuActivity extends AppCompatActivity {
 
     SharedPreferences login;
     SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,14 +41,14 @@ public class LoginMenuActivity extends AppCompatActivity {
         SharedPreferences user = getSharedPreferences("LoginKeep", MODE_PRIVATE);
         String userkeep = user.getString("user_id", "0");
 
-        if(!userkeep.equals("0")){
+        if (!userkeep.equals("0")) {
             viewMove();
         }
          /*페이스북 로그인연동*/
 
         callbackManager = CallbackManager.Factory.create();  //로그인 응답을 처리할 콜백 관리자
 
-        CustomloginButton = (Button)findViewById(R.id.facebook_loagin);
+        CustomloginButton = (Button) findViewById(R.id.facebook_loagin);
         CustomloginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,23 +77,24 @@ public class LoginMenuActivity extends AppCompatActivity {
         /*페이스북 로그인연동*/
 
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    public void Travel_login (View view){
+    public void Travel_login(View view) {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
 
-    public void register (View view){
+    public void register(View view) {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }
 
-    public void viewMove(){
+    public void viewMove() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }

@@ -11,11 +11,11 @@ public class DataBaseUrl {
     *
     */
     private String url = "http://114.201.41.248:8084";
-    private String tumnailUrl = url+"/turn/resources/upload/logs/s_";
-    private String serverUrl = url+"/android/";
-    private String dataUrl = url+"/turn/resources/upload/logs/";
-    private String profile = url+"/turn/resources/upload/profile/";
-    private String stepUrl = url+"/turn/resources/upload/step_Log/";
+    private String tumnailUrl = url + "/turn/resources/upload/logs/s_";
+    private String serverUrl = url + "/android/";
+    private String dataUrl = url + "/turn/resources/upload/logs/";
+    private String profile = url + "/turn/resources/upload/profile/";
+    private String stepUrl = url + "/turn/resources/upload/step_Log/";
 
     public String getTumnailUrl() {
         return tumnailUrl;
@@ -29,7 +29,9 @@ public class DataBaseUrl {
         return dataUrl;
     }
 
-    public String getStepUrl() { return stepUrl; }
+    public String getStepUrl() {
+        return stepUrl;
+    }
 
     public String getProfile() {
         return profile;

@@ -22,6 +22,7 @@ public class FindPassActivity extends AppCompatActivity {
     private boolean regicheck2 = false;
 
     DataBaseUrl dataurl = new DataBaseUrl();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +31,7 @@ public class FindPassActivity extends AppCompatActivity {
         user_email = (EditText) findViewById(R.id.user_email);
         user_id = (EditText) findViewById(R.id.user_id);
     }
+
     public void findpass(View view) {
         String user_find_id = user_id.getText().toString();
         String user_find_email = user_email.getText().toString();
@@ -37,33 +39,34 @@ public class FindPassActivity extends AppCompatActivity {
         //공백 체크
         spacecheck(user_find_email, user_find_id);
         //공백이 없으면 실행
-        if(textcheck ) {
+        if (textcheck) {
             checkrole(user_find_email);
-            if(regicheck2){
+            if (regicheck2) {
                 FindPassDataBase(user_find_email, user_find_id);
             }
         }
     }
+
     //정규식 체크
-    public void checkrole(String email){
+    public void checkrole(String email) {
         textcheck = false;
-        if(!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Toast.makeText(getApplicationContext(), "이메일형식이 아닙니다.", Toast.LENGTH_LONG).show();
             user_email.requestFocus();
-        }else{
+        } else {
             regicheck2 = true;
         }
     }
 
-    public void spacecheck(String user_find_email, String user_find_id){
+    public void spacecheck(String user_find_email, String user_find_id) {
         textcheck = false;
-        if(user_find_email.isEmpty()){
-            Toast.makeText(getApplicationContext(),"아이디를 입력해주세요.",Toast.LENGTH_LONG).show();
+        if (user_find_email.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "아이디를 입력해주세요.", Toast.LENGTH_LONG).show();
             user_id.requestFocus();
-        }else if(user_find_id.isEmpty()){
-            Toast.makeText(getApplicationContext(),"이메일을 입력해주세요.",Toast.LENGTH_LONG).show();
+        } else if (user_find_id.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "이메일을 입력해주세요.", Toast.LENGTH_LONG).show();
             user_email.requestFocus();
-        }else{
+        } else {
             textcheck = true;
         }
     }
@@ -85,9 +88,9 @@ public class FindPassActivity extends AppCompatActivity {
                 Log.d("result", s);
                 loading.dismiss();
 
-                if(!s.equals("FAILED")){
+                if (!s.equals("FAILED")) {
                     viewMove();
-                }else{
+                } else {
                     Toast.makeText(getApplicationContext(), "가입하신 아이디, 일치하는 이메일이 없습니다.", Toast.LENGTH_LONG).show();
                 }
             }
@@ -105,7 +108,7 @@ public class FindPassActivity extends AppCompatActivity {
                     loginParam.put("user_id", user_id);
 
 
-                    String link = dataurl.getServerUrl()+"findPass"; //92.168.25.25
+                    String link = dataurl.getServerUrl() + "findPass"; //92.168.25.25
                     HttpClient.Builder http = new HttpClient.Builder("POST", link);
 
                     http.addAllParameters(loginParam);
@@ -129,16 +132,19 @@ public class FindPassActivity extends AppCompatActivity {
         }
 
         passFind task = new passFind();
-        task.execute(user_email,user_id);
+        task.execute(user_email, user_id);
     }
-    public void viewMove(){
+
+    public void viewMove() {
         Intent intent = new Intent(this, emailSubmitActivity.class);
         startActivity(intent);
     }
-    public void bakcMain(View view){
+
+    public void bakcMain(View view) {
         finish();
     }
-    public void findid(View view){
+
+    public void findid(View view) {
         Intent intent = new Intent(this, FindIdActivity.class);
         startActivity(intent);
     }

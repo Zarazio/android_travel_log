@@ -20,6 +20,7 @@ public class HttpClient {
     private static final String WWW_FORM = "application/x-www-form-urlencoded";
     private int httpStatusCode;
     private String body;
+
     public int getHttpStatusCode() {
         return httpStatusCode;
     }
@@ -27,7 +28,9 @@ public class HttpClient {
     public String getBody() {
         return body;
     }
+
     private Builder builder;
+
     private void setBuilder(Builder builder) {
         this.builder = builder;
     }
@@ -40,6 +43,7 @@ public class HttpClient {
         body = readStream(conn);
         conn.disconnect();
     }
+
     private HttpURLConnection getConnection() {
         try {
             URL url = new URL(builder.getUrl());
@@ -51,6 +55,7 @@ public class HttpClient {
         }
         return null;
     }
+
     private void setHeader(HttpURLConnection connection) {
         setContentType(connection);
         setRequestMethod(connection);
@@ -58,9 +63,11 @@ public class HttpClient {
         connection.setDoOutput(true);
         connection.setDoInput(true);
     }
+
     private void setContentType(HttpURLConnection connection) {
         connection.setRequestProperty("Content-Type", WWW_FORM);
     }
+
     private void setRequestMethod(HttpURLConnection connection) {
         try {
             connection.setRequestMethod(builder.getMethod());
@@ -68,6 +75,7 @@ public class HttpClient {
             e.printStackTrace();
         }
     }
+
     private void setBody(HttpURLConnection connection) {
         String parameter = builder.getParameters();
         if (parameter != null && parameter.length() > 0) {
@@ -79,9 +87,15 @@ public class HttpClient {
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
-                try { if (outputStream != null) outputStream.close(); }
-                catch (IOException e) { e.printStackTrace(); } } }
+                try {
+                    if (outputStream != null) outputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
+
     private int getStatusCode(HttpURLConnection connection) {
         try {
             return connection.getResponseCode();
@@ -92,32 +106,38 @@ public class HttpClient {
     }
 
     private String readStream(HttpURLConnection connection) {
-        String result = ""; BufferedReader reader = null;
+        String result = "";
+        BufferedReader reader = null;
         try {
             reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line = null;
             while ((line = reader.readLine()) != null) {
-                result += line;}
+                result += line;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
                 if (reader != null) reader.close();
-            } catch (IOException e) { }
+            } catch (IOException e) {
+            }
 
         }
 
         return result;
 
     }
+
     public static class Builder {
         private Map parameters;
         private String method;
         private String url;
+
         public String getMethod() {
             return method;
 
         }
+
         public String getUrl() {
             return url;
 
@@ -140,10 +160,10 @@ public class HttpClient {
             this.parameters.put(key, value);
 
         }
-        public void addAllParameters(Map param){
+
+        public void addAllParameters(Map param) {
             this.parameters.putAll(param);
         }
-
 
 
         public String getParameters() {
@@ -156,7 +176,9 @@ public class HttpClient {
 
             return (String) this.parameters.get(key);
 
-        } private String generateParameters() {
+        }
+
+        private String generateParameters() {
             StringBuffer parameters = new StringBuffer();
             Iterator keys = getKeys();
             String key = "";
@@ -176,6 +198,7 @@ public class HttpClient {
             return params;
 
         }
+
         private Iterator getKeys() {
             return this.parameters.keySet().iterator();
 
@@ -183,7 +206,8 @@ public class HttpClient {
 
         public HttpClient create() {
             HttpClient client = new HttpClient();
-            client.setBuilder(this); return client;
+            client.setBuilder(this);
+            return client;
 
         }
 

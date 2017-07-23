@@ -3,6 +3,7 @@ package turn.zio.zara.travel_log;
 /**
  * Created by 하루마다 on 2017-05-24.
  */
+
 import android.app.Dialog;
 import android.content.Context;
 import android.util.Log;
@@ -23,6 +24,7 @@ public class ListViewDialog extends Dialog {
     private Context mContext;
     private ArrayList<String> mStrListItem;
     private ListView mListView;
+
     public ListViewDialog(Context context, String title, ArrayList<String> item) {
         super(context);
 // TODO Auto-generated constructor stub
@@ -35,14 +37,15 @@ public class ListViewDialog extends Dialog {
         createListViewDialog();
     }
 
-    private void findViews(){
+    private void findViews() {
         mListView = (ListView) findViewById(R.id.list_view_dialog);
     }
-    private void createListViewDialog(){
+
+    private void createListViewDialog() {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, mStrListItem);
         mListView.setAdapter(adapter);
 
-        mListView.setOnItemClickListener(new OnItemClickListener(){
+        mListView.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
@@ -53,16 +56,18 @@ public class ListViewDialog extends Dialog {
             }
         });
     }
+
     /**
      * listener 함수..
      */
-    public void onOnSetItemClickListener(ListViewDialogSelectListener listener){
+    public void onOnSetItemClickListener(ListViewDialogSelectListener listener) {
         mListener = listener;
     }
+
     /**
      * interface...
      */
-    public interface ListViewDialogSelectListener{
+    public interface ListViewDialogSelectListener {
         public void onSetOnItemClickListener(int position);
     }
 }

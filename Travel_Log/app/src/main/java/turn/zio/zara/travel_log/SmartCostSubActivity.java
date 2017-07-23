@@ -38,6 +38,7 @@ public class SmartCostSubActivity extends AppCompatActivity {
     ExpenseListViewAdapter exadapter;
 
     DataBaseUrl dataurl = new DataBaseUrl();
+
     @Override
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
@@ -54,7 +55,7 @@ public class SmartCostSubActivity extends AppCompatActivity {
     }
 
     // 아이콘 클릭시 디비시작
-    private void insertToDatabase(String selectGroupCode){
+    private void insertToDatabase(String selectGroupCode) {
         SmartCostSubActivity.InsertData task = new SmartCostSubActivity.InsertData();
         Log.d("디비시작한다이제 준비하셈", "시작한다!!");
         task.execute(selectGroupCode); // 메소드를 실행한당
@@ -67,22 +68,22 @@ public class SmartCostSubActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) { // 웹 -> 앱으로 받는값
             super.onPostExecute(s);
-            Log.d("onPostExecute: ",s);
-                liston(s);
+            Log.d("onPostExecute: ", s);
+            liston(s);
         }
 
         @Override
         protected String doInBackground(String... params) { // 실행 메서드
 
-            try{
+            try {
                 String link = "";
                 String data = "";
                 link = dataurl.getServerUrl(); // 집 : 192.168.1.123, 학교 : 172.20.10.203, 에이타운 : 192.168.0.14
 
-                Map<String, String> insertParam = new HashMap<String,String>(); // key, value
+                Map<String, String> insertParam = new HashMap<String, String>(); // key, value
 
                 String group_Code = (String) params[0];
-                insertParam.put("group_Code",selectGroupCode);
+                insertParam.put("group_Code", selectGroupCode);
 
                 link += "selectExpense";
 
@@ -98,13 +99,13 @@ public class SmartCostSubActivity extends AppCompatActivity {
                 // 응답 본문 가져오기
                 String body = post.getBody();
                 return body;
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 return new String("Exception: " + e.getMessage());
             }
         }
     }
-    public void liston(String title){
+
+    public void liston(String title) {
 
         // Adapter 생성
         exadapter = new ExpenseListViewAdapter();
@@ -116,17 +117,17 @@ public class SmartCostSubActivity extends AppCompatActivity {
         JsonArray json = (JsonArray) new JsonParser().parse(title);
 
 ////        Log.d("TAG", "onCreate: "+title);
-        for(int i = 0; i < json.size(); i++) {
+        for (int i = 0; i < json.size(); i++) {
             Log.d("TAG Object", json.get(i).toString());
             JsonObject obj = json.get(i).getAsJsonObject(); // 오브젝트
 
-            exadapter.addItem(obj.get("user_id").toString().replaceAll("\"",""), obj.get("expense_Content").toString().replaceAll("\"",""), obj.get("expense_Cost").toString().replaceAll("\"", ""));
+            exadapter.addItem(obj.get("user_id").toString().replaceAll("\"", ""), obj.get("expense_Content").toString().replaceAll("\"", ""), obj.get("expense_Cost").toString().replaceAll("\"", ""));
 //
         }
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l){
-                ListViewItem listViewItem = (ListViewItem)adapterView.getItemAtPosition(i);
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ListViewItem listViewItem = (ListViewItem) adapterView.getItemAtPosition(i);
             }
         });
 
@@ -188,7 +189,7 @@ public class SmartCostSubActivity extends AppCompatActivity {
 
             public void onSetOnItemClickListener(int position) {
                 // TODO Auto-generated method stub
-                if(selectGroupCode.equals(select_group_Code)) {
+                if (selectGroupCode.equals(select_group_Code)) {
                     if (position == 0) {
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         startActivityForResult(intent, position);
@@ -201,7 +202,7 @@ public class SmartCostSubActivity extends AppCompatActivity {
                     } else if (position == 3) {
                         mDialog.dismiss();
                     }
-                }else{
+                } else {
                     Toast.makeText(getApplicationContext(), "현재 진행 중인 일정이 아닙니다.", Toast.LENGTH_LONG).show();
                 }
                 mDialog.dismiss();

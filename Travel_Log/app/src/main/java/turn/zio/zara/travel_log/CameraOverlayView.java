@@ -31,7 +31,7 @@ import java.util.Map;
  * Created by 하루마다 on 2017-04-29.
  */
 
-public class CameraOverlayView  extends View implements SensorEventListener {
+public class CameraOverlayView extends View implements SensorEventListener {
 
     private static float mXCompassDegree;
     private static float mYCompassDegree;
@@ -58,21 +58,17 @@ public class CameraOverlayView  extends View implements SensorEventListener {
 
     String s = null;
     private int item_code;
-    private RectF searchRect;
-    private RectF viewMode;
     public static boolean DBselect = true;
     public static String order_DB = "1";
     public static String hashTag;
-    private int themeRectWidth;
     public static boolean drawtext;
-    private RectF backbtn;
 
     public CameraOverlayView(Context context) {
         super(context);
         mContext = (CameraActivity) context;
 
 
-        hashTag="없음";
+        hashTag = "없음";
         DBselect = true;
         drawtext = true;
 
@@ -87,12 +83,6 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         // DB의 레코드를 읽어들이고, 그림
 
         interpretDB(canvas);
-        /*
-        initRectFs();
-        if(drawtext) {
-            drawButton(canvas);
-        }
-        */
         // 회전된 카메라를 원상복귀함
         canvas.restore();
         // 아이템이 터치된 상태일때 팝업을 그림
@@ -119,20 +109,6 @@ public class CameraOverlayView  extends View implements SensorEventListener {
 
     }
 
-    public void initRectFs() {
-        themeRectWidth = (mHeight - (mHeight / 20 * 2)) / 10;
-
-        backbtn = new RectF( ((mWidth - mHeight) / 2) + mHeight
-                / 20 + (float)(themeRectWidth * 1.7),30, ((mWidth - mHeight) / 2) + mHeight / 20
-                + (float)(themeRectWidth * 2.7),180);
-        viewMode = new RectF( ((mWidth - mHeight) / 2) + mHeight
-                / 20 + (float)(themeRectWidth * 4.5),30, ((mWidth - mHeight) / 2) + mHeight / 20
-                + (float)(themeRectWidth * 5.5),180);
-
-        searchRect = new RectF( ((mWidth - mHeight) / 2) + mHeight / 20
-                + (float)(themeRectWidth * 7.3),30,((mWidth - mHeight) / 2) + mHeight / 20
-                + (float)(themeRectWidth * 8.3),180);
-    }
 
     // 센서 초기화
     // TYPE_ORIENTATION 사용할수 있게 설정
@@ -144,28 +120,7 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         mSensorManager.registerListener(this, mOriSensor,
                 SensorManager.SENSOR_DELAY_UI);
     }
-    private void drawButton(Canvas pCanvas) {
-        Paint tPaint = new Paint();
-        int yTextMargin = 8;
-        tPaint.setColor(Color.BLACK);
-        tPaint.setAlpha(125);pCanvas.drawRoundRect(backbtn, 20, 20, tPaint);
-        pCanvas.drawText("back",
-                (backbtn.left + backbtn.right) / 2  - mPaint.measureText("back")
-                        / 2,
-                (backbtn.top + backbtn.bottom) / 2 + yTextMargin, mPaint);
-        pCanvas.drawRoundRect(viewMode, 20, 20, tPaint);
-        pCanvas.drawText("Mode",
-                (viewMode.left + viewMode.right) / 2 - mPaint.measureText("Mode")
-                        / 2,
-                (viewMode.top + viewMode.bottom) / 2 + yTextMargin, mPaint);
 
-        pCanvas.drawRoundRect(searchRect, 20, 20, tPaint);
-        pCanvas.drawText("필터",
-                (searchRect.left + searchRect.right) / 2 - mPaint.measureText("필터")
-                        / 2,
-                (searchRect.top + searchRect.bottom) / 2 + yTextMargin, mPaint);
-
-    }
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ORIENTATION) {
@@ -191,38 +146,11 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         convertedY = event.getY();
         convertedX = convertedX - mWidth / 2;
         convertedY = convertedY - mHeight / 2;
-        Log.d("convertedX", convertedX+"");
-        Log.d("convertedY", convertedY+"");
+        Log.d("convertedX", convertedX + "");
+        Log.d("convertedY", convertedY + "");
 
         mTouched = false;
-       /* if (convertedX > backbtn.left - mWidth / 2
-                && convertedX < backbtn.right - mWidth / 2
-                && convertedY > backbtn.top - mHeight / 2
-                && convertedY < backbtn.bottom - mWidth / 2) {
-            mContext.finish();
-        }
 
-        if (convertedX > searchRect.left - mWidth / 2
-                && convertedX < searchRect.right - mWidth / 2
-                && convertedY > searchRect.top - mHeight / 2
-                && convertedY < searchRect.bottom - mWidth / 2) {
-                DBselect = false;
-                Intent intent = new Intent(mContext, ARFilterActivity.class);
-                mContext.startActivity(intent);
-        }
-
-        if (convertedX > viewMode.left - mWidth / 2
-                && convertedX < viewMode.right - mWidth / 2
-                && convertedY > viewMode.top - mHeight / 2
-                && convertedY < viewMode.bottom - mWidth / 2) {
-                drawtext = false;
-                Intent intent = new Intent(mContext, popListView.class);
-                intent.putExtra("jsonData",s);
-                intent.putExtra("mlongitude",mlongitude);
-                intent.putExtra("mlatitude",mlatitude);
-                mContext.startActivity(intent);
-                mTouched = false;
-        }*/
 
         PointF tPoint = new PointF();
 
@@ -240,10 +168,10 @@ public class CameraOverlayView  extends View implements SensorEventListener {
             item_code = item[1];
 
 
-            if (convertedX > tPoint.x - (widthSize/2)
-                    && convertedX < tPoint.x + (widthSize/2)
-                    && convertedY > tPoint.y - (100/2)
-                    && convertedY < tPoint.y + (100/2)) {
+            if (convertedX > tPoint.x - (widthSize / 2)
+                    && convertedX < tPoint.x + (widthSize / 2)
+                    && convertedY > tPoint.y - (100 / 2)
+                    && convertedY < tPoint.y + (100 / 2)) {
                 mTouched = true;
                 mTouchedItem = item_code;
 
@@ -256,7 +184,7 @@ public class CameraOverlayView  extends View implements SensorEventListener {
     private void drawPopup() {
         // TODO Auto-generated method stub
         int touch_board_Code = mTouchedItem;
-        Log.d("이거 클릭",touch_board_Code+"");
+        Log.d("이거 클릭", touch_board_Code + "");
         String[][] parsedata = new String[0][9];
 
         JSONArray json = null;
@@ -278,21 +206,21 @@ public class CameraOverlayView  extends View implements SensorEventListener {
                 parsedata[i][9] = jobject.getString("user_profile");
 
                 int sel_board_Code = Integer.parseInt(parsedata[i][0]);
-                if(touch_board_Code == sel_board_Code){
+                if (touch_board_Code == sel_board_Code) {
 
                     Intent intent = new Intent(mContext, LifeLogViewActivity.class);
-                    intent.putExtra("board_Code",parsedata[i][0]);
-                    intent.putExtra("board_Title",parsedata[i][1]);
-                    intent.putExtra("board_Content",parsedata[i][2]);
-                    intent.putExtra("log_longtitude",parsedata[i][3]);
-                    intent.putExtra("log_latitude",parsedata[i][4]);
-                    intent.putExtra("board_Date",parsedata[i][7]);
-                    intent.putExtra("write_type",parsedata[i][8]);
-                    intent.putExtra("profile_picture",parsedata[i][9]);
+                    intent.putExtra("board_Code", parsedata[i][0]);
+                    intent.putExtra("board_Title", parsedata[i][1]);
+                    intent.putExtra("board_Content", parsedata[i][2]);
+                    intent.putExtra("log_longtitude", parsedata[i][3]);
+                    intent.putExtra("log_latitude", parsedata[i][4]);
+                    intent.putExtra("board_Date", parsedata[i][7]);
+                    intent.putExtra("write_type", parsedata[i][8]);
+                    intent.putExtra("profile_picture", parsedata[i][9]);
                     Log.d("click", parsedata[i][9]);
 
                     mContext.startActivity(intent);
-                    DBselect =false;
+                    DBselect = false;
                     mTouched = false;
                 }
             }
@@ -302,14 +230,18 @@ public class CameraOverlayView  extends View implements SensorEventListener {
 
     }
 
-    public String getJsonData(){
+    public String getJsonData() {
         return s;
     }
-    public Double getLong(){
+
+    public Double getLong() {
         return mlongitude;
-    }public Double getLat(){
+    }
+
+    public Double getLat() {
         return mlatitude;
     }
+
     private void drawGrid(double tAx, double tAy, double tBx, double tBy,
                           Canvas pCanvas, Paint pPaint, String title, String content, int placeY, int item_code, int i) {
         // TODO Auto-generated method stub
@@ -335,7 +267,6 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         } else if (mXDegree + mXCompassDegree >= 360) {
             mXDegree = mXDegree + mXCompassDegree - 360;
         }
-
 
 
         // 계산된 각도 만큼 기기 정중앙 화면 기준 어디에 나타날지 계산함
@@ -375,22 +306,22 @@ public class CameraOverlayView  extends View implements SensorEventListener {
                         mShadowPaint.setTextSize(50);
                         tPaint.setColor(Color.BLACK);
                         tPaint.setAlpha(125);
-                        RectF r = new RectF(mX-pPaint.measureText(title) / 2-60 , mY+placeY-70, mX+pPaint.measureText(title) / 2+60, mY+placeY+30);
+                        RectF r = new RectF(mX - pPaint.measureText(title) / 2 - 60, mY + placeY - 70, mX + pPaint.measureText(title) / 2 + 60, mY + placeY + 30);
 
                         pCanvas.drawRoundRect(r, 20, 20, tPaint);
                         pCanvas.drawText(title, mX - pPaint.measureText(title) / 2
-                                + mShadowXMargin, mY+placeY
+                                + mShadowXMargin, mY + placeY
                                 + mShadowYMargin, mShadowPaint);
-                        pCanvas.drawText(title, mX - pPaint.measureText(title) / 2, mY+placeY, pPaint);
+                        pCanvas.drawText(title, mX - pPaint.measureText(title) / 2, mY + placeY, pPaint);
 
 
-                        int widthbox = (int)(r.right-r.left);
-                        int heightbox = (int)(r.bottom-r.top);
+                        int widthbox = (int) (r.right - r.left);
+                        int heightbox = (int) (r.bottom - r.top);
 
-                        boxsize.add(new int[]{item_code,widthbox,heightbox});
+                        boxsize.add(new int[]{item_code, widthbox, heightbox});
 
                         PointF tPoint = new PointF();
-                        tPoint.set(mX - mWidth / 2, mY - mHeight / 2 +placeY);
+                        tPoint.set(mX - mWidth / 2, mY - mHeight / 2 + placeY);
 
                         mPointFList.add(tPoint);
                         PointHashMap.add(new int[]{i, item_code});
@@ -447,9 +378,9 @@ public class CameraOverlayView  extends View implements SensorEventListener {
                 tBx = Double.parseDouble(parsedata[i][3]);
                 tBy = Double.parseDouble(parsedata[i][4]);
 
-                int placeY = Integer.parseInt( parsedata[i][5]);
+                int placeY = Integer.parseInt(parsedata[i][5]);
 
-                if(drawtext==true) {
+                if (drawtext == true) {
                     drawGrid(tAx, tAy, tBx, tBy, pCanvas, mPaint, title, content, placeY, item_code, i);
                 }
 
@@ -460,17 +391,18 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         }
 
     }
+
     class arData extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
-            try{
+            try {
 
-                Map<String, String> seldata = new HashMap<String,String>() ;
+                Map<String, String> seldata = new HashMap<String, String>();
 
-                seldata.put("order_DB",order_DB) ;
-                seldata.put("hashTag",hashTag);
+                seldata.put("order_DB", order_DB);
+                seldata.put("hashTag", hashTag);
 
-                String link= dataurl.getServerUrl()+"boardList"; //92.168.25.25
+                String link = dataurl.getServerUrl() + "boardList"; //92.168.25.25
                 HttpClient.Builder http = new HttpClient.Builder("GET", link);
 
                 http.addAllParameters(seldata);
@@ -486,8 +418,7 @@ public class CameraOverlayView  extends View implements SensorEventListener {
 
                 // Read Server Response
 
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 return new String("Exception: " + e.getMessage());
             }
         }
@@ -502,6 +433,7 @@ public class CameraOverlayView  extends View implements SensorEventListener {
             super.onPostExecute(s);
         }
     }
+
     // 카메라 액티비티에서 오버레이 화면 크기를 설정함
     public void setOverlaySize(int width, int height) {
         // TODO Auto-generated method stub
@@ -509,6 +441,7 @@ public class CameraOverlayView  extends View implements SensorEventListener {
         mHeight = height;
 
     }
+
     //핸재위치 갱신
     public void setCurrentPoint(double longitude, double latitude) {
 
