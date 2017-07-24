@@ -27,6 +27,10 @@
         <item>취소</item>
     </string-array>
 
-
+    <string-array name="log_wrtie_item">
+        <item>로그</item>
+        <item>스탭 로그</item>
+        <item>취소</item>
+    </string-array>
     <string name="action_settings">Settings</string>
 </resources>

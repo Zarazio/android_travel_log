@@ -28,7 +28,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="8dp"
@@ -38,47 +38,18 @@
                         android:id="@+id/Camera_sel_pop"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
                         android:background="#fafafa"
                         android:onClick="PictureSel"
                         app:srcCompat="@drawable/camera" />
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:background="#fafafa">
-
-                        <ImageView
-                            android:id="@+id/view_calender_icon"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:background="#fafafa"
-                            android:onClick="travel_List"
-                            app:srcCompat="@drawable/calender" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:background="#fafafa">
-
-                        <ImageView
-                            android:id="@+id/view_step_log"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:background="#fafafa"
-                            android:onClick="stepon"
-                            app:srcCompat="@drawable/offsteplog" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="right"
-                        android:background="#fafafa">
-
+                        <LinearLayout
+                            android:layout_width="30dp"
+                            android:layout_height="50dp"></LinearLayout>
                         <ImageView
                             android:id="@+id/view_mainlogo_icon"
                             android:layout_width="200dp"
@@ -86,7 +57,21 @@
                             android:layout_alignBottom="@+id/backmain"
                             android:layout_alignParentTop="true"
                             android:background="#fafafa"
+                            android:layout_weight="1"
                             android:src="@drawable/mainlogo2" />
+                        <LinearLayout
+                            android:layout_width="30dp"
+                            android:layout_height="50dp"></LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="8dp">
+
+                        <LinearLayout
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"></LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -396,8 +381,8 @@
                                 android:background="@drawable/border"
                                 android:gravity="center"
                                 android:onClick="profile_edit"
-                                android:textSize="20sp"
-                                android:text="프로필 수정" />
+                                android:text="프로필 수정"
+                                android:textSize="20sp" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>

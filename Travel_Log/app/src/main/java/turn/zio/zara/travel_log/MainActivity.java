@@ -1,5 +1,8 @@
 package turn.zio.zara.travel_log;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -116,12 +119,21 @@ public class MainActivity extends AppCompatActivity {
 
     Bitmap[] pImage;
     private ImageView my_page_profile_picture;
-
+    Notification.Builder builder;
+    PendingIntent pendingNotificationIntent;
+    NotificationManager notificationManager;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         /*처음 DB 실행*/
+        notificationManager= (NotificationManager)MainActivity.this.getSystemService(MainActivity.this.NOTIFICATION_SERVICE);
+
+        Intent intent1 = new Intent(MainActivity.this.getApplicationContext(),MainActivity.class);
+        intent1.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP| Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        builder = new Notification.Builder(getApplicationContext());
+        pendingNotificationIntent = PendingIntent.getActivity( MainActivity.this,0, intent1,PendingIntent.FLAG_UPDATE_CURRENT);
 
         mode = 1;
         menu = new boolean[4];
@@ -142,7 +154,6 @@ public class MainActivity extends AppCompatActivity {
 
         logCount = (TextView) findViewById(R.id.logCount);
         friendsCount = (TextView) findViewById(R.id.friendsCount);
-        step_log_pic = (ImageView) findViewById(R.id.view_step_log);
         my_page_profile_picture = (ImageView) findViewById(R.id.my_page_profile_picture);
 
         login = getSharedPreferences("LoginKeep", MODE_PRIVATE);
@@ -173,8 +184,10 @@ public class MainActivity extends AppCompatActivity {
 
         if (steplogkeep.equals("1")) {
             steparr = new ArrayList<LocationInfo>();
-            d = getResources().getDrawable(R.drawable.onsteplog);
-            step_log_pic.setImageDrawable(d);
+            builder.setSmallIcon(R.drawable.foot).setTicker("StepLog").setWhen(System.currentTimeMillis())
+                    .setNumber(1).setContentTitle("Step Log").setContentText("Step Log 작성중...").setOngoing(true)
+                    .setContentIntent(pendingNotificationIntent);
+            notificationManager.notify(1, builder.build());
             for (int i = 0; i < stepsize; i++) {
                 Double latitude = Double.parseDouble(stepkeep.getString("latitude" + i, "0"));
                 Double longitude = Double.parseDouble(stepkeep.getString("longitude" + i, "0"));
@@ -182,8 +195,6 @@ public class MainActivity extends AppCompatActivity {
                 steparr.add(new LocationInfo(latitude, longitude));
             }
         } else {
-            d = getResources().getDrawable(R.drawable.offsteplog);
-            step_log_pic.setImageDrawable(d);
             steparr = new ArrayList<LocationInfo>();
         }
 
@@ -374,39 +385,7 @@ public class MainActivity extends AppCompatActivity {
 
     /*스탭로그 키거나 끄기*/
     public void stepon(View view) {
-        Drawable d;
-        if (steplogkeep.equals("0")) {
-            d = getResources().getDrawable(R.drawable.onsteplog);
-            step_log_pic.setImageDrawable(d);
-            steplogkeep = "1";
-            editor.putString("steplogkeep", steplogkeep);
-            StepInsert(user_id);
-        } else {
-            d = getResources().getDrawable(R.drawable.offsteplog);
-            step_log_pic.setImageDrawable(d);
-            steplogkeep = "0";
-            editor.putString("steplogkeep", steplogkeep);
-            editor.commit();
-            Intent intent = new Intent(getApplicationContext(), StepLogActivity.class);
 
-            double[] latitude = new double[steparr.size()];
-            double[] longitude = new double[steparr.size()];
-            for (int i = 0; i < steparr.size(); i++) {
-                latitude[i] = steparr.get(i).getLatitude();
-                longitude[i] = steparr.get(i).getLongitude();
-            }
-
-            intent.putExtra("user_id", user_id);
-            intent.putExtra("stepsize", steparr.size());
-            intent.putExtra("latitude", latitude);
-            intent.putExtra("longitude", longitude);
-
-            startActivityForResult(intent, 3);
-            /*CreateKMLFile crateKML = new CreateKMLFile();
-            crateKML.createKML(steparr, user_id);
-            steparr = null;*/
-        }
-        Log.d("step_log", steplogkeep);
     }
 
     /*StepLog Insert*/
@@ -1177,9 +1156,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void log_Write(View view) {
-        Intent intent = new Intent(this, Life_LogActivity.class);
-        intent.putExtra("stepLog", steplogkeep);
-        startActivity(intent);
+        LogWriteDialog();
     }
 
     public void option(View v) {
@@ -1201,7 +1178,67 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
+    /*글쓰기 버튼 클릿*/
+    private void LogWriteDialog() {
 
+        String[] item = getResources().getStringArray(R.array.log_wrtie_item);
+
+        List<String> listItem = Arrays.asList(item);
+        ArrayList<String> itemArrayList = new ArrayList<String>(listItem);
+        mDialog = new ListViewDialog(this, getString(R.string.list_dialog_title), itemArrayList);
+        mDialog.getWindow().setGravity(Gravity.BOTTOM);
+        mDialog.onOnSetItemClickListener(new ListViewDialog.ListViewDialogSelectListener() {
+
+
+            @Override
+
+            public void onSetOnItemClickListener(int position) {
+                // TODO Auto-generated method stub
+
+                if (position == 0) {
+                    Intent intent = new Intent(getApplicationContext(), Life_LogActivity.class);
+                    intent.putExtra("stepLog", steplogkeep);
+                    startActivity(intent);
+                } else if (position == 1) {
+                    if (steplogkeep.equals("0")) {
+                        steplogkeep = "1";
+                        editor2.putString("steplogkeep", steplogkeep);
+                        StepInsert(user_id);
+                        builder.setSmallIcon(R.drawable.foot).setTicker("StepLog").setWhen(System.currentTimeMillis())
+                                .setNumber(1).setContentTitle("Step Log").setContentText("Step Log 작성중...").setOngoing(true)
+                                .setContentIntent(pendingNotificationIntent);
+
+
+                        notificationManager.notify(1, builder.build());
+
+                    } else {
+                        Intent intent = new Intent(getApplicationContext(), StepLogActivity.class);
+
+                        double[] latitude = new double[steparr.size()];
+                        double[] longitude = new double[steparr.size()];
+                        for (int i = 0; i < steparr.size(); i++) {
+                            latitude[i] = steparr.get(i).getLatitude();
+                            longitude[i] = steparr.get(i).getLongitude();
+                        }
+
+                        intent.putExtra("user_id", user_id);
+                        intent.putExtra("stepsize", steparr.size());
+                        intent.putExtra("latitude", latitude);
+                        intent.putExtra("longitude", longitude);
+
+                        startActivityForResult(intent, 3);
+                    }
+                    Log.d("step_log", steplogkeep);
+                } else if (position == 2) {
+                    mDialog.dismiss();
+                }
+                mDialog.dismiss();
+            }
+        });
+        mDialog.show();
+
+    }
+    /*카메라 버튼 클릭*/
     private void showListDialog() {
 
         String[] item = getResources().getStringArray(R.array.list_dialog_main_item);

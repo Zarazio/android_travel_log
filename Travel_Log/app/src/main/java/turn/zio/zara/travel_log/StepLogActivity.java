@@ -1,8 +1,10 @@
 package turn.zio.zara.travel_log;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -40,11 +42,20 @@ public class StepLogActivity extends Activity {
     String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/travelLog/kml/";
     private String pathName;
 
+    SharedPreferences login;
+    SharedPreferences.Editor editor;
+    private SharedPreferences stepkeep;
+    private String steplogkeep;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_log);
-
+        
+        stepkeep = getSharedPreferences("LoginKeep", MODE_PRIVATE);
+        editor = stepkeep.edit();
+        steplogkeep = stepkeep.getString("steplogkeep", "0");
+        
         log_Title = (EditText) findViewById(R.id.view_Travel_logTitle);
         shareAll = (RadioButton) findViewById(R.id.share_all_button);
         shareGroup = (RadioButton) findViewById(R.id.share_group_button);
@@ -118,7 +129,14 @@ public class StepLogActivity extends Activity {
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 Log.d("result", s);
+                steplogkeep = "0";
+                editor.putString("steplogkeep", steplogkeep);
+                editor.commit();
+                NotificationManager nm =
+                        (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
+                // 등록된 notification 을 제거 한다.
+                nm.cancel(1);
             }
 
             @Override
@@ -175,6 +193,15 @@ public class StepLogActivity extends Activity {
                 super.onPostExecute(s);
                 Log.d("result", s);
                 if (s.equals("success")) {
+                    steplogkeep = "0";
+                    editor.putString("steplogkeep", steplogkeep);
+                    editor.commit();
+                    NotificationManager nm =
+                            (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+
+                    // 등록된 notification 을 제거 한다.
+                    nm.cancel(1);
+
                     Toast.makeText(getApplicationContext(), "업로드 성공", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
@@ -294,6 +321,6 @@ public class StepLogActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        step_delte(user_id);
+        finish();
     }
 }
