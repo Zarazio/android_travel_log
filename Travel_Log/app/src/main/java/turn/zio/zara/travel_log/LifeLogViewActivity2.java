@@ -154,6 +154,7 @@ public class LifeLogViewActivity2 extends AppCompatActivity implements OnMapRead
         if (user_id.equals(write_user_id)) {
             option.setVisibility(View.VISIBLE);
         }
+        
         LikeTure(user_id, board_code + "");
         String address = "0";
         if (file_Type.equals("1")) {
