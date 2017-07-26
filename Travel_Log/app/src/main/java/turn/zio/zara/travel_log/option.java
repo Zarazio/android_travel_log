@@ -35,7 +35,10 @@ public class option extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), profileEditActivity.class);
         startActivityForResult(intent, 1);
     }
-
+    public void like_board(View view) {
+        Intent intent = new Intent(getApplicationContext(), MyLikeBoardActivity.class);
+        startActivity(intent);
+    }
     public void bakcMain(View view) {
         finish();
     }
@@ -49,7 +52,9 @@ public class option extends AppCompatActivity {
                         // 'YES'
                         editor.clear();
                         editor.commit();
-                        finish();
+                        Intent intent = new Intent(getApplicationContext(), LoginMenuActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
                     }
                 }).setNegativeButton("취소",
                 new DialogInterface.OnClickListener() {

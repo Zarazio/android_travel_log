@@ -17,7 +17,6 @@ import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -33,7 +32,6 @@ import android.widget.Toast;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -349,13 +347,7 @@ public class Life_LogActivity extends AppCompatActivity {
                         file_Type = "2";
                         mFileInputStream = new FileInputStream(file);
                     } else {
-                        String testStr = "ABCDEFGHIJK...";
-                        File savefile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/travelLog/log.txt");
-                        FileOutputStream fos = new FileOutputStream(savefile);
-                        fos.write(testStr.getBytes());
-                        fos.close();
-                        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/travelLog/log.txt");
-                        mFileInputStream = new FileInputStream(Environment.getExternalStorageDirectory().getAbsolutePath() + "/travelLog/log.txt");
+
                     }
 
                     URL url = new URL(dataurl.getServerUrl() + "insertLog"); //요청 URL을 입력
@@ -497,19 +489,6 @@ public class Life_LogActivity extends AppCompatActivity {
                         dos.writeBytes("Content-Disposition: form-data; name=\"null\";filename=\"" + null + "\"" + lineEnd);
                         dos.writeBytes(lineEnd);
 
-                        int bytesAvailable = mFileInputStream.available();
-                        int maxBufferSize = 1024;
-                        int bufferSize = Math.min(bytesAvailable, maxBufferSize);
-
-                        byte[] buffer = new byte[bufferSize];
-                        int bytesRead = mFileInputStream.read(buffer, 0, bufferSize);
-
-                        while (bytesRead > 0) {
-                            dos.write(buffer, 0, bufferSize);
-                            bytesAvailable = mFileInputStream.available();
-                            bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                            bytesRead = mFileInputStream.read(buffer, 0, bufferSize);
-                        }
                         dos.writeBytes(lineEnd);
                         dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
                     }
@@ -541,8 +520,6 @@ public class Life_LogActivity extends AppCompatActivity {
                     }*/
                 } catch (Exception e) {
                     e.printStackTrace();
-                } finally {
-                    conn.disconnect();
                 }
 
                 return sb.toString();

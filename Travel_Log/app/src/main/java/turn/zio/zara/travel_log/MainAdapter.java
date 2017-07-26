@@ -1,12 +1,10 @@
 package turn.zio.zara.travel_log;
 
-import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
@@ -21,33 +19,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.maps.android.kml.KmlLayer;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static turn.zio.zara.travel_log.R.id.profile_picture;
 
 /**
  * Created by 하루마다 on 2017-06-14.
  */
 
-class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
+class MainAdapter extends BaseAdapter{
 
     private final int layout;
     Context context;
@@ -81,6 +67,7 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
     String step_log_codetext;
     String[] write_type;
     String[] coo;
+    String[] user_profile;
 
     DataBaseUrl dataurl = new DataBaseUrl();
     ArrayList<String> location = new ArrayList<String>();
@@ -94,7 +81,8 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
 
     //생성자
     public MainAdapter(Context context, int layout, String[] board_code, String[] title, String[] Content, String[] date,
-                       String[] writeuser_id, String[] file_type, String[] adress, String[] file_Content, String[] step_log_code, String[] write_type, String user_id) {
+                       String[] writeuser_id, String[] file_type, String[] adress, String[] file_Content, String[] step_log_code,
+                       String[] write_type, String user_id, String[] user_profile) {
         //인플레이트 준비를 합니다.
         this.context = context;
         this.layout = layout;
@@ -110,6 +98,7 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
         this.step_log_code = step_log_code;
         this.write_type = write_type;
         this.mainuser_id = user_id;
+        this.user_profile = user_profile;
         inf = (LayoutInflater) context.getSystemService
                 (Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -161,11 +150,11 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
         final TextView user_id = (TextView) convertView.findViewById(R.id.user_id);
         user_id.setText(writeuser_id[position]);
 
-
         final ImageView like = (ImageView) convertView.findViewById(R.id.log_Likes);
         ImageView Comment = (ImageView) convertView.findViewById(R.id.log_Comments);
         ImageView iv = (ImageView) convertView.findViewById(R.id.log_picture);
-        ImageView profile_pic = (ImageView) convertView.findViewById(R.id.profile_picture);
+        ImageView map_picture = (ImageView) convertView.findViewById(R.id.map_picture);
+        ImageView profile_pic = (ImageView) convertView.findViewById(profile_picture);
         LinearLayout picView = (LinearLayout) convertView.findViewById(R.id.log_picture_Linear);
         LinearLayout map = (LinearLayout) convertView.findViewById(R.id.MapContainer);
         LinearLayout text = (LinearLayout) convertView.findViewById(R.id.text);
@@ -196,6 +185,23 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
                 context.startActivity(intent);
             }
         });
+        map_picture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, LifeLogViewActivity2.class);
+                intent.putExtra("board_Code", board_codetext);
+                intent.putExtra("board_Title", titletext);
+                intent.putExtra("board_Content", Contenttext);
+                intent.putExtra("board_Date", datetext);
+                intent.putExtra("user_id", writeuser_idtext);
+                intent.putExtra("file_Type", file_typetext);
+                intent.putExtra("file_Content", kmlFile);
+                intent.putExtra("step_log_code", step_log_codetext);
+                intent.putExtra("profile_picture", user_profile[position]);
+
+                context.startActivity(intent);
+            }
+        });
         profile_pic.setImageBitmap(pimages[position]);
         profile_pic.setScaleType(ImageView.ScaleType.FIT_XY);
         if (file_type[position].equals("0")) {
@@ -218,15 +224,6 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
             flag2 = true;
         } else if (file_type[position].equals("3")) {
             map.setVisibility(View.VISIBLE);
-            if (flag2) {
-                fragmentTransaction = ((Activity) context).getFragmentManager().beginTransaction();
-                mMapFragment = MapFragment.newInstance();
-                fragmentTransaction.add(R.id.MapContainer, mMapFragment);
-                GoogleMapOptions options = new GoogleMapOptions().liteMode(true);
-                mMapFragment.getMapAsync(this);
-                fragmentTransaction.commit();
-                flag2 = false;
-            }
             picView.setVisibility(View.GONE);
             text.setVisibility(View.GONE);
             board_codetext = board_code[position];
@@ -239,27 +236,16 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
             kmlFile = file_Content[position];
             step_log_codetext = step_log_code[position];
 
-
-            if (mMap != null) {
+            map_picture.setImageBitmap(images[position]);
+            map_picture.setScaleType(ImageView.ScaleType.FIT_XY);
+            /*i
                 mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
                     public void onMapClick(LatLng latLng) {
                         Log.d("dd", Double.parseDouble(coo[0]) + "/" + Double.parseDouble(coo[1]));
-                        Intent intent = new Intent(context, LifeLogViewActivity2.class);
-                        intent.putExtra("board_Code", board_codetext);
-                        intent.putExtra("board_Title", titletext);
-                        intent.putExtra("board_Content", Contenttext);
-                        intent.putExtra("board_Date", datetext);
-                        intent.putExtra("user_id", writeuser_idtext);
-                        intent.putExtra("file_Type", file_typetext);
-                        intent.putExtra("file_Content", kmlFile);
-                        intent.putExtra("log_longtitude", Double.parseDouble(coo[0]));
-                        intent.putExtra("log_latitude", Double.parseDouble(coo[1]));
-                        intent.putExtra("step_log_code", step_log_codetext);
-                        context.startActivity(intent);
-                    }
-                });
-            }
+
+
+            }*/
         }
         if (like_ture == -1) {
             LikeTure(mainuser_id, board_code[position], like);
@@ -312,95 +298,6 @@ class MainAdapter extends BaseAdapter implements OnMapReadyCallback {
         }
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        Log.d("GoogleMpa", mMap + "");
-        selFile();
-    }
-
-    private void selFile() {
-
-        class loginData extends AsyncTask<String, Void, String> {
-            ProgressDialog loading;
-            private InputStream is = null;
-            KmlLayer layer = null;
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-            }
-
-            @Override
-            protected void onPostExecute(String s) {
-                Log.d("result", s);
-
-                if (mMap != null) {
-                    coo = location.get(((location.size() - 1) / 2)).toString().split(",");
-                    LatLng startPoint = new LatLng(Double.parseDouble(coo[1]), Double.parseDouble(coo[0]));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(startPoint));
-                    CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
-                    mMap.animateCamera(zoom);
-                    PolylineOptions option = new PolylineOptions();
-                    option.width(4);
-                    option.color(Color.BLACK);
-                    for (int i = 0; i < location.size(); i++) {
-                        String[] coos = location.get(i).toString().split(",");
-                        LatLng point = new LatLng(Double.parseDouble(coos[1]), Double.parseDouble(coos[0]));
-                        option.add(point);
-                    }
-                    mMap.addPolyline(option);
-                }
-            }
-
-            @Override
-            protected String doInBackground(String... params) {
-
-                try {
-                    String urltext = dataurl.getStepUrl() + kmlFile;
-                    Log.d("url", urltext);
-                    URL url = new URL(urltext);
-                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                    urlConnection.connect();
-                    File file = new File(urltext);
-                    //FileInputStream is =new FileInputStream(file);
-                    is = urlConnection.getInputStream();
-
-                    InputStreamReader inputReader = new InputStreamReader(is);
-
-                    String column = null;
-                    BufferedReader br = new BufferedReader(inputReader);
-                    boolean flag = false;
-                    while ((column = br.readLine()) != null) {
-                        int coordin = column.indexOf("<coordinates>");
-
-                        if (coordin != -1 || flag) {
-                            int i = 0;
-                            flag = true;
-                            String tmpCoordin = column;
-                            tmpCoordin = tmpCoordin.replaceAll("<coordinates>", "");
-                            tmpCoordin = tmpCoordin.replaceAll("</coordinates>", "");
-                            if (tmpCoordin.trim().equals("</LineString>")) {
-                                break;
-                            }
-                            location.add(tmpCoordin.trim());
-                        }
-
-                    }
-
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                return "success";
-            }
-        }
-
-        loginData task = new loginData();
-        task.execute();
-    }
 
     /*좋아요 여부*/
     private void LikeTure(final String user_id, final String board_code, final ImageView like) {

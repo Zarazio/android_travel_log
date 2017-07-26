@@ -86,9 +86,10 @@ public class CreateKMLFile {
                         lineString.addContent(coordinates);
 
                         String location = "";
-                        for (LocationInfo info : locationHistory)
+                        for (LocationInfo info : locationHistory) {
                             location += info.getLongitude() + "," + info.getLatitude() + ",0 \n";
-
+                        }
+                        Log.d("location", location);
                         coordinates.setText(location);
                     }
                 }

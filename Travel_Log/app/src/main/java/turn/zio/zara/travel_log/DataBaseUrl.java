@@ -11,7 +11,7 @@ public class DataBaseUrl {
     *
     */
     private String url = "http://114.201.41.248:8084";
-    private String tumnailUrl = url + "/turn/resources/upload/logs/s_";
+    private String tumnailUrl = url + "/turn/resources/upload/logs";
     private String serverUrl = url + "/android/";
     private String dataUrl = url + "/turn/resources/upload/logs/";
     private String profile = url + "/turn/resources/upload/profile/";

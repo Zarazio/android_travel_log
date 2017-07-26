@@ -47,7 +47,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -95,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
     String sc_Division;
     public static String select_group_Code = "";
 
+    ArrayList<String> location = new ArrayList<String>();
+
     private ImageView step_log_pic;
     private ImageView profile;
     ListView listview;
@@ -122,18 +128,19 @@ public class MainActivity extends AppCompatActivity {
     Notification.Builder builder;
     PendingIntent pendingNotificationIntent;
     NotificationManager notificationManager;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         /*처음 DB 실행*/
-        notificationManager= (NotificationManager)MainActivity.this.getSystemService(MainActivity.this.NOTIFICATION_SERVICE);
+        notificationManager = (NotificationManager) MainActivity.this.getSystemService(MainActivity.this.NOTIFICATION_SERVICE);
 
-        Intent intent1 = new Intent(MainActivity.this.getApplicationContext(),MainActivity.class);
-        intent1.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP| Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Intent intent1 = new Intent(MainActivity.this.getApplicationContext(), MainActivity.class);
+        intent1.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         builder = new Notification.Builder(getApplicationContext());
-        pendingNotificationIntent = PendingIntent.getActivity( MainActivity.this,0, intent1,PendingIntent.FLAG_UPDATE_CURRENT);
+        pendingNotificationIntent = PendingIntent.getActivity(MainActivity.this, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
         mode = 1;
         menu = new boolean[4];
@@ -165,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
         editor2 = stepkeep.edit();
         steplogkeep = stepkeep.getString("steplogkeep", "0");
         int stepsize = stepkeep.getInt("stepdatasize", 0);
+
         alram = getSharedPreferences("pushAlram", MODE_PRIVATE);
         editor3 = alram.edit();
 
@@ -211,14 +219,18 @@ public class MainActivity extends AppCompatActivity {
 
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         /*위치정보*/
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, // 등록할 위치제공자
-                placeTime, // 통지사이의 최소 시간간격 (miliSecond)
-                1, // 통지사이의 최소 변경거리 (m)
-                mLocationListener);
-        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, // 등록할 위치제공자
-                placeTime, // 통지사이의 최소 시간간격 (miliSecond)
-                1, // 통지사이의 최소 변경거리 (m)
-                mLocationListener);
+        if(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER) == true){
+            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, // 등록할 위치제공자
+                    placeTime, // 통지사이의 최소 시간간격 (miliSecond)
+                    1, // 통지사이의 최소 변경거리 (m)
+                    mLocationListener);
+        }else{
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, // 등록할 위치제공자
+                    placeTime, // 통지사이의 최소 시간간격 (miliSecond)
+                    1, // 통지사이의 최소 변경거리 (m)
+                    mLocationListener);
+        }
+
 
         /*검색시 해시태그 View 클릭시*/
         search_Text.setOnFocusChangeListener(new View.OnFocusChangeListener() { // 포커스를 얻으면
@@ -383,10 +395,6 @@ public class MainActivity extends AppCompatActivity {
         task.execute(token);
     }
 
-    /*스탭로그 키거나 끄기*/
-    public void stepon(View view) {
-
-    }
 
     /*StepLog Insert*/
     private void StepInsert(String user_id) {
@@ -488,7 +496,7 @@ public class MainActivity extends AppCompatActivity {
                 parsedata[i][10] = jobject.getString("write_type");
                 if (json.getJSONObject(i).isNull("user_profile") == false) {
                     parsedata[i][11] = jobject.getString("user_profile");
-                }else{
+                } else {
                     parsedata[i][11] = prifile_pict;
                 }
             }
@@ -509,6 +517,7 @@ public class MainActivity extends AppCompatActivity {
         String[] file_Content = new String[parsedata.length];
         String[] step_log_code = new String[parsedata.length];
         String[] write_type = new String[parsedata.length];
+        String[] user_profile = new String[parsedata.length];
 
         for (int i = 0; i < parsedata.length; i++) {
             board_code[i] = parsedata[i][0];
@@ -524,12 +533,13 @@ public class MainActivity extends AppCompatActivity {
                 step_log_code[i] = "0";
             }
             write_type[i] = parsedata[i][10];
+            user_profile[i] = parsedata[i][11];
         }
         Log.d("image", images + "");
         mainapter = new MainAdapter(
                 MainActivity.this,
                 R.layout.main_log_view, board_code,       // GridView 항목의 레이아웃 row.xml
-                title, Content, date, writeuser_id, file_type, adress, file_Content, step_log_code, write_type, user_id);
+                title, Content, date, writeuser_id, file_type, adress, file_Content, step_log_code, write_type, user_id, user_profile);
         mainapter.image(images, 1);
         mainapter.pimage(pImage, 1);
         GridView gv = (GridView) findViewById(R.id.main_list);
@@ -555,9 +565,9 @@ public class MainActivity extends AppCompatActivity {
                 text, file_type);
         adapter.image(images);
         GridView gv = null;
-        if(mode == 2) {
+        if (mode == 2) {
             gv = (GridView) findViewById(R.id.list);
-        }else if (mode == 4){
+        } else if (mode == 4) {
             gv = (GridView) findViewById(R.id.mypage_list);
         }
         gv.setAdapter(adapter);
@@ -567,6 +577,9 @@ public class MainActivity extends AppCompatActivity {
     /*gridView 웹서버 이미지 뿌리기*/
     class serpic extends AsyncTask<String, Void, Bitmap[]> {
         ProgressDialog loading;
+
+        private InputStream is = null;
+        private String KMlurl;
 
         @Override
         protected Bitmap[] doInBackground(String... params) {
@@ -582,17 +595,70 @@ public class MainActivity extends AppCompatActivity {
                     optionss.inJustDecodeBounds = false;
                     Bitmap resizedBitmaps = BitmapFactory.decodeStream(iss, null, optionss);
                     pImage[i] = resizedBitmaps;
+                    if (parsedata[i][7].equals("3")) {
+                        String urltext = dataurl.getStepUrl() + parsedata[i][8];
+                        Log.d("KMLurl", urltext);
+                        URL url = new URL(urltext);
+                        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                        urlConnection.connect();
+                        File file = new File(urltext);
+                        //FileInputStream is =new FileInputStream(file);
+                        is = urlConnection.getInputStream();
 
+                        InputStreamReader inputReader = new InputStreamReader(is);
+
+                        String column = null;
+                        BufferedReader br = new BufferedReader(inputReader);
+                        boolean flag = false;
+                        while ((column = br.readLine()) != null) {
+                            int coordin = column.indexOf("<coordinates>");
+
+                            if (coordin != -1 || flag) {
+                                Log.d("폴리라인 그림", "걸러내는중");
+                                int j = 0;
+                                flag = true;
+                                String tmpCoordin = column;
+                                tmpCoordin = tmpCoordin.replaceAll("<coordinates>", "");
+                                tmpCoordin = tmpCoordin.replaceAll("</coordinates>", "");
+                                if (tmpCoordin.trim().equals("</LineString>")) {
+                                    break;
+                                }
+                                location.add(tmpCoordin.trim());
+                            }
+
+
+                        }
+
+                        Log.d("size", location.size()+"");
+                        KMlurl = "";
+                        KMlurl = "http://maps.googleapis.com/maps/api/staticmap?size=400x400&path=";
+                        for (int k = 0; k < location.size(); k++) {
+                            String[] coos = location.get(k).toString().split(",");
+                            KMlurl += coos[1] + "," + coos[0];
+                            if (k != location.size() - 1) {
+                                KMlurl += "|";
+                            }else {
+                                KMlurl += "&sensor=false";
+                            }
+                            Log.d("dd", coos[1] + "," + coos[0]);
+                            Log.d("result", parsedata[i][8]);
+                        }
+
+                    }
                     if (parsedata[i][7].equals("1")) {
                         String url = dataurl.getTumnailUrl() + parsedata[i][8];
                         Log.d("URL", url);
                         InputStream is = (InputStream) new URL(url).getContent();
                         BitmapFactory.Options options = new BitmapFactory.Options();
-                        if (mode == 1) {
-                            options.inSampleSize = 1;
-                        } else {
-                            options.inSampleSize = 2;
-                        }
+
+                        options.inJustDecodeBounds = false;
+                        Bitmap resizedBitmap = BitmapFactory.decodeStream(is, null, options);
+                        images[i] = resizedBitmap;
+                    }else if(parsedata[i][7].equals("3")){
+                        Log.d("url", parsedata[i][8]);
+                        InputStream is = (InputStream) new URL(KMlurl).getContent();
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+
                         options.inJustDecodeBounds = false;
                         Bitmap resizedBitmap = BitmapFactory.decodeStream(is, null, options);
                         images[i] = resizedBitmap;
@@ -619,7 +685,7 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(s);
             if (mode == 1) {
                 mainApeter(s);
-            } else{
+            } else {
                 Log.d("image", "dd");
                 Apeter(s);
             }
@@ -702,6 +768,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
+
     /*메인 클릭시 db시*/
     class mainlistAll extends AsyncTask<String, Void, String> {
         ProgressDialog loading;
@@ -710,14 +777,14 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             try {
                 String DBserver = null;
-                Log.d("mode", mode+"");
+                Log.d("mode", mode + "");
                 Map<String, String> seldata = new HashMap<String, String>();
                 if (mode == 1) {
                     seldata.put("user_id", user_id);
                     DBserver = "main_View_DB";
                 } else if (mode == 2) {
                     DBserver = "all_list_View";
-                } else if(mode==4){
+                } else if (mode == 4) {
                     seldata.put("user_id", user_id);
                     DBserver = "myLog";
                 }
@@ -801,6 +868,7 @@ public class MainActivity extends AppCompatActivity {
         write task = new write();
         task.execute();
     }
+
     class profile_count extends AsyncTask<String, Void, String> {
         ProgressDialog loading;
 
@@ -841,9 +909,9 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            Log.d("카운트 결과값",s);
-            String lCount = s.substring(0,s.indexOf(","));
-            String fCount = s.substring(s.indexOf(",")+1);
+            Log.d("카운트 결과값", s);
+            String lCount = s.substring(0, s.indexOf(","));
+            String fCount = s.substring(s.indexOf(",") + 1);
 
             friendsCount.setText(fCount);
             logCount.setText(lCount);
@@ -898,18 +966,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void myLogList(View view){
+    public void myLogList(View view) {
         mode = 4;
         mylogvisible.setVisibility(View.VISIBLE);
         travelvisible.setVisibility(View.GONE);
         DBinput();
     }
-    public void myTravel(View view){
+
+    public void myTravel(View view) {
         mylogvisible.setVisibility(View.GONE);
         travelvisible.setVisibility(View.VISIBLE);
         Travel task = new Travel();
         task.execute(user_id); // 메소드를 실행한당
     }
+
     //AsyncTask 라는 스레드를 시작 시켜 DB연결
     class Travel extends AsyncTask<String, Void, String> {
 
@@ -956,6 +1026,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
     public void liston(String title) {
         // Adapter 생성
         Tadapter = new ListViewAdapter();
@@ -1035,6 +1106,7 @@ public class MainActivity extends AppCompatActivity {
         editor4.putString("joinCode", String.valueOf(joinCode)); // 선택한 제목
         editor4.commit();
     }
+
     private void SearhToDatabase(String group_Code) {
         SearhData task = new SearhData();
         Log.d("최지훈디비전송", group_Code);
@@ -1065,7 +1137,8 @@ public class MainActivity extends AppCompatActivity {
             try {
                 String link = "";
                 String data = "";
-                link = dataurl.getServerUrl();; // 집 : 192.168.1.123, 학교 : 172.20.10.203, 에이타운 : 192.168.0.14
+                link = dataurl.getServerUrl();
+                ; // 집 : 192.168.1.123, 학교 : 172.20.10.203, 에이타운 : 192.168.0.14
 
                 Map<String, String> insertParam = new HashMap<String, String>(); // key, value
 
@@ -1110,6 +1183,8 @@ public class MainActivity extends AppCompatActivity {
             user_place.setText(getAddress(latitude, longitude));
             if (steplogkeep.equals("1")) {
                 steparr.add(new LocationInfo(latitude, longitude));
+                Log.d("dd",steparr.size()+"");
+                Log.d("dd","dd");
             }
         }
 
@@ -1148,8 +1223,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if (list.size() > 0) {
             Address addr = list.get(0);
-            address = addr.getAdminArea() + " "
-                    + addr.getLocality() + " "
+            address =   addr.getLocality() + " "
                     + addr.getThoroughfare() + " ";
         }
         return address;
@@ -1178,6 +1252,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
+
     /*글쓰기 버튼 클릿*/
     private void LogWriteDialog() {
 
@@ -1200,9 +1275,14 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("stepLog", steplogkeep);
                     startActivity(intent);
                 } else if (position == 1) {
+                    stepkeep = getSharedPreferences("LoginKeep", MODE_PRIVATE);
+                    editor = stepkeep.edit();
+                    steplogkeep = stepkeep.getString("steplogkeep", "0");
+                    Log.d("steplog", steplogkeep);
                     if (steplogkeep.equals("0")) {
                         steplogkeep = "1";
                         editor2.putString("steplogkeep", steplogkeep);
+                        editor2.commit();
                         StepInsert(user_id);
                         builder.setSmallIcon(R.drawable.foot).setTicker("StepLog").setWhen(System.currentTimeMillis())
                                 .setNumber(1).setContentTitle("Step Log").setContentText("Step Log 작성중...").setOngoing(true)
@@ -1238,6 +1318,7 @@ public class MainActivity extends AppCompatActivity {
         mDialog.show();
 
     }
+
     /*카메라 버튼 클릭*/
     private void showListDialog() {
 

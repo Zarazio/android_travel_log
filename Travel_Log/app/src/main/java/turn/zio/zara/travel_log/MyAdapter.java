@@ -75,8 +75,8 @@ class MyAdapter extends BaseAdapter {
                 drawable = context.getResources().getDrawable(R.drawable.voice);
                 iv.setImageDrawable(drawable);
             } else if (file_type[position].equals("3")) {
-                drawable = context.getResources().getDrawable(R.drawable.foot);
-                iv.setImageDrawable(drawable);
+                iv.setImageBitmap(images[position]);
+                iv.setScaleType(ImageView.ScaleType.FIT_XY);
             }
         }
         return convertView;

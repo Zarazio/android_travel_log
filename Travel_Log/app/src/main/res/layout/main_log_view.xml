@@ -153,7 +153,13 @@
                         android:id="@+id/MapContainer"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
-                        android:visibility="gone"></LinearLayout>
+                        android:visibility="gone">
+                        <ImageView
+                            android:id="@+id/map_picture"
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            android:layout_weight="1" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 

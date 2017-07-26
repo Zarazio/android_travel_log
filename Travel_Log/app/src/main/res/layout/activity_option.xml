@@ -159,6 +159,7 @@
                     android:layout_marginLeft="30dp"
                     android:layout_marginTop="7dp"
                     android:layout_weight="1"
+                    android:onClick="like_board"
                     android:text="회원님이 좋아한 게시물"
                     android:textColor="#000000"
                     android:textSize="22dp" />

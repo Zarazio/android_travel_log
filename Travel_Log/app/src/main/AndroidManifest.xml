@@ -154,7 +154,9 @@
         <activity
             android:name=".Comment"
             android:theme="@style/mainTheme" />
-        <activity android:name=".option"></activity>
+        <activity android:name=".option"
+            android:theme="@style/mainTheme" />
+        <activity android:name=".MyLikeBoardActivity"></activity>
     </application>
 
 </manifest>

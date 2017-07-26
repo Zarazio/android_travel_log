@@ -5,10 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fafafa"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
     android:orientation="vertical"
-    tools:context="turn.zio.zara.travel_log.Comment">
+    tools:context="turn.zio.zara.travel_log.MyLikeBoardActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -48,13 +46,13 @@
             android:gravity="center_vertical|center_horizontal">
 
             <TextView
-                android:id="@+id/Comment_Title"
+                android:id="@+id/log_Write_Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="#fafafa"
                 android:gravity="center_vertical|center_horizontal"
-                android:text="댓글"
+                android:text="좋아요 한 게시물"
                 android:textColor="#000000"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -65,69 +63,23 @@
             android:background="#fafafa">
 
             <LinearLayout
-                android:layout_width="30dp"
+                android:layout_width="40dp"
                 android:layout_height="match_parent"
                 android:background="#fafafa"></LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:background="#e6e6e6" />
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_marginTop="10dp"
+        android:fillViewport="true">
 
-        <ScrollView
-            android:id="@+id/mscroll"
+        <GridView
+            android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true">
-            <GridView
-                android:id="@+id/list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </ScrollView>
-    </LinearLayout>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:background="#e6e6e6" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp">
-
-        <EditText
-            android:id="@+id/commentText"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:ems="10"
-            android:hint="댓글달기..."
-            android:inputType="textPersonName" />
-
-        <Button
-            android:id="@+id/commentButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@null"
-            android:onClick="commentWrite"
-            android:text="게시"
-            android:textColor="@android:color/black"
-            android:textSize="20dp" />
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:background="#e6e6e6" />
+            android:horizontalSpacing="5dp"
+            android:numColumns="3"
+            android:verticalSpacing="5dp" />
+    </ScrollView>
 </LinearLayout>

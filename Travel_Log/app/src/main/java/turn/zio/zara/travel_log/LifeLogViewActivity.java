@@ -246,8 +246,7 @@ public class LifeLogViewActivity extends Activity {
         }
         if (list.size() > 0) {
             Address addr = list.get(0);
-            address = addr.getAdminArea() + " "
-                    + addr.getLocality() + " "
+            address = addr.getLocality() + " "
                     + addr.getThoroughfare() + " ";
         }
         return address;
